@@ -1,0 +1,26 @@
+services:
+  web:
+    container_name: web
+    build: ./Frontend
+    ports:
+      - 3001:5173
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    restart: always
+    depends_on:
+      - server
+    env_file:
+      - .env
+  
+  server:
+    container_name: server
+    build: ./Backend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./Backend:/app
+      - /app/node_modules
+    restart: always
+    env_file:
+      - .env
