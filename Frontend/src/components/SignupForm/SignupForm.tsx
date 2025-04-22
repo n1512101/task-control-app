@@ -29,6 +29,13 @@ const SignupForm: FC = (): ReactElement => {
           style={{ backgroundColor: inputBackgroundColor }}
         />
       </div>
+      <div className="confirmForm">
+        <span>Confirm: </span>
+        <input
+          type="password"
+          style={{ backgroundColor: inputBackgroundColor }}
+        />
+      </div>
       <Button className="signupBtn" variant="outlined" type="submit">
         ログイン
       </Button>

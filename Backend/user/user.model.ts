@@ -4,19 +4,20 @@ import { IUser } from "./user.interface";
 const userSchema: Schema<IUser> = new Schema({
   email: {
     type: String,
-    required: [true, "Email is required."],
+    required: true,
+    unique: true,
     trim: true,
   },
   password: {
     type: String,
-    required: [true, "Password is required."],
+    required: true,
     trim: true,
   },
   name: {
     type: String,
-    required: [true, "Name is required."],
+    required: true,
     trim: true,
   },
 });
 
-export const User: Model<IUser> = model("User", userSchema);
+export const User: Model<IUser> = model("Users", userSchema);
