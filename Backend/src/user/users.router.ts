@@ -2,6 +2,8 @@ import { Request, Response, Router } from "express";
 import { inject, injectable } from "inversify";
 import { IUser } from "./user.interface";
 import UsersController from "./users.controller";
+import { signupValidator } from "./validators/signup.validator";
+import { Result, validationResult } from "express-validator";
 
 @injectable()
 export default class UsersRouter {
@@ -21,9 +23,18 @@ export default class UsersRouter {
 
     this.router.post(
       "/signup",
+      signupValidator,
       async (req: Request<{}, {}, IUser>, res: Response) => {
-        // サインアップ処理
-        this.usersController.signUp(req, res);
+        // result: バリデーション結果
+        const result: Result = validationResult(req);
+
+        if (result.isEmpty()) {
+          // バリデーションチェックok, サインアップ処理
+          const response = await this.usersController.signUp(req, res);
+          res.json(response);
+        } else {
+          res.status(400).json(result.array());
+        }
       }
     );
   }

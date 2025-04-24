@@ -2,15 +2,18 @@ import { Request, Response } from "express";
 import { IUser } from "./user.interface";
 import { User } from "./user.model";
 import { injectable } from "inversify";
+import { matchedData } from "express-validator";
 
 @injectable()
 export default class UsersController {
   constructor() {}
 
   public async signUp(req: Request<{}, {}, IUser>, res: Response) {
+    const validateData: IUser = matchedData(req);
+
     // サインアップ時の処理
     try {
-      const { name, password, email } = req.body;
+      const { name, password, email } = validateData;
 
       // email重複チェック
       const existingUser = await User.findOne({ email });

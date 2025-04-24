@@ -1,4 +1,4 @@
-import { FC, ReactElement, useContext } from "react";
+import { FC, ReactElement, useContext, useEffect } from "react";
 import {
   DarkModeContext,
   DarkModeContextType,
@@ -37,7 +37,7 @@ const SignupForm: FC = (): ReactElement => {
         />
       </div>
       <Button className="signupBtn" variant="outlined" type="submit">
-        ログイン
+        sign up
       </Button>
     </form>
   );

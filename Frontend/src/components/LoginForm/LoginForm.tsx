@@ -26,7 +26,7 @@ const LoginForm: FC = (): ReactElement => {
         />
       </div>
       <Button className="loginBtn" variant="outlined" type="submit">
-        ログイン
+        login
       </Button>
     </form>
   );

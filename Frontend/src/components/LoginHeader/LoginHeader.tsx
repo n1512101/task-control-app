@@ -2,13 +2,16 @@ import { FC, ReactElement, useContext } from "react";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import { Theme, useTheme } from "@mui/material";
-import { DarkModeContext } from "../../context/DarkModeContext";
+import {
+  DarkModeContext,
+  DarkModeContextType,
+} from "../../context/DarkModeContext";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import "./LoginHeader.scss";
 
 const LoginHeader: FC = (): ReactElement => {
   // ダークモード切り替え用
-  const { mode, toggle } = useContext(DarkModeContext);
+  const { mode, toggle } = useContext<DarkModeContextType>(DarkModeContext);
   // テーマの色にアクセスする関数
   const theme = useTheme<Theme>();
 

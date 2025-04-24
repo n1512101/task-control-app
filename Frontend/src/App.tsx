@@ -3,11 +3,14 @@ import { RouterProvider } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import router from "./router/router.tsx";
 import { CssBaseline, Theme } from "@mui/material";
-import { DarkModeContext } from "./context/DarkModeContext.tsx";
+import {
+  DarkModeContext,
+  DarkModeContextType,
+} from "./context/DarkModeContext.tsx";
 
 const App: FC = (): ReactElement => {
   // mode: ダークモードorライトモード
-  const { mode } = useContext(DarkModeContext);
+  const { mode } = useContext<DarkModeContextType>(DarkModeContext);
 
   // モードテーマ：light, dark, デフォルトの色も定義
   const theme: Theme = createTheme({
