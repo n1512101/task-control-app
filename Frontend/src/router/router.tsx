@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Login from "../pages/Login/Login";
 import Signup from "../pages/Signup/Signup";
 import Home from "../pages/Home/Home";
+import RequireAuth from "../components/RequireAuth/RequireAuth";
 
 // ルートパス設定
 const router = createBrowserRouter(
@@ -15,8 +16,12 @@ const router = createBrowserRouter(
       element: <Signup />,
     },
     {
-      path: "/home/:id",
-      element: <Home />,
+      path: "/home/:userId",
+      element: (
+        <RequireAuth>
+          <Home />
+        </RequireAuth>
+      ),
     },
   ],
   {

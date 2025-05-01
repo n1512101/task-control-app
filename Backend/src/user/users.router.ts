@@ -1,9 +1,10 @@
 import { Request, Response, Router } from "express";
 import { inject, injectable } from "inversify";
-import { IUser } from "./user.interface";
+import { Result, validationResult } from "express-validator";
+import { ILoginUser, IUser } from "./user.interface";
 import UsersController from "./users.controller";
 import { signupValidator } from "./validators/signup.validator";
-import { Result, validationResult } from "express-validator";
+import { loginValidator } from "./validators/login.validator";
 
 @injectable()
 export default class UsersRouter {
@@ -17,10 +18,24 @@ export default class UsersRouter {
   }
 
   private initializeRoutes() {
-    this.router.post("/login", (req: Request, res: Response) => {
-      // ログイン時の処理
-    });
+    // ログインAPI
+    this.router.post(
+      "/login",
+      loginValidator,
+      async (req: Request<{}, {}, ILoginUser>, res: Response) => {
+        // result: バリデーション結果
+        const result: Result = validationResult(req);
 
+        if (result.isEmpty()) {
+          // バリデーションチェックokの場合, ログイン処理を実行
+          await this.usersController.login(req, res);
+        } else {
+          res.status(400).json(result.array());
+        }
+      }
+    );
+
+    // サインアップAPI
     this.router.post(
       "/signup",
       signupValidator,
@@ -29,13 +44,17 @@ export default class UsersRouter {
         const result: Result = validationResult(req);
 
         if (result.isEmpty()) {
-          // バリデーションチェックok, サインアップ処理
-          const response = await this.usersController.signUp(req, res);
-          res.json(response);
+          // バリデーションチェックokの場合, サインアップ処理を実行
+          await this.usersController.signUp(req, res);
         } else {
           res.status(400).json(result.array());
         }
       }
     );
+
+    // ログアウトAPI
+    this.router.post("/logout", async (req: Request, res: Response) => {
+      await this.usersController.logout(req, res);
+    });
   }
 }

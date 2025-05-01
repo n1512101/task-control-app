@@ -1,4 +1,11 @@
-import { createContext, useState, useEffect, ReactNode, FC } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  FC,
+  ReactElement,
+} from "react";
 
 type ThemeModeType = "dark" | "light" | null;
 export interface DarkModeContextType {
@@ -12,14 +19,10 @@ export const DarkModeContext = createContext<DarkModeContextType>({
   toggle: () => {},
 });
 
-interface DarkModeContextProviderProps {
-  children: ReactNode;
-}
-
-// プロジェクト全体をダークモード変換できるようにするcontext
-export const DarkModeContextProvider: FC<DarkModeContextProviderProps> = ({
+// ダークモードorライトモードを保持するcontext
+export const DarkModeContextProvider: FC<{ children: ReactNode }> = ({
   children,
-}) => {
+}): ReactElement => {
   const [mode, setMode] = useState<ThemeModeType>(() => {
     const mode = localStorage.getItem("darkMode");
     if (mode === "dark" || mode === "light") {

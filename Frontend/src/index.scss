@@ -1,3 +1,30 @@
+:root[data-theme="light"] {
+  --base-color: #101010;
+  --base-background: #f8f8ff;
+  --header-background: #fff6e9;
+  --input-background: #eeeeee;
+}
+
+:root[data-theme="dark"] {
+  --base-color: #efefef;
+  --base-background: #2c2c2c;
+  --header-background: #101010;
+  --input-background: #aaaaaa;
+}
+
 :root {
+  color: var(--base-color);
+}
+
+html,
+body {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }

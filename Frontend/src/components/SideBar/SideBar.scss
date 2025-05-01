@@ -1,0 +1,16 @@
+.box {
+  width: 250px;
+  height: calc(100vh - 60px);
+  background-color: var(--base-background);
+  position: sticky;
+  margin-top: 60px;
+  top: 60px;
+  transition: margin-left 0.5s ease;
+}
+
+.box.open {
+  margin-left: 0;
+}
+.box.close {
+  margin-left: -250px;
+}

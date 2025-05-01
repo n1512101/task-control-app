@@ -1,34 +1,99 @@
-import { FC, ReactElement, useContext } from "react";
-import {
-  DarkModeContext,
-  DarkModeContextType,
-} from "../../context/DarkModeContext";
+import { FC, ReactElement, useContext, useState } from "react";
+import z from "zod";
+import CustomizedSnackBar from "../SnackBar/SnackBar";
 import Button from "@mui/material/Button";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import useLogin from "../../hooks/useLogin.hook";
+import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import IProperty from "../../interfaces/snackbarProperty.interface";
 import "./LoginForm.scss";
 
+// スキーマ定義
+const schema = z.object({
+  email: z
+    .string()
+    .email({ message: "正しいメールアドレスを入力してください" }),
+  password: z
+    .string()
+    .min(6, { message: "6文字以上入力してください" })
+    .max(20, { message: "20文字以内で入力してください" }),
+});
+type Schema = z.infer<typeof schema>;
+
 const LoginForm: FC = (): ReactElement => {
-  // mode: テーマモード
-  const { mode } = useContext<DarkModeContextType>(DarkModeContext);
-  // inputの背景色取得
-  const inputBackgroundColor = mode === "dark" ? "#888" : "#ddd";
+  // snackbarに渡すプロパティー
+  const [property, setProperty] = useState<IProperty>({
+    open: false,
+    message: "",
+    severity: "warning",
+  });
+
+  const { mutate } = useLogin();
+  const { setAccessToken } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // snackbarを閉じる関数
+  const handleClose = () => {
+    setProperty({ ...property, open: false });
+  };
+
+  // react-hook-form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Schema>({ resolver: zodResolver(schema) });
+
+  // loginボタンを押した際に動作する関数
+  const onSubmit = (userInfo: Schema) => {
+    mutate(userInfo, {
+      // ログイン成功の場合
+      onSuccess: (data) => {
+        // アクセストークンを受け取って保存
+        setAccessToken(data.accessToken);
+        // ページ遷移
+        navigate("/home/" + data.id);
+      },
+      // ログイン失敗の場合
+      onError: (error) => {
+        setProperty({
+          open: true,
+          message: error.message,
+          severity: "warning",
+        });
+      },
+    });
+  };
 
   return (
-    <form className="loginForm">
-      <div className="emailForm">
-        <span>Email: </span>
-        <input style={{ backgroundColor: inputBackgroundColor }} />
-      </div>
-      <div className="passwordForm">
-        <span>Password: </span>
-        <input
-          type="password"
-          style={{ backgroundColor: inputBackgroundColor }}
-        />
-      </div>
-      <Button className="loginBtn" variant="outlined" type="submit">
-        login
-      </Button>
-    </form>
+    <>
+      <CustomizedSnackBar handleClose={handleClose} property={property} />
+      <form className="loginForm" onSubmit={handleSubmit(onSubmit)}>
+        <div className="emailForm">
+          <div>
+            <span>Email: </span>
+            <input {...register("email")} />
+          </div>
+          <div className="errorMessage">
+            {errors.email && <span>{errors.email.message}</span>}
+          </div>
+        </div>
+        <div className="passwordForm">
+          <div>
+            <span>Password: </span>
+            <input {...register("password")} type="password" />
+          </div>
+          <div className="errorMessage">
+            {errors.password && <span>{errors.password.message}</span>}
+          </div>
+        </div>
+        <Button className="loginBtn" variant="outlined" type="submit">
+          login
+        </Button>
+      </form>
+    </>
   );
 };
 
