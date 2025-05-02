@@ -49,7 +49,7 @@ export default class AuthRouter {
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
           });
-          await RefreshToken.deleteOne({ userId: user._id });
+          await RefreshToken.deleteOne({ _id: user._id });
 
           // 新しいリフレッシュトークンを発行し、保存する
           const refreshToken = jwt.sign(

@@ -1,5 +1,6 @@
 .homeHeader {
   width: 100%;
+  min-width: 500px;
   height: 60px;
   position: fixed;
   top: 0;
@@ -9,6 +10,7 @@
   align-items: center;
   padding: 10px;
   background-color: var(--header-background);
+  z-index: 999;
   .left {
     display: flex;
     gap: 30px;
@@ -39,6 +41,7 @@
 
   @media (max-width: 480px) {
     padding: 10px;
+    min-width: 100%;
     .left {
       gap: 12px;
       font-size: 13px;

@@ -1,10 +1,10 @@
 .box {
   width: 250px;
   height: calc(100vh - 60px);
-  background-color: var(--base-background);
-  position: sticky;
-  margin-top: 60px;
+  background-color: var(--second-background);
   top: 60px;
+  position: fixed;
+  z-index: 999;
   transition: margin-left 0.5s ease;
 }
 

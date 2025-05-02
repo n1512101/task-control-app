@@ -1,5 +1,6 @@
 .loginHeader {
   width: 100%;
+  min-width: 500px;
   height: 60px;
   position: fixed;
   top: 0;
@@ -40,6 +41,7 @@
 
   @media (max-width: 480px) {
     padding: 10px;
+    min-width: 100%;
     .left,
     .right {
       gap: 12px;

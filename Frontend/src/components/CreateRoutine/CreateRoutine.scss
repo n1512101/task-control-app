@@ -1,0 +1,54 @@
+.createRoutine {
+  padding: 70px 10px 10px;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--base-background);
+  position: relative;
+  .card {
+    padding: 20px;
+    width: 40%;
+    min-width: 480px;
+    border: 1px solid var(--border-color);
+    box-shadow: 2px 2px 8px #888;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--third-background);
+    .createRoutineForm {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      .formControl {
+        .tag {
+          width: 30%;
+        }
+        .select {
+          height: 30px;
+          width: 45%;
+          font-size: 14px;
+          color: var(--base-color);
+        }
+        .text {
+          width: 45%;
+          font-size: 14px;
+        }
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+      }
+    }
+  }
+
+  @media (max-width: 1024px) {
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    .card {
+      padding: 10px 0;
+      min-width: 90%;
+    }
+  }
+}

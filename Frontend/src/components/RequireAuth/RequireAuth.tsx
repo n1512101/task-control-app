@@ -35,6 +35,8 @@ const RequireAuth = ({ children }: { children: ReactNode }) => {
       }
     },
     retry: false,
+    refetchInterval: 300000,
+    refetchIntervalInBackground: true,
   });
 
   if (isLoading) {

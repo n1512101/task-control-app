@@ -6,17 +6,32 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
+import AddTaskRoundedIcon from "@mui/icons-material/AddTaskRounded";
 import "./SideBar.scss";
+import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
 
 interface PropsType {
   open: boolean;
   setOpen: (open: boolean) => void;
 }
 
+// サイドバーリストおよび対応するナビゲーション
+const topOfSideBar = {
+  本日のタスク: "",
+  今週のルーティン: "weekroutine",
+  過去のルーティン: "pastroutine",
+};
+const bottomOfSideBar = {
+  タスクを作成: "createtask",
+  ルーティンを作成: "createroutine",
+};
+
 // サイドバーコンポーネント
 const SideBar: FC<PropsType> = ({ open, setOpen }): ReactElement => {
+  const navigate: NavigateFunction = useNavigate();
+  const { userId } = useParams();
+
   const DrawerList = (
     <Box
       className={`box ${open ? "open" : "close"}`}
@@ -24,11 +39,17 @@ const SideBar: FC<PropsType> = ({ open, setOpen }): ReactElement => {
       onClick={() => setOpen(false)}
     >
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
+        {Object.keys(topOfSideBar).map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              onClick={() =>
+                navigate(
+                  `/home/${userId}/${Object.values(topOfSideBar)[index]}`
+                )
+              }
+            >
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <TaskOutlinedIcon sx={{ color: "var(--base-color)" }} />
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
@@ -37,11 +58,17 @@ const SideBar: FC<PropsType> = ({ open, setOpen }): ReactElement => {
       </List>
       <Divider />
       <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
+        {Object.keys(bottomOfSideBar).map((text, index) => (
           <ListItem key={text} disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              onClick={() =>
+                navigate(
+                  `/home/${userId}/${Object.values(bottomOfSideBar)[index]}`
+                )
+              }
+            >
               <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                <AddTaskRoundedIcon sx={{ color: "var(--base-color)" }} />
               </ListItemIcon>
               <ListItemText primary={text} />
             </ListItemButton>
