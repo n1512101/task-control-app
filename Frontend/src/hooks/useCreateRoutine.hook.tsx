@@ -1,0 +1,24 @@
+import axios from "axios";
+import { IRoutine } from "../interfaces/routine.interface";
+import { useMutation } from "@tanstack/react-query";
+
+// ルーティン作成する際に動作する関数
+const createRoutine = async (routine: IRoutine) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACK_API_URL}/routine/create`,
+      routine
+    );
+    return response.data;
+  } catch (error: any) {
+    const errorMessage =
+      error?.response?.data?.message ?? "予期せぬエラーが発生しました";
+    throw new Error(errorMessage);
+  }
+};
+
+export default function useCreateRoutine() {
+  return useMutation({
+    mutationFn: createRoutine,
+  });
+}
