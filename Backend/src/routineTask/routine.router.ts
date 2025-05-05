@@ -4,6 +4,7 @@ import { Result, validationResult } from "express-validator";
 import RoutineController from "./routine.controller";
 import { createRoutineValidator } from "./validators/createRoutine.validator";
 import { IRoutine } from "./routine.interface";
+import verifyAccessToken from "../middlewares/verifyAccessToken";
 
 @injectable()
 export default class RoutineRouter {
@@ -21,6 +22,7 @@ export default class RoutineRouter {
     this.router.post(
       "/create",
       createRoutineValidator,
+      verifyAccessToken,
       async (req: Request<{}, {}, IRoutine>, res: Response) => {
         // result: バリデーション結果
         const result: Result = validationResult(req);

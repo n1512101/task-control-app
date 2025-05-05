@@ -14,7 +14,10 @@ export default class RoutineController {
     const validateData: IRoutine = matchedData(req);
 
     try {
-      const newRoutine = new RoutineTask({ ...validateData });
+      const newRoutine = new RoutineTask({
+        ...validateData,
+        userId: req.user.id,
+      });
       await newRoutine.save();
       res.status(200).json("ルーティン作成成功！");
     } catch (error: any) {

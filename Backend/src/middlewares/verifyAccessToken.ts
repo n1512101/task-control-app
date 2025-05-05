@@ -22,7 +22,7 @@ const verifyAccessToken = (req: Request, res: Response, next: NextFunction) => {
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(403).json({ message: "アクセストークンが無効です" });
+    res.status(401).json({ message: "アクセストークンが無効です" });
   }
 };
 

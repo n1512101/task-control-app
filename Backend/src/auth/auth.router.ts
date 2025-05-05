@@ -31,14 +31,14 @@ export default class AuthRouter {
       async (req: Request, res: Response) => {
         try {
           // データベース内からユーザーを確認
-          const user = await RefreshToken.findOne({ userId: req.user.id });
-          if (!user) {
+          const token = await RefreshToken.findOne({ userId: req.user.id });
+          if (!token) {
             throw new Error();
           }
 
           // 新しいアクセストークンを発行する
           const accessToken = jwt.sign(
-            { id: user._id },
+            { id: req.user.id },
             process.env.ACCESS_TOKEN_SECRET as string,
             { expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRY as string) }
           );
@@ -49,17 +49,17 @@ export default class AuthRouter {
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
           });
-          await RefreshToken.deleteOne({ _id: user._id });
+          await RefreshToken.deleteOne({ userId: req.user.id });
 
           // 新しいリフレッシュトークンを発行し、保存する
           const refreshToken = jwt.sign(
-            { id: user._id },
+            { id: req.user.id },
             process.env.REFRESH_TOKEN_SECRET as string,
             { expiresIn: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) }
           );
 
           const newRefreshToken = new RefreshToken<IRefreshToken>({
-            userId: user._id,
+            userId: req.user.id,
             refreshToken,
           });
           await newRefreshToken.save();
@@ -73,7 +73,7 @@ export default class AuthRouter {
 
           res.status(200).json({ accessToken });
         } catch (error) {
-          res.status(403).json({ message: "リフレッシュトークンが無効です" });
+          res.status(401).json({ message: "リフレッシュトークンが無効です" });
         }
       }
     );

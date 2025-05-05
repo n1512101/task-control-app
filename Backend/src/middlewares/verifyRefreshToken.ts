@@ -24,7 +24,7 @@ const verifyRefreshToken = (
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(403).json({ message: "リフレッシュトークンが無効です" });
+    res.status(401).json({ message: "リフレッシュトークンが無効です" });
   }
 };
 

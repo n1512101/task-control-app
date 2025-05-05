@@ -1,7 +1,7 @@
 import { model, Model, Schema } from "mongoose";
-import { IRoutine } from "../routineTask/routine.interface";
+import { IRoutineSchema } from "../routineTask/routine.interface";
 
-const routineSchema: Schema<IRoutine> = new Schema({
+const routineSchema: Schema<IRoutineSchema> = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -30,7 +30,7 @@ const routineSchema: Schema<IRoutine> = new Schema({
   },
 });
 
-export const RoutineTask: Model<IRoutine> = model(
+export const RoutineTask: Model<IRoutineSchema> = model(
   "RoutineTasks",
   routineSchema
 );
