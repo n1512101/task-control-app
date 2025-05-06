@@ -34,5 +34,14 @@ export default class RoutineRouter {
         }
       }
     );
+
+    // ルーティン取得API
+    this.router.get(
+      "/",
+      verifyAccessToken,
+      async (req: Request, res: Response) => {
+        await this.routineController.getRoutine(req, res);
+      }
+    );
   }
 }

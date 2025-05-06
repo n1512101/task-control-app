@@ -1,4 +1,4 @@
-import { FC, ReactElement } from "react";
+import { FC, ReactElement, useState } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,6 +7,9 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import useCreateRoutine from "../../hooks/useCreateRoutine.hook";
+import CustomizedSnackBar from "../SnackBar/SnackBar";
+import IProperty from "../../interfaces/snackbarProperty.interface";
+import { useNavigate } from "react-router-dom";
 import "./CreateRoutine.scss";
 
 // スキーマ定義
@@ -18,7 +21,24 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const CreateRoutine: FC = (): ReactElement => {
+  // snackbarに渡すプロパティー
+  const [property, setProperty] = useState<IProperty>({
+    open: false,
+    message: "",
+    severity: "warning",
+  });
+  // ルーティン作成成功か失敗か
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const { mutate } = useCreateRoutine();
+  const navigate = useNavigate();
+
+  // snackbarを閉じる関数
+  const handleClose = () => {
+    setProperty({ ...property, open: false });
+    if (isSuccess) navigate("/home/weekroutine");
+    setIsSuccess(false);
+  };
 
   // react-hook-form
   const {
@@ -32,16 +52,31 @@ const CreateRoutine: FC = (): ReactElement => {
     mutate(
       { ...data, status: "pending" },
       {
-        // 作成成功の場合
-        onSuccess: (response) => console.log(response),
-        // 作成失敗の場合
-        onError: (error) => console.log(error.message),
+        // ルーティン作成成功の場合
+        onSuccess: (response) => {
+          setIsSuccess(true);
+          setProperty({
+            open: true,
+            message: response,
+            severity: "success",
+          });
+        },
+        // ルーティン作成失敗の場合
+        onError: (error) => {
+          setIsSuccess(false);
+          setProperty({
+            open: true,
+            message: error.message,
+            severity: "warning",
+          });
+        },
       }
     );
   };
 
   return (
     <div className="createRoutine">
+      <CustomizedSnackBar handleClose={handleClose} property={property} />
       <div className="card">
         <div className="title">
           <span>ルーティン登録</span>

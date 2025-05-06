@@ -60,7 +60,7 @@ export default class UsersController {
         maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
       });
 
-      res.status(200).json({ accessToken, id: user._id });
+      res.status(200).json({ accessToken });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

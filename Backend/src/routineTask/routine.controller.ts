@@ -24,4 +24,14 @@ export default class RoutineController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  // ルーティン取得時の処理
+  public async getRoutine(req: Request, res: Response) {
+    try {
+      console.log(req.user);
+      res.send("ok");
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }

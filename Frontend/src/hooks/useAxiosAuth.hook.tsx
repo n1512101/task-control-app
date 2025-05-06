@@ -37,7 +37,9 @@ const useAxiosAuth = () => {
           return instance(originalRequest);
         } catch (error: any) {
           return Promise.reject(
-            error.response?.data?.message ?? "予期せぬエラーが発生しました"
+            new Error(
+              error.response?.data?.message ?? "予期せぬエラーが発生しました"
+            )
           );
         }
       }

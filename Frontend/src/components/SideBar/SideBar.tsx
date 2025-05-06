@@ -9,7 +9,7 @@ import ListItemText from "@mui/material/ListItemText";
 import TaskOutlinedIcon from "@mui/icons-material/TaskOutlined";
 import AddTaskRoundedIcon from "@mui/icons-material/AddTaskRounded";
 import "./SideBar.scss";
-import { NavigateFunction, useNavigate, useParams } from "react-router-dom";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 interface PropsType {
   open: boolean;
@@ -30,7 +30,6 @@ const bottomOfSideBar = {
 // サイドバーコンポーネント
 const SideBar: FC<PropsType> = ({ open, setOpen }): ReactElement => {
   const navigate: NavigateFunction = useNavigate();
-  const { userId } = useParams();
 
   const DrawerList = (
     <Box
@@ -43,9 +42,7 @@ const SideBar: FC<PropsType> = ({ open, setOpen }): ReactElement => {
           <ListItem key={text} disablePadding>
             <ListItemButton
               onClick={() =>
-                navigate(
-                  `/home/${userId}/${Object.values(topOfSideBar)[index]}`
-                )
+                navigate(`/home/${Object.values(topOfSideBar)[index]}`)
               }
             >
               <ListItemIcon>
@@ -62,9 +59,7 @@ const SideBar: FC<PropsType> = ({ open, setOpen }): ReactElement => {
           <ListItem key={text} disablePadding>
             <ListItemButton
               onClick={() =>
-                navigate(
-                  `/home/${userId}/${Object.values(bottomOfSideBar)[index]}`
-                )
+                navigate(`/home/${Object.values(bottomOfSideBar)[index]}`)
               }
             >
               <ListItemIcon>

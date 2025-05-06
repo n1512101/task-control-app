@@ -30,14 +30,14 @@ const LoginForm: FC = (): ReactElement => {
     severity: "warning",
   });
 
-  const { mutate } = useLogin();
-  const { setAccessToken } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   // snackbarを閉じる関数
   const handleClose = () => {
     setProperty({ ...property, open: false });
   };
+
+  const { mutate } = useLogin();
+  const { setAccessToken } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // react-hook-form
   const {
@@ -54,7 +54,7 @@ const LoginForm: FC = (): ReactElement => {
         // アクセストークンを受け取って保存
         setAccessToken(data.accessToken);
         // ページ遷移
-        navigate("/home/" + data.id);
+        navigate("/home");
       },
       // ログイン失敗の場合
       onError: (error) => {

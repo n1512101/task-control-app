@@ -9,7 +9,7 @@
     width: 40%;
     min-width: 480px;
     border: 1px solid var(--border-color);
-    box-shadow: 2px 1px 3px #888;
+    box-shadow: 2px 1px 3px var(--shadow-color);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -86,14 +86,23 @@
     .card {
       padding: 15px 0;
       min-width: 90%;
+      .title {
+        font-size: 18px;
+      }
       .createRoutineForm {
-        .formControl {
+        .typeForm,
+        .categoryForm {
           width: 95%;
           .select {
             width: 55%;
           }
-          .text {
-            width: 55%;
+        }
+        .descriptionForm {
+          width: 95%;
+          .content {
+            .text {
+              width: 55%;
+            }
           }
         }
         .btn {
