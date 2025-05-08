@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import Button from "@mui/material/Button";
 import useSignup from "../../hooks/useSignup.hook";
 import CustomizedSnackBar from "../SnackBar/SnackBar";
 import IProperty from "../../interfaces/snackbarProperty.interface";
+import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import "./SignupForm.scss";
 
 // スキーマ定義
@@ -131,9 +131,9 @@ const SignupForm: FC = (): ReactElement => {
             {errors.confirm && <span>{errors.confirm.message}</span>}
           </div>
         </div>
-        <Button className="signupBtn" variant="outlined" type="submit">
-          sign up
-        </Button>
+        <CustomizedButton className="signupBtn" type="submit">
+          サインアップ
+        </CustomizedButton>
       </form>
     </>
   );

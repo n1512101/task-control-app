@@ -1,13 +1,13 @@
 import { FC, ReactElement, useContext, useState } from "react";
 import z from "zod";
 import CustomizedSnackBar from "../SnackBar/SnackBar";
-import Button from "@mui/material/Button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useLogin from "../../hooks/useLogin.hook";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import IProperty from "../../interfaces/snackbarProperty.interface";
+import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import "./LoginForm.scss";
 
 // スキーマ定義
@@ -89,9 +89,9 @@ const LoginForm: FC = (): ReactElement => {
             {errors.password && <span>{errors.password.message}</span>}
           </div>
         </div>
-        <Button className="loginBtn" variant="outlined" type="submit">
-          login
-        </Button>
+        <CustomizedButton className="loginBtn" type="submit">
+          ログイン
+        </CustomizedButton>
       </form>
     </>
   );

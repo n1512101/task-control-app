@@ -45,13 +45,8 @@
   }
   .signupBtn {
     margin-top: 8px;
-    width: 10%;
     max-width: 180px;
     min-width: 110px;
-    background-color: rgba(176, 224, 230, 0.15);
-    &:hover {
-      background-color: rgba(176, 224, 230, 0.25);
-    }
   }
 
   @media (max-width: 1024px) {
@@ -71,7 +66,6 @@
       }
     }
     .signupBtn {
-      width: 30%;
       font-size: 12px;
     }
   }

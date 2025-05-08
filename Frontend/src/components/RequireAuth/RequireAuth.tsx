@@ -28,7 +28,7 @@ const RequireAuth = ({ children }: { children: ReactNode }) => {
   }, [isError, navigate]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>読み込み中...</div>;
   }
 
   return children;

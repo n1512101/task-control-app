@@ -4,3 +4,9 @@ export interface IRoutine {
   description: string;
   status: "pending" | "done";
 }
+
+// APIから帰ってくるルーティンの型
+export interface IRoutineTask extends IRoutine {
+  _id: string;
+  userId: string;
+}

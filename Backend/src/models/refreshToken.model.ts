@@ -10,6 +10,7 @@ const refreshTokenSchema: Schema<IRefreshToken> = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     required: true,
+    index: true,
     ref: "User",
   },
   refreshToken: {

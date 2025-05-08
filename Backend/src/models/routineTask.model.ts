@@ -5,6 +5,7 @@ const routineSchema: Schema<IRoutineSchema> = new Schema({
   userId: {
     type: Schema.Types.ObjectId,
     required: true,
+    index: true,
     ref: "User",
   },
   repeatType: {

@@ -28,8 +28,11 @@ export default class RoutineController {
   // ルーティン取得時の処理
   public async getRoutine(req: Request, res: Response) {
     try {
-      console.log(req.user);
-      res.send("ok");
+      const tasks = await RoutineTask.find({
+        userId: req.user.id,
+        repeatType: req.query.repeatType,
+      });
+      res.status(200).json(tasks);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

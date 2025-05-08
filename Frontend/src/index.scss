@@ -8,18 +8,26 @@
   --border-color: #ccc;
   --title-color: #7d7d7d;
   --shadow-color: #888;
+  --button-color: rgba(135, 207, 235, 0.7);
+  --hover-button-color: rgba(135, 207, 235, 1);
+  --paper-background: #fefefe;
+  --icon-color: rgb(117, 117, 117);
 }
 
 :root[data-theme="dark"] {
   --base-color: #efefef;
   --base-background: #202124;
   --second-background: #494848;
-  --third-background: #15202b;
+  --third-background: #263b50;
   --header-background: #101010;
   --input-background: #777;
   --border-color: #888;
   --title-color: #87ceeb;
   --shadow-color: #1f2e60;
+  --button-color: rgba(38, 83, 199, 0.7);
+  --hover-button-color: rgba(38, 83, 199, 1);
+  --paper-background: #26384a;
+  --icon-color: rgb(170, 170, 170);
 }
 
 :root {

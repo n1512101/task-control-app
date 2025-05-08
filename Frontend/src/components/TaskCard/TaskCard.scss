@@ -1,0 +1,28 @@
+.task {
+  padding: 10px 10px 30px;
+  position: relative;
+  .category {
+    padding: 3px;
+    color: var(--base-color);
+  }
+  .textfield {
+    display: block;
+    margin: 15px 0 25px;
+  }
+  .content {
+    color: var(--base-color);
+    word-wrap: break-word;
+  }
+  .controller {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    position: absolute;
+    right: 15px;
+    bottom: 5px;
+    .btn,
+    .deletebtn {
+      color: var(--icon-color);
+    }
+  }
+}

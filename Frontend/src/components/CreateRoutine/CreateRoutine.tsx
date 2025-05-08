@@ -5,11 +5,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import useCreateRoutine from "../../hooks/useCreateRoutine.hook";
 import CustomizedSnackBar from "../SnackBar/SnackBar";
 import IProperty from "../../interfaces/snackbarProperty.interface";
 import { useNavigate } from "react-router-dom";
+import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import "./CreateRoutine.scss";
 
 // スキーマ定義
@@ -99,8 +99,8 @@ const CreateRoutine: FC = (): ReactElement => {
               }}
               {...register("repeatType")}
             >
-              <MenuItem value="daily">日ごと</MenuItem>
-              <MenuItem value="weekly">週ごと</MenuItem>
+              <MenuItem value="daily">毎日</MenuItem>
+              <MenuItem value="weekly">毎週</MenuItem>
             </Select>
           </div>
           <div className="categoryForm">
@@ -145,9 +145,9 @@ const CreateRoutine: FC = (): ReactElement => {
               {errors.description && <span>{errors.description.message}</span>}
             </div>
           </div>
-          <Button className="btn" variant="outlined" type="submit">
+          <CustomizedButton className="btn" type="submit">
             ルーティン作成
-          </Button>
+          </CustomizedButton>
         </form>
       </div>
     </div>
