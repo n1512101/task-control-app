@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { injectable } from "inversify";
 import { matchedData } from "express-validator";
-import { IRoutine } from "./routine.interface";
+import { IRoutine, IUpdateRoutine } from "./routine.interface";
 import { RoutineTask } from "../models/routineTask.model";
 
 @injectable()
@@ -33,6 +33,41 @@ export default class RoutineController {
         repeatType: req.query.repeatType,
       });
       res.status(200).json(tasks);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // ルーティン更新時の処理
+  public async updateRoutine(
+    req: Request<{}, {}, IUpdateRoutine>,
+    res: Response
+  ) {
+    try {
+      const { _id, description, status } = req.body;
+      // 更新対象フィールド
+      const updateFields: Partial<Pick<IRoutine, "description" | "status">> =
+        {};
+      if (description !== undefined) updateFields.description = description;
+      if (status !== undefined) updateFields.status = status;
+
+      if (Object.keys(updateFields).length === 0) {
+        return res
+          .status(400)
+          .json({ message: "更新対象が指定されていません" });
+      }
+
+      const result = await RoutineTask.updateOne(
+        { _id },
+        { $set: updateFields }
+      );
+      if (!result.matchedCount) {
+        return res
+          .status(404)
+          .json({ message: "該当するルーティンはありません" });
+      }
+
+      res.status(200).json({ message: "ルーティン更新成功！" });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

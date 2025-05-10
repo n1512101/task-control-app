@@ -3,17 +3,91 @@ import { Button, Checkbox, IconButton, Paper, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IRoutineTask } from "../../interfaces/routine.interface";
 import { Category, CategoryBackground } from "../../utils/utils";
+import useUpdateRoutine from "../../hooks/useUpdateRoutine.hook";
+import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
+import { motion } from "framer-motion";
+import useDebounce from "../../hooks/useDebounce.hook";
 import "./TaskCard.scss";
 
-const TaskCard = ({ task }: { task: IRoutineTask }) => {
+// アニメーション設定
+const taskVariants = {
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  hidden: { opacity: 0, y: 20 },
+};
+
+const MotionPaper = motion.create(Paper); // Material UIコンポーネントをmotion化
+
+const TaskCard = ({
+  task,
+  setProperty,
+}: {
+  task: IRoutineTask;
+  setProperty: (property: ISnackbarProperty) => void;
+}) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [text, setText] = useState<string>(task.description);
+  const [isDone, setIsDone] = useState<boolean>(
+    task.status === "done" ? true : false
+  );
+
+  // データ更新hook
+  const { mutate } = useUpdateRoutine();
+
+  // 編集or保存ボタンを押した際に動作する関数
+  const handleEdit = () => {
+    // 保存ボタンを押した場合、タスク内容を更新する
+    if (isEdit) {
+      mutate(
+        { _id: task._id, description: text },
+        {
+          onError: (error) => {
+            setProperty({
+              open: true,
+              message: error.message,
+              severity: "warning",
+            });
+          },
+        }
+      );
+    }
+    setIsEdit(!isEdit);
+  };
+
+  // debounce関数(1秒)
+  const debounce = useDebounce(1000);
+  const debouncedUpdate = (newDone: boolean) => {
+    debounce(() => {
+      mutate(
+        { _id: task._id, status: newDone ? "done" : "pending" },
+        {
+          onError: (error) => {
+            setProperty({
+              open: true,
+              message: error.message,
+              severity: "warning",
+            });
+          },
+        }
+      );
+    });
+  };
+
+  // checkboxを変更した際に動作する関数
+  const handleCheck = () => {
+    const newDone = !isDone;
+    setIsDone(newDone);
+    debouncedUpdate(newDone);
+  };
 
   return (
-    <Paper
+    <MotionPaper
       elevation={3}
       className="task"
-      sx={{ backgroundColor: "var(--paper-background)" }}
+      variants={taskVariants}
+      sx={{
+        backgroundColor: "var(--paper-background)",
+      }}
+      whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
     >
       <span
         className="category"
@@ -38,27 +112,22 @@ const TaskCard = ({ task }: { task: IRoutineTask }) => {
               },
             },
           }}
+          onChange={(e) => setText(e.target.value)}
         />
       ) : (
         <p className="content">{text}</p>
       )}
 
       <div className="controller">
-        <Button className="btn" onClick={() => setIsEdit(!isEdit)}>
+        <Button className="btn" onClick={handleEdit}>
           {isEdit ? "保存" : "編集"}
         </Button>
-        <Checkbox
-          slotProps={{
-            input: {
-              "aria-label": "controlled",
-            },
-          }}
-        />
+        <Checkbox onChange={handleCheck} checked={isDone} />
         <IconButton aria-label="delete" size="medium" className="deletebtn">
           <DeleteIcon fontSize="inherit" />
         </IconButton>
       </div>
-    </Paper>
+    </MotionPaper>
   );
 };
 

@@ -7,7 +7,7 @@ import Select from "@mui/material/Select";
 import TextField from "@mui/material/TextField";
 import useCreateRoutine from "../../hooks/useCreateRoutine.hook";
 import CustomizedSnackBar from "../SnackBar/SnackBar";
-import IProperty from "../../interfaces/snackbarProperty.interface";
+import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import { useNavigate } from "react-router-dom";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import "./CreateRoutine.scss";
@@ -22,7 +22,7 @@ type Schema = z.infer<typeof schema>;
 
 const CreateRoutine: FC = (): ReactElement => {
   // snackbarに渡すプロパティー
-  const [property, setProperty] = useState<IProperty>({
+  const [property, setProperty] = useState<ISnackbarProperty>({
     open: false,
     message: "",
     severity: "warning",

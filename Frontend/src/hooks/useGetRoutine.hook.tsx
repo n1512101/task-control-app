@@ -20,5 +20,6 @@ export default function useGetRoutine(repeatType: "daily" | "weekly") {
   return useQuery({
     queryKey: ["routine", repeatType],
     queryFn: getRoutine,
+    refetchOnWindowFocus: false,
   });
 }

@@ -1,14 +1,36 @@
-import { FC, ReactElement } from "react";
+import { FC, ReactElement, useState } from "react";
+import { motion } from "framer-motion";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import { IRoutineTask } from "../../interfaces/routine.interface";
-import "./WeekRoutine.scss";
 import TaskCard from "../TaskCard/TaskCard";
+import CustomizedSnackBar from "../SnackBar/SnackBar";
+import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
+import "./WeekRoutine.scss";
+
+// アニメーション設定
+const containerVariants = {
+  visible: { opacity: 1, transition: { duration: 0.5 } },
+  hidden: { opacity: 0 },
+};
 
 // 今週のルーティンコンポーネント
 const WeekRoutine: FC = (): ReactElement => {
+  // データ取得hook
   const { data, isSuccess, isPending, isError, refetch } =
     useGetRoutine("weekly");
+
+  // snackbarに渡すプロパティー
+  const [property, setProperty] = useState<ISnackbarProperty>({
+    open: false,
+    message: "",
+    severity: "warning",
+  });
+
+  // snackbarを閉じる関数
+  const handleClose = () => {
+    setProperty({ ...property, open: false });
+  };
 
   return (
     <div className="weekRoutine">
@@ -23,11 +45,17 @@ const WeekRoutine: FC = (): ReactElement => {
       {isSuccess && data.data.length === 0 ? (
         <p className="noroutine">ルーティンがありません</p>
       ) : (
-        <div className="container">
+        <motion.div
+          className="container"
+          variants={containerVariants}
+          animate="visible"
+          initial="hidden"
+        >
+          <CustomizedSnackBar property={property} handleClose={handleClose} />
           {data?.data.map((task: IRoutineTask) => (
-            <TaskCard task={task} key={task._id} />
+            <TaskCard task={task} key={task._id} setProperty={setProperty} />
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );

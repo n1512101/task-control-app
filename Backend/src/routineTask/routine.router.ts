@@ -3,7 +3,7 @@ import { inject, injectable } from "inversify";
 import { Result, validationResult } from "express-validator";
 import RoutineController from "./routine.controller";
 import { createRoutineValidator } from "./validators/createRoutine.validator";
-import { IRoutine } from "./routine.interface";
+import { IRoutine, IUpdateRoutine } from "./routine.interface";
 import verifyAccessToken from "../middlewares/verifyAccessToken";
 
 @injectable()
@@ -41,6 +41,15 @@ export default class RoutineRouter {
       verifyAccessToken,
       async (req: Request, res: Response) => {
         await this.routineController.getRoutine(req, res);
+      }
+    );
+
+    // ルーティンを更新するAPI
+    this.router.put(
+      "/",
+      verifyAccessToken,
+      async (req: Request<{}, {}, IUpdateRoutine>, res: Response) => {
+        await this.routineController.updateRoutine(req, res);
       }
     );
   }
