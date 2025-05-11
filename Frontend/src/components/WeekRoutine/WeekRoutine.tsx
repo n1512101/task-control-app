@@ -1,5 +1,6 @@
 import { FC, ReactElement, useState } from "react";
 import { motion } from "framer-motion";
+import { Box, Button, Modal, Typography } from "@mui/material";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import { IRoutineTask } from "../../interfaces/routine.interface";
@@ -26,6 +27,8 @@ const WeekRoutine: FC = (): ReactElement => {
     message: "",
     severity: "warning",
   });
+  // modalが開いているか
+  const [open, setOpen] = useState(false);
 
   // snackbarを閉じる関数
   const handleClose = () => {
@@ -52,8 +55,26 @@ const WeekRoutine: FC = (): ReactElement => {
           initial="hidden"
         >
           <CustomizedSnackBar property={property} handleClose={handleClose} />
+          <Modal open={open} onClose={() => setOpen(false)}>
+            <Box className="modalbox">
+              <Typography className="modalmessage">
+                タスクを削除しますか？
+              </Typography>
+              <Button variant="contained" color="error" className="modalbtn">
+                削除
+              </Button>
+              <Button variant="contained" className="modalbtn">
+                キャンセル
+              </Button>
+            </Box>
+          </Modal>
           {data?.data.map((task: IRoutineTask) => (
-            <TaskCard task={task} key={task._id} setProperty={setProperty} />
+            <TaskCard
+              task={task}
+              key={task._id}
+              setProperty={setProperty}
+              setOpen={setOpen}
+            />
           ))}
         </motion.div>
       )}

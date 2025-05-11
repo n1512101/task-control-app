@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FC, ReactElement, useState } from "react";
 import { Button, Checkbox, IconButton, Paper, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IRoutineTask } from "../../interfaces/routine.interface";
@@ -9,6 +9,12 @@ import { motion } from "framer-motion";
 import useDebounce from "../../hooks/useDebounce.hook";
 import "./TaskCard.scss";
 
+interface IProps {
+  task: IRoutineTask;
+  setProperty: (property: ISnackbarProperty) => void;
+  setOpen: (open: boolean) => void;
+}
+
 // アニメーション設定
 const taskVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
@@ -17,13 +23,7 @@ const taskVariants = {
 
 const MotionPaper = motion.create(Paper); // Material UIコンポーネントをmotion化
 
-const TaskCard = ({
-  task,
-  setProperty,
-}: {
-  task: IRoutineTask;
-  setProperty: (property: ISnackbarProperty) => void;
-}) => {
+const TaskCard: FC<IProps> = ({ task, setProperty, setOpen }): ReactElement => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [text, setText] = useState<string>(task.description);
   const [isDone, setIsDone] = useState<boolean>(
@@ -124,7 +124,7 @@ const TaskCard = ({
         </Button>
         <Checkbox onChange={handleCheck} checked={isDone} />
         <IconButton aria-label="delete" size="medium" className="deletebtn">
-          <DeleteIcon fontSize="inherit" />
+          <DeleteIcon onClick={() => setOpen(true)} />
         </IconButton>
       </div>
     </MotionPaper>
