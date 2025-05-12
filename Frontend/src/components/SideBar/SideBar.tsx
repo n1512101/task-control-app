@@ -20,7 +20,7 @@ interface PropsType {
 const topOfSideBar = {
   本日のタスク: "",
   今週のルーティン: "weekroutine",
-  過去のルーティン: "pastroutine",
+  過去のタスク: "pasttask",
 };
 const bottomOfSideBar = {
   タスクを作成: "createtask",

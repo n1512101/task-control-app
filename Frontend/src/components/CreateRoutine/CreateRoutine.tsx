@@ -1,5 +1,5 @@
 import { FC, ReactElement, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import MenuItem from "@mui/material/MenuItem";
@@ -16,7 +16,7 @@ import "./CreateRoutine.scss";
 const schema = z.object({
   repeatType: z.enum(["daily", "weekly"]),
   category: z.enum(["study", "job", "recreation", "exercise"]),
-  description: z.string().min(1, { message: "1文字以上入力してください" }),
+  description: z.string().nonempty(),
 });
 type Schema = z.infer<typeof schema>;
 
@@ -42,7 +42,7 @@ const CreateRoutine: FC = (): ReactElement => {
 
   // react-hook-form
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<Schema>({ resolver: zodResolver(schema) });
@@ -84,65 +84,83 @@ const CreateRoutine: FC = (): ReactElement => {
         <form className="createRoutineForm" onSubmit={handleSubmit(onSubmit)}>
           <div className="typeForm">
             <span className="tag">タイプ：</span>
-            <Select
+            <Controller
+              name="repeatType"
+              control={control}
               defaultValue="daily"
-              className="select"
-              MenuProps={{
-                slotProps: {
-                  paper: {
-                    sx: {
-                      backgroundColor: "var(--input-background)",
-                      color: "var(--base-color)",
+              render={({ field }) => (
+                <Select
+                  className="select"
+                  MenuProps={{
+                    slotProps: {
+                      paper: {
+                        sx: {
+                          backgroundColor: "var(--input-background)",
+                          color: "var(--base-color)",
+                        },
+                      },
                     },
-                  },
-                },
-              }}
-              {...register("repeatType")}
-            >
-              <MenuItem value="daily">毎日</MenuItem>
-              <MenuItem value="weekly">毎週</MenuItem>
-            </Select>
+                  }}
+                  {...field}
+                >
+                  <MenuItem value="daily">毎日</MenuItem>
+                  <MenuItem value="weekly">毎週</MenuItem>
+                </Select>
+              )}
+            />
           </div>
           <div className="categoryForm">
             <span className="tag">カテゴリー：</span>
-            <Select
+            <Controller
+              name="category"
+              control={control}
               defaultValue="study"
-              className="select"
-              MenuProps={{
-                slotProps: {
-                  paper: {
-                    sx: {
-                      backgroundColor: "var(--input-background)",
-                      color: "var(--base-color)",
+              render={({ field }) => (
+                <Select
+                  className="select"
+                  MenuProps={{
+                    slotProps: {
+                      paper: {
+                        sx: {
+                          backgroundColor: "var(--input-background)",
+                          color: "var(--base-color)",
+                        },
+                      },
                     },
-                  },
-                },
-              }}
-              {...register("category")}
-            >
-              <MenuItem value="study">勉強</MenuItem>
-              <MenuItem value="job">仕事</MenuItem>
-              <MenuItem value="recreation">娯楽</MenuItem>
-              <MenuItem value="exercise">運動</MenuItem>
-            </Select>
+                  }}
+                  {...field}
+                >
+                  <MenuItem value="study">勉強</MenuItem>
+                  <MenuItem value="job">仕事</MenuItem>
+                  <MenuItem value="recreation">娯楽</MenuItem>
+                  <MenuItem value="exercise">運動</MenuItem>
+                </Select>
+              )}
+            />
           </div>
           <div className="descriptionForm">
             <div className="content">
               <span className="tag">タスク内容：</span>
-              <TextField
-                multiline
-                rows={3}
-                className="text"
-                slotProps={{
-                  htmlInput: {
-                    sx: { color: "var(--base-color)" },
-                  },
-                }}
-                {...register("description")}
+              <Controller
+                name="description"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    multiline
+                    rows={3}
+                    className="text"
+                    slotProps={{
+                      htmlInput: {
+                        sx: { color: "var(--base-color)" },
+                      },
+                    }}
+                    {...field}
+                  />
+                )}
               />
             </div>
             <div className="errorMessage">
-              {errors.description && <span>{errors.description.message}</span>}
+              {errors.description && <span>1文字以上入力してください</span>}
             </div>
           </div>
           <CustomizedButton className="btn" type="submit">
