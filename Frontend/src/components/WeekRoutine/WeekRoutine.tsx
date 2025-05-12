@@ -1,5 +1,5 @@
-import { FC, ReactElement, useState } from "react";
-import { motion } from "framer-motion";
+import { FC, ReactElement, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
@@ -7,6 +7,7 @@ import { IRoutineTask } from "../../interfaces/routine.interface";
 import TaskCard from "../TaskCard/TaskCard";
 import CustomizedSnackBar from "../SnackBar/SnackBar";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
+import useDeleteTask from "../../hooks/useDeleteTask.hook";
 import "./WeekRoutine.scss";
 
 // アニメーション設定
@@ -20,6 +21,8 @@ const WeekRoutine: FC = (): ReactElement => {
   // データ取得hook
   const { data, isSuccess, isPending, isError, refetch } =
     useGetRoutine("weekly");
+  // タスク削除hook
+  const { mutate } = useDeleteTask();
 
   // snackbarに渡すプロパティー
   const [property, setProperty] = useState<ISnackbarProperty>({
@@ -27,12 +30,55 @@ const WeekRoutine: FC = (): ReactElement => {
     message: "",
     severity: "warning",
   });
-  // modalが開いているか
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // modalが開いているか
+  const [tasks, setTasks] = useState<IRoutineTask[]>([]);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+
+  // 初期データ同期（初回のみ）
+  useEffect(() => {
+    if (isSuccess) {
+      setTasks(data.data);
+    }
+  }, [isSuccess, data]);
 
   // snackbarを閉じる関数
   const handleClose = () => {
     setProperty({ ...property, open: false });
+  };
+
+  // 削除ボタンを押した際に動作する関数
+  const openModal = (taskId: string) => {
+    setOpen(true);
+    setDeleteTargetId(taskId);
+  };
+
+  // タスクを削除する際に動作する関数
+  const handleDelete = async () => {
+    if (!deleteTargetId) return;
+    mutate(
+      { path: "/routine", id: deleteTargetId },
+      {
+        onSuccess: (response) => {
+          setTasks(tasks.filter((task) => task._id !== deleteTargetId));
+          setProperty({
+            open: true,
+            message: response,
+            severity: "success",
+          });
+        },
+        onError: (error) => {
+          setProperty({
+            open: true,
+            message: error.message,
+            severity: "warning",
+          });
+        },
+        onSettled: () => {
+          setOpen(false);
+          setDeleteTargetId(null);
+        },
+      }
+    );
   };
 
   return (
@@ -60,22 +106,33 @@ const WeekRoutine: FC = (): ReactElement => {
               <Typography className="modalmessage">
                 タスクを削除しますか？
               </Typography>
-              <Button variant="contained" color="error" className="modalbtn">
+              <Button
+                variant="contained"
+                color="error"
+                className="modalbtn"
+                onClick={handleDelete}
+              >
                 削除
               </Button>
-              <Button variant="contained" className="modalbtn">
+              <Button
+                variant="contained"
+                className="modalbtn"
+                onClick={() => setOpen(false)}
+              >
                 キャンセル
               </Button>
             </Box>
           </Modal>
-          {data?.data.map((task: IRoutineTask) => (
-            <TaskCard
-              task={task}
-              key={task._id}
-              setProperty={setProperty}
-              setOpen={setOpen}
-            />
-          ))}
+          <AnimatePresence>
+            {tasks.map((task: IRoutineTask) => (
+              <TaskCard
+                task={task}
+                key={task._id}
+                setProperty={setProperty}
+                onRequestDelete={openModal}
+              />
+            ))}
+          </AnimatePresence>
         </motion.div>
       )}
     </div>

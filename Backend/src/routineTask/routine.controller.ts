@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { injectable } from "inversify";
 import { matchedData } from "express-validator";
+import { Types } from "mongoose";
 import { IRoutine, IUpdateRoutine } from "./routine.interface";
 import { RoutineTask } from "../models/routineTask.model";
 
@@ -68,6 +69,29 @@ export default class RoutineController {
       }
 
       res.status(200).json({ message: "ルーティン更新成功！" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
+  // ルーティン削除時の処理
+  public async deleteRoutine(
+    req: Request<{}, {}, { _id: Types.ObjectId }>,
+    res: Response
+  ) {
+    try {
+      const { _id } = req.body;
+      if (!_id) {
+        return res
+          .status(400)
+          .json({ message: "削除対象が指定されていません" });
+      }
+
+      const result = await RoutineTask.deleteOne({ _id });
+      if (!result.deletedCount) {
+        return res.status(404).json({ message: "削除対象が存在しません" });
+      }
+      res.status(200).json({ message: "ルーティンを削除しました！" });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

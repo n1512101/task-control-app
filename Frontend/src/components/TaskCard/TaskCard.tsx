@@ -12,18 +12,23 @@ import "./TaskCard.scss";
 interface IProps {
   task: IRoutineTask;
   setProperty: (property: ISnackbarProperty) => void;
-  setOpen: (open: boolean) => void;
+  onRequestDelete: (taskId: string) => void;
 }
 
 // アニメーション設定
 const taskVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   hidden: { opacity: 0, y: 20 },
+  exit: { opacity: 0, x: -500, transition: { duration: 0.5 } },
 };
 
 const MotionPaper = motion.create(Paper); // Material UIコンポーネントをmotion化
 
-const TaskCard: FC<IProps> = ({ task, setProperty, setOpen }): ReactElement => {
+const TaskCard: FC<IProps> = ({
+  task,
+  setProperty,
+  onRequestDelete,
+}): ReactElement => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [text, setText] = useState<string>(task.description);
   const [isDone, setIsDone] = useState<boolean>(
@@ -81,9 +86,13 @@ const TaskCard: FC<IProps> = ({ task, setProperty, setOpen }): ReactElement => {
 
   return (
     <MotionPaper
+      layout
       elevation={3}
       className="task"
       variants={taskVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
       sx={{
         backgroundColor: "var(--paper-background)",
       }}
@@ -124,7 +133,7 @@ const TaskCard: FC<IProps> = ({ task, setProperty, setOpen }): ReactElement => {
         </Button>
         <Checkbox onChange={handleCheck} checked={isDone} />
         <IconButton aria-label="delete" size="medium" className="deletebtn">
-          <DeleteIcon onClick={() => setOpen(true)} />
+          <DeleteIcon onClick={() => onRequestDelete(task._id)} />
         </IconButton>
       </div>
     </MotionPaper>

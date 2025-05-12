@@ -5,6 +5,7 @@ import RoutineController from "./routine.controller";
 import { createRoutineValidator } from "./validators/createRoutine.validator";
 import { IRoutine, IUpdateRoutine } from "./routine.interface";
 import verifyAccessToken from "../middlewares/verifyAccessToken";
+import { Types } from "mongoose";
 
 @injectable()
 export default class RoutineRouter {
@@ -50,6 +51,15 @@ export default class RoutineRouter {
       verifyAccessToken,
       async (req: Request<{}, {}, IUpdateRoutine>, res: Response) => {
         await this.routineController.updateRoutine(req, res);
+      }
+    );
+
+    // ルーティンを削除するAPI
+    this.router.delete(
+      "/",
+      verifyAccessToken,
+      async (req: Request<{}, {}, { _id: Types.ObjectId }>, res: Response) => {
+        await this.routineController.deleteRoutine(req, res);
       }
     );
   }
