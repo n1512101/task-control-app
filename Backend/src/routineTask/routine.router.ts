@@ -22,8 +22,8 @@ export default class RoutineRouter {
     // ルーティン作成API
     this.router.post(
       "/create",
-      createRoutineValidator,
       verifyAccessToken,
+      createRoutineValidator,
       async (req: Request<{}, {}, IRoutine>, res: Response) => {
         // result: バリデーション結果
         const result: Result = validationResult(req);

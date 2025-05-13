@@ -173,3 +173,23 @@ const CreateRoutine: FC = (): ReactElement => {
 };
 
 export default CreateRoutine;
+
+// // カテゴリーに対応するアイコンとスタイル
+// const categoryConfig = {
+//   study: {
+//     icon: "📚",
+//     label: "勉強",
+//   },
+//   job: {
+//     icon: "💼",
+//     label: "仕事",
+//   },
+//   recreation: {
+//     icon: "🎮",
+//     label: "娯楽",
+//   },
+//   exercise: {
+//     icon: "🏃",
+//     label: "運動",
+//   }
+// };
