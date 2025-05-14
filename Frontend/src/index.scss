@@ -1,10 +1,12 @@
 :root[data-theme="light"] {
   --base-color: #101010;
+  --second-color: #0d9488;
   --base-background: #f8f8ff;
   --second-background: #e6e6fa;
-  --third-background: #eee;
+  --third-background: #fff;
+  --fourth-background: #e6f7f5;
   --header-background: #fff6e9;
-  --input-background: #dedede;
+  --input-background: #f9fafb;
   --border-color: #ccc;
   --title-color: #7d7d7d;
   --shadow-color: #888;
@@ -12,15 +14,19 @@
   --hover-button-color: rgba(135, 207, 235, 1);
   --paper-background: #fefefe;
   --icon-color: rgb(117, 117, 117);
+  --placeholder-color: rgba(106, 106, 106, 0.8);
+  --error-message-background: #fef9c3;
 }
 
 :root[data-theme="dark"] {
   --base-color: #efefef;
+  --second-color: #5eead4;
   --base-background: #202124;
   --second-background: #494848;
-  --third-background: #263b50;
+  --third-background: #1f2937;
+  --fourth-background: #134e4a;
   --header-background: #101010;
-  --input-background: #777;
+  --input-background: #888;
   --border-color: #888;
   --title-color: #87ceeb;
   --shadow-color: #1f2e60;
@@ -28,6 +34,8 @@
   --hover-button-color: rgba(38, 83, 199, 1);
   --paper-background: #26384a;
   --icon-color: rgb(170, 170, 170);
+  --placeholder-color: rgba(230, 230, 230, 0.9);
+  --error-message-background: rgba(254, 249, 195, 0.8);
 }
 
 :root {

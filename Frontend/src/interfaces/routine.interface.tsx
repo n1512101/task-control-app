@@ -1,6 +1,9 @@
+export type IRepeatType = "daily" | "weekly";
+export type ICategory = "study" | "job" | "recreation" | "exercise";
+
 export interface IRoutine {
-  repeatType: "daily" | "weekly";
-  category: "study" | "job" | "recreation" | "exercise";
+  repeatType: IRepeatType;
+  category: ICategory;
   description: string;
   status: "pending" | "done";
 }
