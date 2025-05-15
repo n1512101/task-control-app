@@ -1,6 +1,9 @@
 import { FC, ReactElement, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Box, Button, Modal, Typography } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import IconButton from "@mui/material/IconButton";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import { IRoutineTask } from "../../interfaces/routine.interface";
@@ -23,6 +26,7 @@ const WeekRoutine: FC = (): ReactElement => {
     useGetRoutine("weekly");
   // タスク削除hook
   const { mutate } = useDeleteTask();
+  const navigate = useNavigate();
 
   // snackbarに渡すプロパティー
   const [property, setProperty] = useState<ISnackbarProperty>({
@@ -123,6 +127,15 @@ const WeekRoutine: FC = (): ReactElement => {
               </Button>
             </Box>
           </Modal>
+          <div className="routine-title">
+            <span className="date">{new Date().toLocaleDateString()}</span>
+            <IconButton color="primary">
+              <AddCircleOutlineIcon
+                fontSize="large"
+                onClick={() => navigate("/home/createroutine")}
+              />
+            </IconButton>
+          </div>
           <AnimatePresence>
             {tasks.map((task: IRoutineTask) => (
               <TaskCard
