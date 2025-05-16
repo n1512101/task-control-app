@@ -18,13 +18,12 @@ interface PropsType {
 
 // サイドバーリストおよび対応するナビゲーション
 const topOfSideBar = {
+  今週のルーティン: "week-routine",
   本日のタスク: "",
-  今週のルーティン: "weekroutine",
-  過去のタスク: "pasttask",
+  タスク一覧: "all-tasks",
 };
 const bottomOfSideBar = {
-  タスクを作成: "createtask",
-  ルーティンを作成: "createroutine",
+  タスクを作成: "create-task",
 };
 
 // サイドバーコンポーネント

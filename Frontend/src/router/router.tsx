@@ -5,8 +5,7 @@ import Home from "../pages/Home/Home";
 import RequireAuth from "../components/RequireAuth/RequireAuth";
 import Tasks from "../components/Tasks/Tasks";
 import WeekRoutine from "../components/WeekRoutine/WeekRoutine";
-import PastTask from "../components/PastTask/PastTask";
-import CreateRoutine from "../components/CreateRoutine/CreateRoutine";
+import AllTasks from "../components/AllTasks/AllTasks";
 import CreateTask from "../components/CreateTask/CreateTask";
 
 // ルートパス設定
@@ -33,19 +32,15 @@ const router = createBrowserRouter(
           element: <Tasks />,
         },
         {
-          path: "weekroutine",
+          path: "week-routine",
           element: <WeekRoutine />,
         },
         {
-          path: "pasttask",
-          element: <PastTask />,
+          path: "all-tasks",
+          element: <AllTasks />,
         },
         {
-          path: "createroutine",
-          element: <CreateRoutine />,
-        },
-        {
-          path: "createtask",
+          path: "create-task",
           element: <CreateTask />,
         },
       ],
