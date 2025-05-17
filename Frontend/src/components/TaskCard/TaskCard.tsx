@@ -1,7 +1,7 @@
 import { FC, ReactElement, useState } from "react";
 import { Button, Checkbox, IconButton, Paper, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { IRoutineTask } from "../../interfaces/routine.interface";
+import { IRoutineTask } from "../../interfaces/task.interface";
 import { Category, CategoryBackground } from "../../utils/utils";
 import useUpdateRoutine from "../../hooks/useUpdateRoutine.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";

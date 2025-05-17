@@ -1,6 +1,13 @@
 export type IRepeatType = "daily" | "weekly";
 export type ICategory = "study" | "job" | "recreation" | "exercise";
 
+export interface ITask {
+  date: string;
+  category: ICategory;
+  description: string;
+  status: "pending" | "done";
+}
+
 export interface IRoutine {
   repeatType: IRepeatType;
   category: ICategory;

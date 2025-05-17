@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { IUpdateRoutine } from "../interfaces/routine.interface";
+import { IUpdateRoutine } from "../interfaces/task.interface";
 import useAxiosAuth from "./useAxiosAuth.hook";
 
 export default function useUpdateRoutine() {

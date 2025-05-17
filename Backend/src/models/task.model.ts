@@ -1,4 +1,4 @@
-import { model, Model, Schema, Types } from "mongoose";
+import { model, Model, Schema } from "mongoose";
 import { ITaskSchema } from "../task/task.interface";
 
 const taskSchema: Schema<ITaskSchema> = new Schema({
@@ -24,11 +24,10 @@ const taskSchema: Schema<ITaskSchema> = new Schema({
     enum: ["pending", "done"],
     required: true,
   },
-  createdAt: {
+  date: {
     type: Date,
-    default: Date.now,
-    expires: parseInt(process.env.TASK_EXPIRY as string),
     required: true,
+    index: { expires: parseInt(process.env.TASK_EXPIRY as string) },
   },
   completedAt: {
     type: Date,

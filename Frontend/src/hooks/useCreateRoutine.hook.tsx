@@ -1,4 +1,4 @@
-import { IRoutine } from "../interfaces/routine.interface";
+import { IRoutine } from "../interfaces/task.interface";
 import { useMutation } from "@tanstack/react-query";
 import useAxiosAuth from "./useAxiosAuth.hook";
 

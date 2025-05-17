@@ -1,6 +1,7 @@
 :root[data-theme="light"] {
   --base-color: #101010;
   --second-color: #0d9488;
+  --third-color: rgb(69, 69, 233);
   --base-background: #f8f8ff;
   --second-background: #e6e6fa;
   --third-background: #fff;
@@ -21,6 +22,7 @@
 :root[data-theme="dark"] {
   --base-color: #efefef;
   --second-color: #5eead4;
+  --third-color: rgb(135, 206, 235);
   --base-background: #191919;
   --second-background: #494848;
   --third-background: #1f2937;

@@ -6,7 +6,7 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import IconButton from "@mui/material/IconButton";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
-import { IRoutineTask } from "../../interfaces/routine.interface";
+import { IRoutineTask } from "../../interfaces/task.interface";
 import TaskCard from "../TaskCard/TaskCard";
 import CustomizedSnackBar from "../SnackBar/SnackBar";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
