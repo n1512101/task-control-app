@@ -18,7 +18,7 @@ interface PropsType {
 
 // サイドバーリストおよび対応するナビゲーション
 const topOfSideBar = {
-  今週のルーティン: "week-routine",
+  ルーティン: "routine",
   本日のタスク: "",
   タスク一覧: "all-tasks",
 };

@@ -17,7 +17,7 @@ const LoginHeader: FC = (): ReactElement => {
   return (
     <div className="loginHeader">
       <div className="left">
-        <span>タスク管理アプリ</span>
+        <span className="title">タスク管理アプリ</span>
         {mode === "dark" ? (
           <LightModeIcon className="icon" onClick={toggle} />
         ) : (

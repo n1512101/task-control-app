@@ -1,8 +1,10 @@
 import { FC, ReactElement, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+import "dayjs/locale/ja";
 import { Box, Button, Modal, Typography } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import IconButton from "@mui/material/IconButton";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
@@ -11,7 +13,7 @@ import TaskCard from "../TaskCard/TaskCard";
 import CustomizedSnackBar from "../SnackBar/SnackBar";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import useDeleteTask from "../../hooks/useDeleteTask.hook";
-import "./WeekRoutine.scss";
+import "./Routine.scss";
 
 // アニメーション設定
 const containerVariants = {
@@ -35,13 +37,13 @@ const WeekRoutine: FC = (): ReactElement => {
     severity: "warning",
   });
   const [open, setOpen] = useState(false); // modalが開いているか
-  const [tasks, setTasks] = useState<IRoutineTask[]>([]);
+  const [weeklyRoutines, setWeeklyRoutines] = useState<IRoutineTask[]>([]);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   // 初期データ同期（初回のみ）
   useEffect(() => {
     if (isSuccess) {
-      setTasks(data.data);
+      setWeeklyRoutines(data.data);
     }
   }, [isSuccess, data]);
 
@@ -63,7 +65,9 @@ const WeekRoutine: FC = (): ReactElement => {
       { path: "/routine", id: deleteTargetId },
       {
         onSuccess: (response) => {
-          setTasks(tasks.filter((task) => task._id !== deleteTargetId));
+          setWeeklyRoutines(
+            weeklyRoutines.filter((task) => task._id !== deleteTargetId)
+          );
           setProperty({
             open: true,
             message: response,
@@ -86,7 +90,7 @@ const WeekRoutine: FC = (): ReactElement => {
   };
 
   return (
-    <div className="weekRoutine">
+    <div className="routine">
       {isPending && <div>読み込み中...</div>}
       {isError && (
         <div className="error">
@@ -96,14 +100,12 @@ const WeekRoutine: FC = (): ReactElement => {
         </div>
       )}
       {isSuccess && data.data.length === 0 ? (
-        <p className="noroutine">ルーティンがありません</p>
+        <p className="no-routine">週ごとのルーティンがありません</p>
       ) : (
-        <motion.div
-          className="container"
-          variants={containerVariants}
-          animate="visible"
-          initial="hidden"
-        >
+        <div className="content">
+          <p className="date">
+            {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
+          </p>
           <CustomizedSnackBar property={property} handleClose={handleClose} />
           <Modal open={open} onClose={() => setOpen(false)}>
             <Box className="modalbox">
@@ -127,26 +129,34 @@ const WeekRoutine: FC = (): ReactElement => {
               </Button>
             </Box>
           </Modal>
-          <div className="routine-title">
-            <span className="date">{new Date().toLocaleDateString()}</span>
-            <IconButton color="primary">
-              <AddCircleOutlineIcon
-                fontSize="large"
-                onClick={() => navigate("/home/createroutine")}
-              />
-            </IconButton>
-          </div>
-          <AnimatePresence>
-            {tasks.map((task: IRoutineTask) => (
-              <TaskCard
-                task={task}
-                key={task._id}
-                setProperty={setProperty}
-                onRequestDelete={openModal}
-              />
-            ))}
-          </AnimatePresence>
-        </motion.div>
+          {/* 週ごとのルーティンコンテナ */}
+          <motion.div
+            className="routine-container"
+            variants={containerVariants}
+            animate="visible"
+            initial="hidden"
+          >
+            <div className="routine-header">
+              <span className="routine-title">今週のルーティン</span>
+              <IconButton color="primary" className="routine-button">
+                <AddCircleIcon
+                  fontSize="large"
+                  onClick={() => navigate("/home/create-task")}
+                />
+              </IconButton>
+            </div>
+            <AnimatePresence>
+              {weeklyRoutines.map((task: IRoutineTask) => (
+                <TaskCard
+                  task={task}
+                  key={task._id}
+                  setProperty={setProperty}
+                  onRequestDelete={openModal}
+                />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
       )}
     </div>
   );

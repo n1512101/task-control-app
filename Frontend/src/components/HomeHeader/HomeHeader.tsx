@@ -41,7 +41,7 @@ const HomeHeader: FC<PropsType> = ({ open, setOpen }): ReactElement => {
   return (
     <div className="homeHeader">
       <div className="left">
-        <span>タスク管理アプリ</span>
+        <span className="title">タスク管理アプリ</span>
         {open ? (
           <MenuOpenRoundedIcon
             className="icon"

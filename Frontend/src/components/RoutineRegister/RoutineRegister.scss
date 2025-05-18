@@ -5,7 +5,7 @@
   background-color: var(--paper-background);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  position: absolute;
+  grid-area: 1 / 1 / 2 / 2;
   transition: transform 1s ease;
   backface-visibility: hidden;
   .routine-header {

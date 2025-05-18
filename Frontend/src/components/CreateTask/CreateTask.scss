@@ -2,9 +2,7 @@
   margin-top: 60px;
   min-height: calc(100vh - 60px);
   background-color: var(--base-background);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
   perspective: 1000px;
+  display: grid;
+  place-items: center;
 }

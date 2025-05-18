@@ -2,19 +2,19 @@
   --base-color: #101010;
   --second-color: #0d9488;
   --third-color: rgb(69, 69, 233);
-  --base-background: #f8f8ff;
+  --base-background: rgb(248, 249, 253);
   --second-background: #e6e6fa;
   --third-background: #fff;
   --fourth-background: #e6f7f5;
-  --header-background: #fff6e9;
+  --header-background: rgb(255, 255, 255);
   --input-background: #f9fafb;
-  --border-color: #eee;
+  --border-color: rgba(0, 0, 0, 0.05);
   --title-color: #7d7d7d;
   --shadow-color: rgba(0, 0, 0, 0.2);
   --button-color: rgba(135, 207, 235, 0.7);
   --hover-button-color: rgba(135, 207, 235, 1);
   --paper-background: #f7f7f7;
-  --icon-color: rgb(117, 117, 117);
+  --icon-color: rgb(149, 157, 169);
   --placeholder-color: rgba(106, 106, 106, 0.8);
   --error-message-background: #fef9c3;
 }
@@ -23,11 +23,11 @@
   --base-color: #efefef;
   --second-color: #5eead4;
   --third-color: rgb(135, 206, 235);
-  --base-background: #191919;
+  --base-background: rgb(19, 19, 19);
   --second-background: #494848;
   --third-background: #1f2937;
   --fourth-background: #134e4a;
-  --header-background: #101010;
+  --header-background: rgb(30, 30, 30);
   --input-background: #888;
   --border-color: #444;
   --title-color: #87ceeb;

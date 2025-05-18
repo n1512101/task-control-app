@@ -95,8 +95,14 @@ const TaskCard: FC<IProps> = ({
       exit="exit"
       sx={{
         backgroundColor: "var(--paper-background)",
+        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
+        borderRadius: "12px",
       }}
-      whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+      whileHover={{
+        scale: 1.03,
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+        transition: { duration: 0.2 },
+      }}
     >
       <span
         className="category"

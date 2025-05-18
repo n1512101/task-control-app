@@ -4,7 +4,7 @@ import Signup from "../pages/Signup/Signup";
 import Home from "../pages/Home/Home";
 import RequireAuth from "../components/RequireAuth/RequireAuth";
 import Tasks from "../components/Tasks/Tasks";
-import WeekRoutine from "../components/WeekRoutine/WeekRoutine";
+import Routine from "../components/Routine/Routine";
 import AllTasks from "../components/AllTasks/AllTasks";
 import CreateTask from "../components/CreateTask/CreateTask";
 
@@ -32,8 +32,8 @@ const router = createBrowserRouter(
           element: <Tasks />,
         },
         {
-          path: "week-routine",
-          element: <WeekRoutine />,
+          path: "routine",
+          element: <Routine />,
         },
         {
           path: "all-tasks",

@@ -10,10 +10,14 @@
   align-items: center;
   padding: 10px;
   background-color: var(--header-background);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   .left {
     display: flex;
     gap: 30px;
     align-items: center;
+    .title {
+      font-weight: bold;
+    }
     .icon {
       cursor: pointer;
     }
