@@ -167,5 +167,14 @@
 @media (max-width: 480px) {
   .task-form-container {
     width: 90%;
+    .task-form-content {
+      .form-section,
+      .form-date-section {
+        margin-bottom: 20px;
+      }
+      .submit-button {
+        margin-top: 5px;
+      }
+    }
   }
 }

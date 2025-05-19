@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import useAxiosAuth from "./useAxiosAuth.hook";
 
-export default function useGetRoutine() {
+export default function useGetTasks() {
   const axiosAuth = useAxiosAuth();
-  // ルーティン取得する際に動作する関数
-  const getRoutine = async () => {
+  // タスクを取得する際に動作する関数
+  const getTasks = async () => {
     try {
-      const result = await axiosAuth.get("/routine");
+      const result = await axiosAuth.get("/task");
       return result;
     } catch (error: any) {
       const errorMessage =
@@ -16,8 +16,8 @@ export default function useGetRoutine() {
   };
 
   return useQuery({
-    queryKey: ["routine"],
-    queryFn: getRoutine,
+    queryKey: ["tasks"],
+    queryFn: getTasks,
     refetchOnWindowFocus: false,
   });
 }

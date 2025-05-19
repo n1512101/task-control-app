@@ -1,5 +1,5 @@
 import { FC, ReactElement, useState } from "react";
-import CustomizedSnackBar from "../SnackBar/SnackBar";
+import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import RoutineRegister from "../RoutineRegister/RoutineRegister";
 import TaskRegister from "../TaskRegister/TaskRegister";
@@ -31,21 +31,23 @@ const CreateTask: FC = (): ReactElement => {
   };
 
   return (
-    <div className="create-task">
+    <>
       <CustomizedSnackBar handleClose={handleClose} property={property} />
-      <TaskRegister
-        setProperty={setProperty}
-        isFlipped={isFlipped}
-        handleFlip={handleFlip}
-        setIsAnimating={setIsAnimating}
-      />
-      <RoutineRegister
-        setProperty={setProperty}
-        isFlipped={isFlipped}
-        handleFlip={handleFlip}
-        setIsAnimating={setIsAnimating}
-      />
-    </div>
+      <div className="create-task">
+        <TaskRegister
+          setProperty={setProperty}
+          isFlipped={isFlipped}
+          handleFlip={handleFlip}
+          setIsAnimating={setIsAnimating}
+        />
+        <RoutineRegister
+          setProperty={setProperty}
+          isFlipped={isFlipped}
+          handleFlip={handleFlip}
+          setIsAnimating={setIsAnimating}
+        />
+      </div>
+    </>
   );
 };
 

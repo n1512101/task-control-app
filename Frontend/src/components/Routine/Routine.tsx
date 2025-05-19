@@ -3,16 +3,16 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import { Box, Button, Modal, Typography } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import IconButton from "@mui/material/IconButton";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
-import CustomizedButton from "../CustomizedButton/CustomizedButton";
-import { IRoutineTask } from "../../interfaces/task.interface";
+import { IRoutineResponse } from "../../interfaces/task.interface";
 import TaskCard from "../TaskCard/TaskCard";
-import CustomizedSnackBar from "../SnackBar/SnackBar";
+import CustomizedButton from "../CustomizedButton/CustomizedButton";
+import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
+import CustomizedModal from "../Modal/Modal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
-import useDeleteTask from "../../hooks/useDeleteTask.hook";
+import useDeleteRoutine from "../../hooks/useDeleteRoutine.hook";
 import "./Routine.scss";
 
 // アニメーション設定
@@ -22,12 +22,11 @@ const containerVariants = {
 };
 
 // 今週のルーティンコンポーネント
-const WeekRoutine: FC = (): ReactElement => {
+const Routine: FC = (): ReactElement => {
   // データ取得hook
-  const { data, isSuccess, isPending, isError, refetch } =
-    useGetRoutine("weekly");
+  const { data, isSuccess, isPending, isError, refetch } = useGetRoutine();
   // タスク削除hook
-  const { mutate } = useDeleteTask();
+  const { mutate } = useDeleteRoutine();
   const navigate = useNavigate();
 
   // snackbarに渡すプロパティー
@@ -37,13 +36,24 @@ const WeekRoutine: FC = (): ReactElement => {
     severity: "warning",
   });
   const [open, setOpen] = useState(false); // modalが開いているか
-  const [weeklyRoutines, setWeeklyRoutines] = useState<IRoutineTask[]>([]);
+  const [weeklyRoutines, setWeeklyRoutines] = useState<IRoutineResponse[]>([]);
+  const [dailyRoutines, setDailyRoutines] = useState<IRoutineResponse[]>([]);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   // 初期データ同期（初回のみ）
   useEffect(() => {
     if (isSuccess) {
-      setWeeklyRoutines(data.data);
+      const routines = data.data;
+      setWeeklyRoutines(
+        routines.filter(
+          (routine: IRoutineResponse) => routine.repeatType === "weekly"
+        )
+      );
+      setDailyRoutines(
+        routines.filter(
+          (routine: IRoutineResponse) => routine.repeatType === "daily"
+        )
+      );
     }
   }, [isSuccess, data]);
 
@@ -67,6 +77,9 @@ const WeekRoutine: FC = (): ReactElement => {
         onSuccess: (response) => {
           setWeeklyRoutines(
             weeklyRoutines.filter((task) => task._id !== deleteTargetId)
+          );
+          setDailyRoutines(
+            dailyRoutines.filter((task) => task._id !== deleteTargetId)
           );
           setProperty({
             open: true,
@@ -99,36 +112,17 @@ const WeekRoutine: FC = (): ReactElement => {
           <CustomizedButton onClick={() => refetch()}>再試行</CustomizedButton>
         </div>
       )}
-      {isSuccess && data.data.length === 0 ? (
-        <p className="no-routine">週ごとのルーティンがありません</p>
-      ) : (
+      {isSuccess && (
         <div className="content">
-          <p className="date">
-            {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
-          </p>
           <CustomizedSnackBar property={property} handleClose={handleClose} />
-          <Modal open={open} onClose={() => setOpen(false)}>
-            <Box className="modalbox">
-              <Typography className="modalmessage">
-                タスクを削除しますか？
-              </Typography>
-              <Button
-                variant="contained"
-                color="error"
-                className="modalbtn"
-                onClick={handleDelete}
-              >
-                削除
-              </Button>
-              <Button
-                variant="contained"
-                className="modalbtn"
-                onClick={() => setOpen(false)}
-              >
-                キャンセル
-              </Button>
-            </Box>
-          </Modal>
+          <CustomizedModal
+            open={open}
+            setOpen={setOpen}
+            handleDelete={handleDelete}
+          />
+          <div className="date">
+            {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
+          </div>
           {/* 週ごとのルーティンコンテナ */}
           <motion.div
             className="routine-container"
@@ -146,7 +140,34 @@ const WeekRoutine: FC = (): ReactElement => {
               </IconButton>
             </div>
             <AnimatePresence>
-              {weeklyRoutines.map((task: IRoutineTask) => (
+              {weeklyRoutines.map((task: IRoutineResponse) => (
+                <TaskCard
+                  task={task}
+                  key={task._id}
+                  setProperty={setProperty}
+                  onRequestDelete={openModal}
+                />
+              ))}
+            </AnimatePresence>
+          </motion.div>
+          {/* 日ごとのルーティンコンテナ */}
+          <motion.div
+            className="routine-container"
+            variants={containerVariants}
+            animate="visible"
+            initial="hidden"
+          >
+            <div className="routine-header">
+              <span className="routine-title">今日のルーティン</span>
+              <IconButton color="primary" className="routine-button">
+                <AddCircleIcon
+                  fontSize="large"
+                  onClick={() => navigate("/home/create-task")}
+                />
+              </IconButton>
+            </div>
+            <AnimatePresence>
+              {dailyRoutines.map((task: IRoutineResponse) => (
                 <TaskCard
                   task={task}
                   key={task._id}
@@ -162,4 +183,4 @@ const WeekRoutine: FC = (): ReactElement => {
   );
 };
 
-export default WeekRoutine;
+export default Routine;

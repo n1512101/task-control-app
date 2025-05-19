@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import useSignup from "../../hooks/useSignup.hook";
-import CustomizedSnackBar from "../SnackBar/SnackBar";
+import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import IProperty from "../../interfaces/snackbarProperty.interface";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import "./SignupForm.scss";

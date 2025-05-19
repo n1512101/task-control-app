@@ -26,10 +26,19 @@ export default class TaskRouter {
         const result: Result = validationResult(req);
 
         if (result.isEmpty()) {
-          await this.taskController.create(req, res);
+          await this.taskController.createTask(req, res);
         } else {
           res.status(400).json(result.array());
         }
+      }
+    );
+
+    // タスク取得API
+    this.router.get(
+      "/",
+      verifyAccessToken,
+      async (req: Request, res: Response) => {
+        await this.taskController.getTasks(req, res);
       }
     );
   }

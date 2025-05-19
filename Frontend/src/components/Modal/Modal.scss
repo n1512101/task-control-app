@@ -1,0 +1,24 @@
+.modalbox {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 350px;
+  background-color: var(--input-background);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  .modalmessage {
+    margin-bottom: 30px;
+  }
+  .modalbtn {
+    margin: 0 15px;
+    height: 35px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modalbox {
+    width: 90%;
+  }
+}

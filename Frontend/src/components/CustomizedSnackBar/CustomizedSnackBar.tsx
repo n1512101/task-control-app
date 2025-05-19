@@ -18,6 +18,7 @@ const CustomizedSnackBar: FC<CustomizedSnackBarProps> = ({
       autoHideDuration={2500}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       onClose={handleClose}
+      sx={{ marginTop: 8 }}
     >
       <Alert
         severity={property.severity}

@@ -8,6 +8,11 @@ export interface ITask {
   status: "pending" | "done";
 }
 
+// APIから帰ってくるタスクの型
+export interface ITaskResponse extends Omit<ITask, "date"> {
+  _id: string;
+}
+
 export interface IRoutine {
   repeatType: IRepeatType;
   category: ICategory;
@@ -16,12 +21,11 @@ export interface IRoutine {
 }
 
 // APIから帰ってくるルーティンの型
-export interface IRoutineTask extends IRoutine {
+export interface IRoutineResponse extends IRoutine {
   _id: string;
-  userId: string;
 }
 
 // ルーティン更新時の引数の型
 export type IUpdateRoutine = { _id: string } & Partial<
-  Pick<IRoutineTask, "description" | "status">
+  Pick<IRoutineResponse, "description" | "status">
 >;

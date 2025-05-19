@@ -1,6 +1,6 @@
 import { FC, ReactElement, useContext, useState } from "react";
 import z from "zod";
-import CustomizedSnackBar from "../SnackBar/SnackBar";
+import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useLogin from "../../hooks/useLogin.hook";

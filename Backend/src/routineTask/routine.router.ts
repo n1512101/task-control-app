@@ -29,7 +29,7 @@ export default class RoutineRouter {
         const result: Result = validationResult(req);
 
         if (result.isEmpty()) {
-          await this.routineController.create(req, res);
+          await this.routineController.createRoutine(req, res);
         } else {
           res.status(400).json(result.array());
         }
@@ -41,7 +41,7 @@ export default class RoutineRouter {
       "/",
       verifyAccessToken,
       async (req: Request, res: Response) => {
-        await this.routineController.getRoutine(req, res);
+        await this.routineController.getRoutines(req, res);
       }
     );
 

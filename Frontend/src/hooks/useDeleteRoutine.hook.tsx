@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import useAxiosAuth from "./useAxiosAuth.hook";
 
-export default function useDeleteTask() {
+export default function useDeleteRoutine() {
   const axiosAuth = useAxiosAuth();
 
   // ルーティンを削除する際に動作する関数

@@ -10,7 +10,7 @@ export default class RoutineController {
   constructor() {}
 
   // ルーティン作成時の処理
-  public async create(req: Request<{}, {}, IRoutine>, res: Response) {
+  public async createRoutine(req: Request<{}, {}, IRoutine>, res: Response) {
     // 余分なデータがあった場合除去する
     const validateData: IRoutine = matchedData(req);
 
@@ -27,12 +27,11 @@ export default class RoutineController {
   }
 
   // ルーティン取得時の処理
-  public async getRoutine(req: Request, res: Response) {
+  public async getRoutines(req: Request, res: Response) {
     try {
       const tasks = await RoutineTask.find({
         userId: req.user.id,
-        repeatType: req.query.repeatType,
-      });
+      }).select(["_id", "repeatType", "category", "description", "status"]);
       res.status(200).json(tasks);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
