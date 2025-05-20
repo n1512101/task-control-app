@@ -18,8 +18,8 @@ interface PropsType {
 
 // サイドバーリストおよび対応するナビゲーション
 const topOfSideBar = {
-  ルーティン: "routine",
   本日のタスク: "",
+  ルーティン: "routine",
   タスク一覧: "all-tasks",
 };
 const bottomOfSideBar = {

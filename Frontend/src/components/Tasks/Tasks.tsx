@@ -12,6 +12,7 @@ import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import CustomizedModal from "../Modal/Modal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import TaskCard from "../TaskCard/TaskCard";
+import useDeleteTask from "../../hooks/useDeleteTask.hook";
 import "./Tasks.scss";
 
 // アニメーション設定
@@ -25,7 +26,8 @@ const Tasks: FC = (): ReactElement => {
 
   // タスク取得hook
   const { data, isSuccess, isPending, isError, refetch } = useGetTasks();
-
+  // タスク削除hook
+  const { mutate } = useDeleteTask();
   const navigate = useNavigate();
 
   // snackbarに渡すプロパティー
@@ -58,7 +60,30 @@ const Tasks: FC = (): ReactElement => {
   // タスクを削除する際に動作する関数
   const handleDelete = async () => {
     if (!deleteTargetId) return;
-    console.log("delete");
+    mutate(
+      { path: "/task", id: deleteTargetId },
+      {
+        onSuccess: (response) => {
+          setTasks(tasks.filter((task) => task._id !== deleteTargetId));
+          setProperty({
+            open: true,
+            message: response,
+            severity: "success",
+          });
+        },
+        onError: (error) => {
+          setProperty({
+            open: true,
+            message: error.message,
+            severity: "warning",
+          });
+        },
+        onSettled: () => {
+          setOpen(false);
+          setDeleteTargetId(null);
+        },
+      }
+    );
   };
 
   return (
@@ -79,18 +104,18 @@ const Tasks: FC = (): ReactElement => {
             setOpen={setOpen}
             handleDelete={handleDelete}
           />
-          <div className="date">
+          <div className="header">
             {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
           </div>
           <motion.div
-            className="routine-container"
+            className="tasks-container"
             variants={containerVariants}
             animate="visible"
             initial="hidden"
           >
-            <div className="routine-header">
-              <span className="routine-title">今日のタスク</span>
-              <IconButton color="primary" className="routine-button">
+            <div className="tasks-header">
+              <span className="tasks-title">今日のタスク</span>
+              <IconButton color="primary" className="tasks-button">
                 <AddCircleIcon
                   fontSize="large"
                   onClick={() => navigate("/home/create-task")}
@@ -104,6 +129,7 @@ const Tasks: FC = (): ReactElement => {
                   key={task._id}
                   setProperty={setProperty}
                   onRequestDelete={openModal}
+                  api="/task"
                 />
               ))}
             </AnimatePresence>

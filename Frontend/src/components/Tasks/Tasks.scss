@@ -1,3 +1,74 @@
 .tasks {
-  margin: 70px 10px 10px;
+  margin-top: 60px;
+  padding: 10px;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--base-background);
+  position: relative;
+  .error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .content {
+    margin: 10px 20px;
+    .header {
+      font-size: 20px;
+      font-weight: bold;
+      max-width: 900px;
+      min-width: 470px;
+      margin: 0 auto 20px;
+    }
+    .tasks-container {
+      max-width: 900px;
+      min-width: 470px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: var(--third-background);
+      border-radius: 16px;
+      box-shadow: 0 2px 6px var(--shadow-color);
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(273px, 1fr));
+      gap: 20px;
+      .tasks-header {
+        grid-column: 1 / -1;
+        padding: 0 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .tasks-title {
+          font-weight: bold;
+          font-size: 20px;
+        }
+        .tasks-button {
+          transition: transform 0.3s ease;
+          &:hover {
+            transform: translateY(-2px);
+          }
+        }
+      }
+    }
+    .tasks-container:last-child {
+      margin-top: 30px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .tasks {
+    .content {
+      margin: 10px;
+      .header {
+        min-width: unset;
+      }
+      .tasks-container {
+        min-width: unset;
+        padding: 15px;
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+    }
+  }
 }

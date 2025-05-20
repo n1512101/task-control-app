@@ -25,7 +25,9 @@ export interface IRoutineResponse extends IRoutine {
   _id: string;
 }
 
-// ルーティン更新時の引数の型
-export type IUpdateRoutine = { _id: string } & Partial<
-  Pick<IRoutineResponse, "description" | "status">
->;
+// タスク更新時の引数の型
+export interface IUpdateTask {
+  _id: string;
+  description?: string;
+  status?: "pending" | "done";
+}

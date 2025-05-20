@@ -46,8 +46,7 @@ export default class RoutineController {
     try {
       const { _id, description, status } = req.body;
       // 更新対象フィールド
-      const updateFields: Partial<Pick<IRoutine, "description" | "status">> =
-        {};
+      const updateFields: Pick<IUpdateRoutine, "description" | "status"> = {};
       if (description !== undefined) updateFields.description = description;
       if (status !== undefined) updateFields.status = status;
 

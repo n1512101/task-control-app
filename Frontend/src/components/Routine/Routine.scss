@@ -12,19 +12,31 @@
     transform: translate(-50%, -50%);
     text-align: center;
   }
-  .no-routine {
-    text-align: center;
-  }
   .content {
     margin: 10px 20px;
-    .date {
-      font-size: 20px;
-      font-weight: bold;
+    .header {
       max-width: 900px;
+      min-width: 470px;
       margin: 0 auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      .left {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .right {
+        font-size: 13px;
+        color: var(--third-color);
+        cursor: pointer;
+        &:hover {
+          opacity: 0.7;
+        }
+      }
     }
     .routine-container {
       max-width: 900px;
+      min-width: 470px;
       margin: 0 auto;
       padding: 20px;
       background-color: var(--third-background);
@@ -61,7 +73,11 @@
   .routine {
     .content {
       margin: 10px;
+      .header {
+        min-width: unset;
+      }
       .routine-container {
+        min-width: unset;
         padding: 15px;
         grid-template-columns: 1fr;
         gap: 15px;

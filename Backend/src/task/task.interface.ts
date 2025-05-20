@@ -13,3 +13,7 @@ export interface ITaskSchema extends ITask {
   reminderCount: 0 | 1 | 2 | 3;
   nextReminderAt: Date | null;
 }
+
+export type IUpdateTask = { _id: Types.ObjectId } & Partial<
+  Pick<ITask, "description" | "status">
+>;

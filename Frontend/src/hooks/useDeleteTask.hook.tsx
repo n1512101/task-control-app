@@ -1,14 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import { IUpdateRoutine } from "../interfaces/task.interface";
 import useAxiosAuth from "./useAxiosAuth.hook";
 
-export default function useUpdateRoutine() {
+export default function useDeleteTask() {
   const axiosAuth = useAxiosAuth();
 
-  // ルーティンを更新する際に動作する関数
-  const updateRoutine = async (routine: IUpdateRoutine) => {
+  // ルーティンを削除する際に動作する関数
+  const deleteTask = async ({ path, id }: { path: string; id: string }) => {
     try {
-      await axiosAuth.put("/routine", routine);
+      const result = await axiosAuth.delete(path, { data: { _id: id } });
+      return result.data.message;
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message ?? "予期せぬエラーが発生しました";
@@ -17,6 +17,6 @@ export default function useUpdateRoutine() {
   };
 
   return useMutation({
-    mutationFn: updateRoutine,
+    mutationFn: deleteTask,
   });
 }

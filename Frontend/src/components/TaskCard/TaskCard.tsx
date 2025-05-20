@@ -6,7 +6,7 @@ import {
   ITaskResponse,
 } from "../../interfaces/task.interface";
 import { Category, CategoryBackground } from "../../utils/utils";
-import useUpdateRoutine from "../../hooks/useUpdateRoutine.hook";
+import useUpdateTask from "../../hooks/useUpdateTask.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import { motion } from "framer-motion";
 import useDebounce from "../../hooks/useDebounce.hook";
@@ -16,6 +16,7 @@ interface IProps {
   task: IRoutineResponse | ITaskResponse;
   setProperty: (property: ISnackbarProperty) => void;
   onRequestDelete: (taskId: string) => void;
+  api: string;
 }
 
 // アニメーション設定
@@ -31,6 +32,7 @@ const TaskCard: FC<IProps> = ({
   task,
   setProperty,
   onRequestDelete,
+  api,
 }): ReactElement => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [text, setText] = useState<string>(task.description);
@@ -39,14 +41,17 @@ const TaskCard: FC<IProps> = ({
   );
 
   // データ更新hook
-  const { mutate } = useUpdateRoutine();
+  const { mutate } = useUpdateTask();
 
   // 編集or保存ボタンを押した際に動作する関数
   const handleEdit = () => {
     // 保存ボタンを押した場合、タスク内容を更新する
     if (isEdit) {
       mutate(
-        { _id: task._id, description: text },
+        {
+          path: api,
+          task: { _id: task._id, description: text },
+        },
         {
           onError: (error) => {
             setProperty({
@@ -66,7 +71,10 @@ const TaskCard: FC<IProps> = ({
   const debouncedUpdate = (newDone: boolean) => {
     debounce(() => {
       mutate(
-        { _id: task._id, status: newDone ? "done" : "pending" },
+        {
+          path: api,
+          task: { _id: task._id, status: newDone ? "done" : "pending" },
+        },
         {
           onError: (error) => {
             setProperty({

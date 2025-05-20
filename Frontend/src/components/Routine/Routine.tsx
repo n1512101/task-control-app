@@ -12,7 +12,7 @@ import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import CustomizedModal from "../Modal/Modal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
-import useDeleteRoutine from "../../hooks/useDeleteRoutine.hook";
+import useDeleteRoutine from "../../hooks/useDeleteTask.hook";
 import "./Routine.scss";
 
 // アニメーション設定
@@ -39,6 +39,15 @@ const Routine: FC = (): ReactElement => {
   const [weeklyRoutines, setWeeklyRoutines] = useState<IRoutineResponse[]>([]);
   const [dailyRoutines, setDailyRoutines] = useState<IRoutineResponse[]>([]);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  // 未完了のルーティンのみを表示するかどうか
+  const [onlyPending, setOnlyPending] = useState<boolean>(() => {
+    try {
+      const result = localStorage.getItem("onlyPending");
+      return result ? JSON.parse(result).routine ?? false : false;
+    } catch {
+      return false;
+    }
+  });
 
   // 初期データ同期（初回のみ）
   useEffect(() => {
@@ -102,6 +111,11 @@ const Routine: FC = (): ReactElement => {
     );
   };
 
+  // 未完了のルーティンのみを表示するかどうかを切り替える関数
+  const handleClick = () => {
+    setOnlyPending(!onlyPending);
+  };
+
   return (
     <div className="routine">
       {isPending && <div>読み込み中...</div>}
@@ -120,8 +134,13 @@ const Routine: FC = (): ReactElement => {
             setOpen={setOpen}
             handleDelete={handleDelete}
           />
-          <div className="date">
-            {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
+          <div className="header">
+            <span className="left">
+              {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
+            </span>
+            <span className="right" onClick={handleClick}>
+              {onlyPending ? "全て表示" : "未完了のみ表示"}
+            </span>
           </div>
           {/* 週ごとのルーティンコンテナ */}
           <motion.div
@@ -146,6 +165,7 @@ const Routine: FC = (): ReactElement => {
                   key={task._id}
                   setProperty={setProperty}
                   onRequestDelete={openModal}
+                  api="/routine"
                 />
               ))}
             </AnimatePresence>
@@ -173,6 +193,7 @@ const Routine: FC = (): ReactElement => {
                   key={task._id}
                   setProperty={setProperty}
                   onRequestDelete={openModal}
+                  api="/routine"
                 />
               ))}
             </AnimatePresence>
