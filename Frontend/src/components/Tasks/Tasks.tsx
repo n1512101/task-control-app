@@ -38,6 +38,8 @@ const Tasks: FC = (): ReactElement => {
   });
   const [open, setOpen] = useState(false); // modalが開いているか
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  // 未完了のルーティンのみを表示するかどうか
+  const [onlyPending, setOnlyPending] = useState<boolean>(false);
 
   // 初期データ同期（初回のみ）
   useEffect(() => {
@@ -86,6 +88,18 @@ const Tasks: FC = (): ReactElement => {
     );
   };
 
+  // tasks内の指定する要素のstatusを更新する関数
+  const handleUpdateStatus = (
+    taskId: string,
+    newStatus: "done" | "pending"
+  ) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task._id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
+  };
+
   return (
     <div className="tasks">
       {isPending && <div>読み込み中...</div>}
@@ -105,7 +119,15 @@ const Tasks: FC = (): ReactElement => {
             handleDelete={handleDelete}
           />
           <div className="header">
-            {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
+            <span className="left">
+              {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
+            </span>
+            <span
+              className="right"
+              onClick={() => setOnlyPending(!onlyPending)}
+            >
+              {onlyPending ? "全て表示" : "未完了のみ表示"}
+            </span>
           </div>
           <motion.div
             className="tasks-container"
@@ -123,15 +145,20 @@ const Tasks: FC = (): ReactElement => {
               </IconButton>
             </div>
             <AnimatePresence>
-              {tasks.map((task: ITaskResponse) => (
-                <TaskCard
-                  task={task}
-                  key={task._id}
-                  setProperty={setProperty}
-                  onRequestDelete={openModal}
-                  api="/task"
-                />
-              ))}
+              {tasks
+                .filter((task) =>
+                  onlyPending ? task.status === "pending" : true
+                )
+                .map((task: ITaskResponse) => (
+                  <TaskCard
+                    task={task}
+                    key={task._id}
+                    setProperty={setProperty}
+                    onRequestDelete={openModal}
+                    api="/task"
+                    handleUpdateStatus={handleUpdateStatus}
+                  />
+                ))}
             </AnimatePresence>
           </motion.div>
         </div>

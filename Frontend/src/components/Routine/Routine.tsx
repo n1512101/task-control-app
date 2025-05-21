@@ -40,14 +40,7 @@ const Routine: FC = (): ReactElement => {
   const [dailyRoutines, setDailyRoutines] = useState<IRoutineResponse[]>([]);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   // 未完了のルーティンのみを表示するかどうか
-  const [onlyPending, setOnlyPending] = useState<boolean>(() => {
-    try {
-      const result = localStorage.getItem("onlyPending");
-      return result ? JSON.parse(result).routine ?? false : false;
-    } catch {
-      return false;
-    }
-  });
+  const [onlyPending, setOnlyPending] = useState<boolean>(false);
 
   // 初期データ同期（初回のみ）
   useEffect(() => {
@@ -111,9 +104,28 @@ const Routine: FC = (): ReactElement => {
     );
   };
 
-  // 未完了のルーティンのみを表示するかどうかを切り替える関数
-  const handleClick = () => {
-    setOnlyPending(!onlyPending);
+  // weeklyRoutines内の指定する要素のstatusを更新する関数
+  const handleUpdateWeeklyRoutineStatus = (
+    taskId: string,
+    newStatus: "done" | "pending"
+  ) => {
+    setWeeklyRoutines((prev) =>
+      prev.map((task) =>
+        task._id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
+  };
+
+  // dailyRoutines内の指定する要素のstatusを更新する関数
+  const handleUpdateDailyRoutineStatus = (
+    taskId: string,
+    newStatus: "done" | "pending"
+  ) => {
+    setDailyRoutines((prev) =>
+      prev.map((task) =>
+        task._id === taskId ? { ...task, status: newStatus } : task
+      )
+    );
   };
 
   return (
@@ -138,7 +150,10 @@ const Routine: FC = (): ReactElement => {
             <span className="left">
               {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
             </span>
-            <span className="right" onClick={handleClick}>
+            <span
+              className="right"
+              onClick={() => setOnlyPending(!onlyPending)}
+            >
               {onlyPending ? "全て表示" : "未完了のみ表示"}
             </span>
           </div>
@@ -159,15 +174,20 @@ const Routine: FC = (): ReactElement => {
               </IconButton>
             </div>
             <AnimatePresence>
-              {weeklyRoutines.map((task: IRoutineResponse) => (
-                <TaskCard
-                  task={task}
-                  key={task._id}
-                  setProperty={setProperty}
-                  onRequestDelete={openModal}
-                  api="/routine"
-                />
-              ))}
+              {weeklyRoutines
+                .filter((task) =>
+                  onlyPending ? task.status === "pending" : true
+                )
+                .map((task: IRoutineResponse) => (
+                  <TaskCard
+                    task={task}
+                    key={task._id}
+                    setProperty={setProperty}
+                    onRequestDelete={openModal}
+                    api="/routine"
+                    handleUpdateStatus={handleUpdateWeeklyRoutineStatus}
+                  />
+                ))}
             </AnimatePresence>
           </motion.div>
           {/* 日ごとのルーティンコンテナ */}
@@ -187,15 +207,20 @@ const Routine: FC = (): ReactElement => {
               </IconButton>
             </div>
             <AnimatePresence>
-              {dailyRoutines.map((task: IRoutineResponse) => (
-                <TaskCard
-                  task={task}
-                  key={task._id}
-                  setProperty={setProperty}
-                  onRequestDelete={openModal}
-                  api="/routine"
-                />
-              ))}
+              {dailyRoutines
+                .filter((task) =>
+                  onlyPending ? task.status === "pending" : true
+                )
+                .map((task: IRoutineResponse) => (
+                  <TaskCard
+                    task={task}
+                    key={task._id}
+                    setProperty={setProperty}
+                    onRequestDelete={openModal}
+                    api="/routine"
+                    handleUpdateStatus={handleUpdateDailyRoutineStatus}
+                  />
+                ))}
             </AnimatePresence>
           </motion.div>
         </div>

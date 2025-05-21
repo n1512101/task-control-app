@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState } from "react";
+import { ChangeEvent, FC, ReactElement, useState } from "react";
 import { Button, Checkbox, IconButton, Paper, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -17,6 +17,7 @@ interface IProps {
   setProperty: (property: ISnackbarProperty) => void;
   onRequestDelete: (taskId: string) => void;
   api: string;
+  handleUpdateStatus: (taskId: string, newStatus: "done" | "pending") => void;
 }
 
 // アニメーション設定
@@ -33,12 +34,13 @@ const TaskCard: FC<IProps> = ({
   setProperty,
   onRequestDelete,
   api,
+  handleUpdateStatus,
 }): ReactElement => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [text, setText] = useState<string>(task.description);
-  const [isDone, setIsDone] = useState<boolean>(
-    task.status === "done" ? true : false
-  );
+  // const [isDone, setIsDone] = useState<boolean>(
+  //   task.status === "done" ? true : false
+  // );
 
   // データ更新hook
   const { mutate } = useUpdateTask();
@@ -68,7 +70,7 @@ const TaskCard: FC<IProps> = ({
 
   // debounce関数(1秒)
   const debounce = useDebounce(1000);
-  const debouncedUpdate = (newDone: boolean) => {
+  const debouncedUpdateStatus = (newDone: boolean) => {
     debounce(() => {
       mutate(
         {
@@ -89,10 +91,12 @@ const TaskCard: FC<IProps> = ({
   };
 
   // checkboxを変更した際に動作する関数
-  const handleCheck = () => {
-    const newDone = !isDone;
-    setIsDone(newDone);
-    debouncedUpdate(newDone);
+  const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
+    // const newDone = !isDone;
+    // setIsDone(newDone);
+    const checked = e.target.checked;
+    handleUpdateStatus(task._id, checked ? "done" : "pending");
+    debouncedUpdateStatus(checked);
   };
 
   return (
@@ -148,7 +152,7 @@ const TaskCard: FC<IProps> = ({
         <Button className="btn" onClick={handleEdit}>
           {isEdit ? "保存" : "編集"}
         </Button>
-        <Checkbox onChange={handleCheck} checked={isDone} />
+        <Checkbox onChange={handleCheck} checked={task.status === "done"} />
         <IconButton aria-label="delete" size="medium" className="deletebtn">
           <DeleteIcon onClick={() => onRequestDelete(task._id)} />
         </IconButton>

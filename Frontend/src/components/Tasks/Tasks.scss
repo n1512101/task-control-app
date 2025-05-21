@@ -15,11 +15,24 @@
   .content {
     margin: 10px 20px;
     .header {
-      font-size: 20px;
-      font-weight: bold;
       max-width: 900px;
       min-width: 470px;
       margin: 0 auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      .left {
+        font-size: 20px;
+        font-weight: bold;
+      }
+      .right {
+        font-size: 13px;
+        color: var(--title-color);
+        cursor: pointer;
+        &:hover {
+          opacity: 0.7;
+        }
+      }
     }
     .tasks-container {
       max-width: 900px;
