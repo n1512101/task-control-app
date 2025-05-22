@@ -38,9 +38,6 @@ const TaskCard: FC<IProps> = ({
 }): ReactElement => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
   const [text, setText] = useState<string>(task.description);
-  // const [isDone, setIsDone] = useState<boolean>(
-  //   task.status === "done" ? true : false
-  // );
 
   // データ更新hook
   const { mutate } = useUpdateTask();
@@ -92,8 +89,6 @@ const TaskCard: FC<IProps> = ({
 
   // checkboxを変更した際に動作する関数
   const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
-    // const newDone = !isDone;
-    // setIsDone(newDone);
     const checked = e.target.checked;
     handleUpdateStatus(task._id, checked ? "done" : "pending");
     debouncedUpdateStatus(checked);

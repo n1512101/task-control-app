@@ -91,7 +91,7 @@ const Tasks: FC = (): ReactElement => {
   // tasks内の指定する要素のstatusを更新する関数
   const handleUpdateStatus = (
     taskId: string,
-    newStatus: "done" | "pending"
+    newStatus: ITaskResponse["status"]
   ) => {
     setTasks((prev) =>
       prev.map((task) =>

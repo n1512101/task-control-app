@@ -43,6 +43,15 @@ export default class TaskRouter {
       }
     );
 
+    // 全てのタスクを取得するAPI
+    this.router.get(
+      "/all",
+      verifyAccessToken,
+      async (req: Request, res: Response) => {
+        await this.taskController.getAllTasks(req, res);
+      }
+    );
+
     // タスクを更新するAPI
     this.router.put(
       "/",

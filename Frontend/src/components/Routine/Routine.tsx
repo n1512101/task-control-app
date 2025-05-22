@@ -104,28 +104,30 @@ const Routine: FC = (): ReactElement => {
     );
   };
 
+  const updateRoutineStatus = (
+    items: IRoutineResponse[],
+    taskId: string,
+    newStatus: IRoutineResponse["status"]
+  ): IRoutineResponse[] => {
+    return items.map((item) =>
+      item._id === taskId ? { ...item, status: newStatus } : item
+    );
+  };
+
   // weeklyRoutines内の指定する要素のstatusを更新する関数
   const handleUpdateWeeklyRoutineStatus = (
     taskId: string,
-    newStatus: "done" | "pending"
+    newStatus: IRoutineResponse["status"]
   ) => {
-    setWeeklyRoutines((prev) =>
-      prev.map((task) =>
-        task._id === taskId ? { ...task, status: newStatus } : task
-      )
-    );
+    setWeeklyRoutines((prev) => updateRoutineStatus(prev, taskId, newStatus));
   };
 
   // dailyRoutines内の指定する要素のstatusを更新する関数
   const handleUpdateDailyRoutineStatus = (
     taskId: string,
-    newStatus: "done" | "pending"
+    newStatus: IRoutineResponse["status"]
   ) => {
-    setDailyRoutines((prev) =>
-      prev.map((task) =>
-        task._id === taskId ? { ...task, status: newStatus } : task
-      )
-    );
+    setDailyRoutines((prev) => updateRoutineStatus(prev, taskId, newStatus));
   };
 
   return (

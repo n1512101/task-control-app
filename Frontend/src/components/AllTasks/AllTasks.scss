@@ -1,3 +1,56 @@
 .all-tasks {
-  margin: 70px 10px 10px;
+  margin-top: 60px;
+  padding: 10px;
+  min-height: 100vh;
+  background-color: var(--base-background);
+  .all-tasks-content {
+    margin: 10px 20px;
+    .all-tasks-calendar {
+      position: fixed;
+      inset: 0;
+      margin: auto;
+      color: var(--base-color);
+      background-color: var(--third-background);
+      z-index: 10;
+    }
+    .all-tasks-calendar-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      min-height: 100vh;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 5;
+    }
+    .all-tasks-header {
+      max-width: 900px;
+      min-width: 470px;
+      margin: 10px auto 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      .left {
+        height: 34px;
+      }
+      .right {
+        font-size: 13px;
+        color: var(--title-color);
+        cursor: pointer;
+        &:hover {
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .all-tasks {
+    .all-tasks-content {
+      margin: 10px;
+      .all-tasks-header {
+        min-width: unset;
+      }
+    }
+  }
 }
