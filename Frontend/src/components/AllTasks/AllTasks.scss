@@ -3,6 +3,13 @@
   padding: 10px;
   min-height: 100vh;
   background-color: var(--base-background);
+  .error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
   .all-tasks-content {
     margin: 10px 20px;
     .all-tasks-calendar {
@@ -28,9 +35,11 @@
       margin: 10px auto 20px;
       display: flex;
       justify-content: space-between;
-      align-items: end;
+      align-items: center;
       .left {
         height: 34px;
+        display: flex;
+        gap: 20px;
       }
       .right {
         font-size: 13px;
@@ -39,6 +48,25 @@
         &:hover {
           opacity: 0.7;
         }
+      }
+    }
+    .all-tasks-container {
+      max-width: 900px;
+      min-width: 470px;
+      margin: 0 auto;
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: var(--third-background);
+      border-radius: 16px;
+      box-shadow: 0 2px 6px var(--shadow-color);
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(273px, 1fr));
+      gap: 20px;
+      .all-tasks-date {
+        grid-column: 1 / -1;
+        padding: 0 10px;
+        font-weight: bold;
+        font-size: 20px;
       }
     }
   }
@@ -50,6 +78,19 @@
       margin: 10px;
       .all-tasks-header {
         min-width: unset;
+        .left {
+          height: 30px;
+          gap: 10px;
+        }
+        .right {
+          font-size: 12px;
+        }
+      }
+      .all-tasks-container {
+        min-width: unset;
+        padding: 15px;
+        grid-template-columns: 1fr;
+        gap: 15px;
       }
     }
   }

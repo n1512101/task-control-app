@@ -7,6 +7,10 @@ export interface ITask {
   date: Date;
 }
 
+export interface ITaskWithID extends ITask {
+  _id: Types.ObjectId;
+}
+
 export interface ITaskSchema extends ITask {
   userId: Types.ObjectId;
   completedAt: Date | null;

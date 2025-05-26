@@ -8,9 +8,7 @@ const useAxiosAuth = () => {
 
   const instance = axios.create({
     baseURL: import.meta.env.VITE_BACK_API_URL,
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
+    headers: { Authorization: `Bearer ${accessToken}` },
   });
 
   instance.interceptors.response.use(

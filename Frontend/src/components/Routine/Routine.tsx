@@ -1,5 +1,5 @@
 import { FC, ReactElement, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
@@ -14,12 +14,6 @@ import CustomizedModal from "../Modal/Modal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import useDeleteRoutine from "../../hooks/useDeleteTask.hook";
 import "./Routine.scss";
-
-// アニメーション設定
-const containerVariants = {
-  visible: { opacity: 1, transition: { duration: 0.5 } },
-  hidden: { opacity: 0 },
-};
 
 // 今週のルーティンコンポーネント
 const Routine: FC = (): ReactElement => {
@@ -70,6 +64,12 @@ const Routine: FC = (): ReactElement => {
     setDeleteTargetId(taskId);
   };
 
+  // 削除キャンセルもしくは削除完了後の処理
+  const closeModal = () => {
+    setOpen(false);
+    setDeleteTargetId(null);
+  };
+
   // タスクを削除する際に動作する関数
   const handleDelete = async () => {
     if (!deleteTargetId) return;
@@ -97,8 +97,7 @@ const Routine: FC = (): ReactElement => {
           });
         },
         onSettled: () => {
-          setOpen(false);
-          setDeleteTargetId(null);
+          closeModal();
         },
       }
     );
@@ -145,7 +144,7 @@ const Routine: FC = (): ReactElement => {
           <CustomizedSnackBar property={property} handleClose={handleClose} />
           <CustomizedModal
             open={open}
-            setOpen={setOpen}
+            closeModal={closeModal}
             handleDelete={handleDelete}
           />
           <div className="header">
@@ -160,12 +159,7 @@ const Routine: FC = (): ReactElement => {
             </span>
           </div>
           {/* 週ごとのルーティンコンテナ */}
-          <motion.div
-            className="routine-container"
-            variants={containerVariants}
-            animate="visible"
-            initial="hidden"
-          >
+          <div className="routine-container">
             <div className="routine-header">
               <span className="routine-title">今週のルーティン</span>
               <IconButton color="primary" className="routine-button">
@@ -191,14 +185,9 @@ const Routine: FC = (): ReactElement => {
                   />
                 ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
           {/* 日ごとのルーティンコンテナ */}
-          <motion.div
-            className="routine-container"
-            variants={containerVariants}
-            animate="visible"
-            initial="hidden"
-          >
+          <div className="routine-container">
             <div className="routine-header">
               <span className="routine-title">今日のルーティン</span>
               <IconButton color="primary" className="routine-button">
@@ -224,7 +213,7 @@ const Routine: FC = (): ReactElement => {
                   />
                 ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>

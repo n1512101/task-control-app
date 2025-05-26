@@ -31,7 +31,10 @@ export default class AuthRouter {
       async (req: Request, res: Response) => {
         try {
           // データベース内からユーザーを確認
-          const token = await RefreshToken.findOne({ userId: req.user.id });
+          const token = await RefreshToken.findOne({
+            userId: req.user.id,
+            refreshToken: req.cookies.refreshToken,
+          });
           if (!token) {
             throw new Error();
           }
@@ -49,7 +52,7 @@ export default class AuthRouter {
             secure: process.env.NODE_ENV === "production",
             sameSite: "strict",
           });
-          await RefreshToken.deleteOne({ userId: req.user.id });
+          await token.deleteOne();
 
           // 新しいリフレッシュトークンを発行し、保存する
           const refreshToken = jwt.sign(

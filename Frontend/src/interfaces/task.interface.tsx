@@ -9,7 +9,7 @@ export interface ITask {
 }
 
 // APIから帰ってくるタスクの型
-export interface ITaskResponse extends Omit<ITask, "date"> {
+export interface ITaskResponse extends ITask {
   _id: string;
 }
 

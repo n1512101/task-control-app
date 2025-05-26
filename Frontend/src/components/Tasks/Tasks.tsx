@@ -1,5 +1,5 @@
 import { FC, ReactElement, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
@@ -14,12 +14,6 @@ import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import TaskCard from "../TaskCard/TaskCard";
 import useDeleteTask from "../../hooks/useDeleteTask.hook";
 import "./Tasks.scss";
-
-// アニメーション設定
-const containerVariants = {
-  visible: { opacity: 1, transition: { duration: 0.5 } },
-  hidden: { opacity: 0 },
-};
 
 const Tasks: FC = (): ReactElement => {
   const [tasks, setTasks] = useState<ITaskResponse[]>([]);
@@ -59,6 +53,12 @@ const Tasks: FC = (): ReactElement => {
     setDeleteTargetId(taskId);
   };
 
+  // 削除キャンセルもしくは削除完了後の処理
+  const closeModal = () => {
+    setOpen(false);
+    setDeleteTargetId(null);
+  };
+
   // タスクを削除する際に動作する関数
   const handleDelete = async () => {
     if (!deleteTargetId) return;
@@ -81,8 +81,7 @@ const Tasks: FC = (): ReactElement => {
           });
         },
         onSettled: () => {
-          setOpen(false);
-          setDeleteTargetId(null);
+          closeModal();
         },
       }
     );
@@ -115,7 +114,7 @@ const Tasks: FC = (): ReactElement => {
           <CustomizedSnackBar property={property} handleClose={handleClose} />
           <CustomizedModal
             open={open}
-            setOpen={setOpen}
+            closeModal={closeModal}
             handleDelete={handleDelete}
           />
           <div className="header">
@@ -129,12 +128,7 @@ const Tasks: FC = (): ReactElement => {
               {onlyPending ? "全て表示" : "未完了のみ表示"}
             </span>
           </div>
-          <motion.div
-            className="tasks-container"
-            variants={containerVariants}
-            animate="visible"
-            initial="hidden"
-          >
+          <div className="tasks-container">
             <div className="tasks-header">
               <span className="tasks-title">今日のタスク</span>
               <IconButton color="primary" className="tasks-button">
@@ -160,7 +154,7 @@ const Tasks: FC = (): ReactElement => {
                   />
                 ))}
             </AnimatePresence>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>

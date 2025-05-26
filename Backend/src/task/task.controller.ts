@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { injectable } from "inversify";
-import { ITask, IUpdateTask } from "./task.interface";
+import { ITask, ITaskWithID, IUpdateTask } from "./task.interface";
 import { matchedData } from "express-validator";
 import { Task } from "../models/task.model";
 import { Types } from "mongoose";
+import dayjs from "dayjs";
 
 @injectable()
 export default class TaskController {
@@ -33,7 +34,6 @@ export default class TaskController {
         userId: req.user.id,
         date: new Date().toLocaleDateString(),
       }).select(["_id", "category", "description", "status"]);
-      console.log(tasks);
       res.status(200).json({ tasks });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -43,6 +43,21 @@ export default class TaskController {
   // 全てのタスクを取得時の処理
   public async getAllTasks(req: Request, res: Response) {
     try {
+      const tasks = await Task.find({
+        userId: req.user.id,
+      }).select(["_id", "category", "description", "status", "date"]);
+
+      // 各taskの日付により分類する
+      const tasksByDate: Record<string, ITaskWithID[]> = {};
+      for (let task of tasks) {
+        const day = dayjs(task.date).format("YYYY-MM-DD");
+        if (!(day in tasksByDate)) {
+          tasksByDate[day] = [];
+        }
+        tasksByDate[day].push(task);
+      }
+
+      res.status(200).json({ tasks: tasksByDate });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

@@ -4,17 +4,17 @@ import "./Modal.scss";
 
 interface IProp {
   open: boolean;
-  setOpen: (open: boolean) => void;
+  closeModal: () => void;
   handleDelete: () => void;
 }
 
 const CustomizedModal: FC<IProp> = ({
   open,
-  setOpen,
+  closeModal,
   handleDelete,
 }): ReactElement => {
   return (
-    <Modal open={open} onClose={() => setOpen(false)}>
+    <Modal open={open} onClose={closeModal}>
       <Box className="modalbox">
         <Typography className="modalmessage">タスクを削除しますか？</Typography>
         <Button
@@ -25,11 +25,7 @@ const CustomizedModal: FC<IProp> = ({
         >
           削除
         </Button>
-        <Button
-          variant="contained"
-          className="modalbtn"
-          onClick={() => setOpen(false)}
-        >
+        <Button variant="contained" className="modalbtn" onClick={closeModal}>
           キャンセル
         </Button>
       </Box>
