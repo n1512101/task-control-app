@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import dayjs, { Dayjs } from "dayjs";
+import { FC, ReactElement, useEffect, useState } from "react";
+import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import { AnimatePresence } from "framer-motion";
 import Button from "@mui/material/Button";
@@ -13,15 +13,38 @@ import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import CustomizedModal from "../Modal/Modal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import useDeleteTask from "../../hooks/useDeleteTask.hook";
-import "./AllTasks.scss";
 import TaskCard from "../TaskCard/TaskCard";
+import "./AllTasks.scss";
+
+interface CommonButtonProps {
+  label: string;
+  onClick: () => void;
+}
+
+const CommonButton: FC<CommonButtonProps> = ({
+  label,
+  onClick,
+}): ReactElement => (
+  <Button
+    variant="contained"
+    onClick={onClick}
+    sx={{
+      fontSize: {
+        xs: "12px",
+        sm: "14px",
+      },
+    }}
+  >
+    {label}
+  </Button>
+);
 
 // tasksの型
 type ITasks = Record<string, ITaskResponse[]>;
 
-const AllTasks = () => {
+const AllTasks: FC = (): ReactElement => {
   // カレンダーの日付
-  const [value, setValue] = useState<Dayjs | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [openCalendar, setOpenCalendar] = useState<boolean>(false);
   const [tasks, setTasks] = useState<ITasks>({});
   // snackbarに渡すプロパティー
@@ -69,7 +92,15 @@ const AllTasks = () => {
       { path: "/task", id: deleteTargetId },
       {
         onSuccess: (response) => {
-          // setTasks(tasks.filter((task) => task._id !== deleteTargetId));
+          setTasks((prev: ITasks) => {
+            const newTasks: typeof prev = {};
+            for (const date in prev) {
+              newTasks[date] = prev[date].filter(
+                (task) => task._id !== deleteTargetId
+              );
+            }
+            return newTasks;
+          });
           setProperty({
             open: true,
             message: response,
@@ -95,21 +126,16 @@ const AllTasks = () => {
     taskId: string,
     newStatus: ITaskResponse["status"]
   ) => {
-    // setTasks((prev) =>
-    //   prev.map((task) =>
-    //     task._id === taskId ? { ...task, status: newStatus } : task
-    //   )
-    // );
-    for (const date in tasks) {
-      setTasks((prev) => {
-        const updatedTasks: typeof prev = {};
-
-        return updatedTasks;
-      });
-    }
+    setTasks((prev: ITasks) => {
+      const updateTasks: typeof prev = {};
+      for (const date in prev) {
+        updateTasks[date] = prev[date].map((task) =>
+          task._id === taskId ? { ...task, status: newStatus } : task
+        );
+      }
+      return updateTasks;
+    });
   };
-
-  // console.log(value?.toDate());
 
   // タスクの日付を取り出す
   const tasksDate = Object.keys(tasks);
@@ -135,9 +161,10 @@ const AllTasks = () => {
           {openCalendar && (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DateCalendar
-                value={value}
                 minDate={dayjs().add(-3, "month")} // 3ヶ月前まで選択可能
-                onChange={(newValue) => setValue(newValue)}
+                onChange={(newDate) =>
+                  setSelectedDate(dayjs(newDate?.toDate()).format("YYYY-MM-DD"))
+                }
                 className="all-tasks-calendar"
                 sx={{
                   "& .MuiButtonBase-root": {
@@ -159,30 +186,14 @@ const AllTasks = () => {
           )}
           <div className="all-tasks-header">
             <div className="left">
-              <Button
-                variant="contained"
-                onClick={() => setValue(null)}
-                sx={{
-                  fontSize: {
-                    xs: "12px",
-                    sm: "14px",
-                  },
-                }}
-              >
-                全てのタスク
-              </Button>
-              <Button
-                variant="contained"
+              <CommonButton
+                label="全てのタスク"
+                onClick={() => setSelectedDate(null)}
+              />
+              <CommonButton
+                label="日付を選択"
                 onClick={() => setOpenCalendar(true)}
-                sx={{
-                  fontSize: {
-                    xs: "12px",
-                    sm: "14px",
-                  },
-                }}
-              >
-                日付を選択
-              </Button>
+              />
             </div>
             <span
               className="right"
@@ -191,25 +202,34 @@ const AllTasks = () => {
               {onlyPending ? "全て表示" : "未完了のみ表示"}
             </span>
           </div>
-          {tasksDate.sort().map((date: string) => (
-            <div className="all-tasks-container" key={date}>
-              <div className="all-tasks-date">
-                {dayjs(date).locale("ja").format("YYYY年MM月DD日 (ddd)")}
+          {tasksDate
+            .filter((date: string) =>
+              selectedDate ? date === selectedDate : true
+            )
+            .sort()
+            .map((date: string) => (
+              <div className="all-tasks-container" key={date}>
+                <div className="all-tasks-date">
+                  {dayjs(date).locale("ja").format("YYYY年MM月DD日 (ddd)")}
+                </div>
+                <AnimatePresence>
+                  {tasks[date]
+                    .filter((task) =>
+                      onlyPending ? task.status === "pending" : true
+                    )
+                    .map((task: ITaskResponse) => (
+                      <TaskCard
+                        task={task}
+                        key={task._id}
+                        setProperty={setProperty}
+                        onRequestDelete={openModal}
+                        api="/task"
+                        handleUpdateStatus={handleUpdateStatus}
+                      />
+                    ))}
+                </AnimatePresence>
               </div>
-              <AnimatePresence>
-                {tasks[date].map((task: ITaskResponse) => (
-                  <TaskCard
-                    task={task}
-                    key={task._id}
-                    setProperty={setProperty}
-                    onRequestDelete={openModal}
-                    api="/task"
-                    handleUpdateStatus={handleUpdateStatus}
-                  />
-                ))}
-              </AnimatePresence>
-            </div>
-          ))}
+            ))}
         </div>
       )}
     </div>
