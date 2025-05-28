@@ -110,7 +110,7 @@ const Tasks: FC = (): ReactElement => {
         </div>
       )}
       {isSuccess && (
-        <div className="content">
+        <div className="tasks-content">
           <CustomizedSnackBar property={property} handleClose={handleClose} />
           <CustomizedModal
             open={open}

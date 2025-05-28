@@ -68,9 +68,25 @@ export default class TaskController {
     try {
       const { _id, description, status } = req.body;
       // 更新対象フィールド
-      const updateFields: Pick<IUpdateTask, "description" | "status"> = {};
+      const updateFields: Pick<IUpdateTask, "description" | "status"> & {
+        completedAt?: string | null;
+        nextReminderAt?: string | null;
+        reminderCount?: number;
+      } = {};
       if (description !== undefined) updateFields.description = description;
-      if (status !== undefined) updateFields.status = status;
+      if (status !== undefined) {
+        updateFields.status = status;
+        if (status === "done") {
+          updateFields.completedAt = dayjs().format("YYYY-MM-DD");
+          updateFields.nextReminderAt = dayjs()
+            .add(1, "day")
+            .format("YYYY-MM-DD");
+        } else {
+          updateFields.completedAt = null;
+          updateFields.nextReminderAt = null;
+          updateFields.reminderCount = 0;
+        }
+      }
 
       if (Object.keys(updateFields).length === 0) {
         return res

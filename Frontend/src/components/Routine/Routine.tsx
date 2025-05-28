@@ -140,7 +140,7 @@ const Routine: FC = (): ReactElement => {
         </div>
       )}
       {isSuccess && (
-        <div className="content">
+        <div className="routine-content">
           <CustomizedSnackBar property={property} handleClose={handleClose} />
           <CustomizedModal
             open={open}
