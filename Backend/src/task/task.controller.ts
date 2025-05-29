@@ -66,7 +66,7 @@ export default class TaskController {
   // タスクを更新する際の処理
   public async updateTask(req: Request<{}, {}, IUpdateTask>, res: Response) {
     try {
-      const { _id, description, status } = req.body;
+      const { _id, description, status, category } = req.body;
       // 更新対象フィールド
       const updateFields: Pick<IUpdateTask, "description" | "status"> & {
         completedAt?: string | null;
@@ -78,13 +78,17 @@ export default class TaskController {
         updateFields.status = status;
         if (status === "done") {
           updateFields.completedAt = dayjs().format("YYYY-MM-DD");
-          updateFields.nextReminderAt = dayjs()
-            .add(1, "day")
-            .format("YYYY-MM-DD");
+          if (category === "study") {
+            updateFields.nextReminderAt = dayjs()
+              .add(1, "day")
+              .format("YYYY-MM-DD");
+          }
         } else {
           updateFields.completedAt = null;
-          updateFields.nextReminderAt = null;
-          updateFields.reminderCount = 0;
+          if (category === "study") {
+            updateFields.nextReminderAt = null;
+            updateFields.reminderCount = 0;
+          }
         }
       }
 

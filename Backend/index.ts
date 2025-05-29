@@ -5,6 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dbConnect from "./src/config/dbConnect";
 import addRoutes from "./src/config/routes.config";
+import reviewReminders from "./src/mailer/reminder";
 
 // データベース接続
 dbConnect();
@@ -23,6 +24,8 @@ app.use(
 
 // appにrouterを定義する
 addRoutes(app);
+
+reviewReminders();
 
 app.listen(port, () => {
   console.log("Server is running.");

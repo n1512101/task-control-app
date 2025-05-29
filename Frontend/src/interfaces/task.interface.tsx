@@ -30,4 +30,5 @@ export interface IUpdateTask {
   _id: string;
   description?: string;
   status?: "pending" | "done";
+  category?: ICategory;
 }

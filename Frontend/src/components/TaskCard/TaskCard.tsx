@@ -72,7 +72,11 @@ const TaskCard: FC<IProps> = ({
       mutate(
         {
           path: api,
-          task: { _id: task._id, status: newDone ? "done" : "pending" },
+          task: {
+            _id: task._id,
+            status: newDone ? "done" : "pending",
+            category: task.category,
+          },
         },
         {
           onError: (error) => {
