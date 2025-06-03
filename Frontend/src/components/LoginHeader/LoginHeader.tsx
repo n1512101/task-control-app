@@ -3,7 +3,7 @@ import {
   DarkModeContext,
   DarkModeContextType,
 } from "../../context/DarkModeContext";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import "./LoginHeader.scss";
@@ -11,8 +11,6 @@ import "./LoginHeader.scss";
 const LoginHeader: FC = (): ReactElement => {
   // ダークモード切り替え用
   const { mode, toggle } = useContext<DarkModeContextType>(DarkModeContext);
-
-  const navigate: NavigateFunction = useNavigate();
 
   return (
     <div className="loginHeader">
@@ -25,8 +23,12 @@ const LoginHeader: FC = (): ReactElement => {
         )}
       </div>
       <div className="right">
-        <span onClick={() => navigate("/login")}>ログイン</span>
-        <span onClick={() => navigate("/signup")}>サインアップ</span>
+        <Link className="link" to="/login">
+          ログイン
+        </Link>
+        <Link className="link" to="/signup">
+          サインアップ
+        </Link>
       </div>
     </div>
   );

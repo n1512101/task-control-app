@@ -161,7 +161,7 @@ const Routine: FC = (): ReactElement => {
           {/* 週ごとのルーティンコンテナ */}
           <div className="routine-container">
             <div className="routine-header">
-              <span className="routine-title">今週のルーティン</span>
+              <span className="routine-title">毎週のルーティン</span>
               <IconButton color="primary" className="routine-button">
                 <AddCircleIcon
                   fontSize="large"
@@ -189,7 +189,7 @@ const Routine: FC = (): ReactElement => {
           {/* 日ごとのルーティンコンテナ */}
           <div className="routine-container">
             <div className="routine-header">
-              <span className="routine-title">今日のルーティン</span>
+              <span className="routine-title">毎日のルーティン</span>
               <IconButton color="primary" className="routine-button">
                 <AddCircleIcon
                   fontSize="large"

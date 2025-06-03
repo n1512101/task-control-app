@@ -26,8 +26,9 @@
     display: flex;
     gap: 30px;
     align-items: center;
-    span {
-      cursor: pointer;
+    .link {
+      color: var(--base-color);
+      text-decoration: none;
       &:hover {
         color: #aaa;
       }

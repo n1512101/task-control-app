@@ -202,34 +202,39 @@ const AllTasks: FC = (): ReactElement => {
               {onlyPending ? "全て表示" : "未完了のみ表示"}
             </span>
           </div>
-          {tasksDate
-            .filter((date: string) =>
-              selectedDate ? date === selectedDate : true
-            )
-            .sort()
-            .map((date: string) => (
-              <div className="all-tasks-container" key={date}>
-                <div className="all-tasks-date">
-                  {dayjs(date).locale("ja").format("YYYY年MM月DD日 (ddd)")}
+          {tasksDate.length === 0 ||
+          (selectedDate && !tasksDate.includes(selectedDate)) ? (
+            <div className="no-task">タスクがありません</div>
+          ) : (
+            tasksDate
+              .filter((date: string) =>
+                selectedDate ? date === selectedDate : true
+              )
+              .sort()
+              .map((date: string) => (
+                <div className="all-tasks-container" key={date}>
+                  <div className="all-tasks-date">
+                    {dayjs(date).locale("ja").format("YYYY年MM月DD日 (ddd)")}
+                  </div>
+                  <AnimatePresence>
+                    {tasks[date]
+                      .filter((task) =>
+                        onlyPending ? task.status === "pending" : true
+                      )
+                      .map((task: ITaskResponse) => (
+                        <TaskCard
+                          task={task}
+                          key={task._id}
+                          setProperty={setProperty}
+                          onRequestDelete={openModal}
+                          api="/task"
+                          handleUpdateStatus={handleUpdateStatus}
+                        />
+                      ))}
+                  </AnimatePresence>
                 </div>
-                <AnimatePresence>
-                  {tasks[date]
-                    .filter((task) =>
-                      onlyPending ? task.status === "pending" : true
-                    )
-                    .map((task: ITaskResponse) => (
-                      <TaskCard
-                        task={task}
-                        key={task._id}
-                        setProperty={setProperty}
-                        onRequestDelete={openModal}
-                        api="/task"
-                        handleUpdateStatus={handleUpdateStatus}
-                      />
-                    ))}
-                </AnimatePresence>
-              </div>
-            ))}
+              ))
+          )}
         </div>
       )}
     </div>

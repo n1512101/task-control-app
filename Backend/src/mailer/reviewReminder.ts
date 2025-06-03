@@ -62,11 +62,31 @@ async function processUserTasks(
     const message = buildReminderMessage(userTasks);
     // ユーザにメール送信
     await sendMail(user.email, "復習をしませんか？", message);
+
+    // 各タスクの更新内容を計算する
+    const bulkOperations = userTasks.map((task) => {
+      let daysToAdd = 1;
+      if (task.reminderCount === 1) {
+        daysToAdd = 3;
+      } else if (task.reminderCount === 2) {
+        daysToAdd = 7;
+      } else if (task.reminderCount === 3) {
+        daysToAdd = 10;
+      }
+      const nextReminderAt = dayjs().add(daysToAdd, "day").format("YYYY-MM-DD");
+
+      return {
+        updateOne: {
+          filter: { _id: task._id },
+          update: {
+            $inc: { reminderCount: 1 },
+            $set: { nextReminderAt },
+          },
+        },
+      };
+    });
     // メール送信回数reminderCountと次回のリマインダー日付nextReminderAtを更新
-    await Task.updateMany(
-      { _id: { $in: userTasks.map((task) => task._id) } },
-      { $inc: { reminderCount: 1 } }
-    );
+    await Task.bulkWrite(bulkOperations);
   } catch (userErr) {
     console.error(`ユーザ ${userId} の処理中にエラー:`, userErr);
   }
@@ -107,7 +127,7 @@ async function reviewReminders() {
 
 // 毎日のUTC時間の23時(日本時間8時)に実行する
 function scheduledReviewReminders() {
-  cron.schedule("0 29 13 * * *", () => {
+  cron.schedule("0 0 23 * * *", () => {
     reviewReminders();
   });
 }
