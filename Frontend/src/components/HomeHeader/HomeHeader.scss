@@ -21,6 +21,17 @@
     }
     .icon {
       cursor: pointer;
+      box-sizing: content-box;
+      padding: 0.2rem;
+      border-radius: 50%;
+      background-color: var(--icon-background);
+      transition: transform 0.3s ease;
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+    .icon.darkMode-icon {
+      color: var(--darkModeIcon-color);
     }
   }
   .right {

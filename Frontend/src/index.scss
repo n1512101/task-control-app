@@ -14,7 +14,9 @@
   --button-color: rgba(135, 207, 235, 0.7);
   --hover-button-color: rgba(135, 207, 235, 1);
   --paper-background: #f7f7f7;
-  --icon-color: rgb(149, 157, 169);
+  --deleteIcon-color: rgb(149, 157, 169);
+  --darkModeIcon-color: #6b7280;
+  --icon-background: rgba(0, 0, 0, 0.1);
   --placeholder-color: rgba(106, 106, 106, 0.8);
   --error-message-background: #fef9c3;
 }
@@ -27,7 +29,7 @@
   --second-background: #494848;
   --third-background: #1f2937;
   --fourth-background: #134e4a;
-  --header-background: rgb(30, 30, 30);
+  --header-background: rgba(38, 37, 73, 0.95);
   --input-background: #888;
   --border-color: #444;
   --title-color: #87ceeb;
@@ -35,7 +37,9 @@
   --button-color: rgba(38, 83, 199, 0.7);
   --hover-button-color: rgba(38, 83, 199, 1);
   --paper-background: #26384a;
-  --icon-color: rgb(170, 170, 170);
+  --deleteIcon-color: rgb(170, 170, 170);
+  --darkModeIcon-color: #fbbf24;
+  --icon-background: rgba(255, 255, 255, 0.1);
   --placeholder-color: rgba(230, 230, 230, 0.9);
   --error-message-background: rgba(254, 249, 195, 0.8);
 }

@@ -51,9 +51,9 @@ const HomeHeader: FC<PropsType> = ({ open, setOpen }): ReactElement => {
           <MenuRoundedIcon className="icon" onClick={() => setOpen(true)} />
         )}
         {mode === "dark" ? (
-          <LightModeIcon className="icon" onClick={toggle} />
+          <LightModeIcon className="icon darkMode-icon" onClick={toggle} />
         ) : (
-          <DarkModeIcon className="icon" onClick={toggle} />
+          <DarkModeIcon className="icon darkMode-icon" onClick={toggle} />
         )}
       </div>
       <div className="right">
