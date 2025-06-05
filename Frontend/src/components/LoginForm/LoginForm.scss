@@ -6,7 +6,45 @@
   justify-content: center;
   align-items: center;
   gap: 30px;
-  background-color: var(--base-background);
+  background: var(--base-background);
+  position: relative;
+  .floating-shapes {
+    position: absolute;
+    pointer-events: none;
+    inset: 0;
+    overflow: hidden;
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: var(--floating-shape-color);
+    }
+    &::before {
+      width: 200px;
+      height: 200px;
+      top: 10%;
+      left: -5%;
+      animation: float 6s ease-in-out infinite;
+    }
+    &::after {
+      width: 150px;
+      height: 150px;
+      bottom: 10%;
+      right: -5%;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% {
+      }
+      50% {
+        transform: translateY(-20px) rotate(180deg);
+      }
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+    }
+  }
   .emailForm,
   .passwordForm {
     width: 35%;
@@ -55,6 +93,16 @@
   @media (max-width: 480px) {
     font-size: 14px;
     gap: 35px;
+    .floating-shapes {
+      &::before {
+        width: 100px;
+        height: 100px;
+      }
+      &::after {
+        width: 80px;
+        height: 80px;
+      }
+    }
     .emailForm,
     .passwordForm {
       width: 80%;

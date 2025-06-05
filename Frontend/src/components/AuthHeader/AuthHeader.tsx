@@ -6,14 +6,14 @@ import {
 import { Link } from "react-router-dom";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import "./LoginHeader.scss";
+import "./AuthHeader.scss";
 
-const LoginHeader: FC = (): ReactElement => {
+const AuthHeader: FC = (): ReactElement => {
   // ダークモード切り替え用
   const { mode, toggle } = useContext<DarkModeContextType>(DarkModeContext);
 
   return (
-    <div className="loginHeader">
+    <div className="authHeader">
       <div className="left">
         <span className="title">タスク管理アプリ</span>
         {mode === "dark" ? (
@@ -34,4 +34,4 @@ const LoginHeader: FC = (): ReactElement => {
   );
 };
 
-export default LoginHeader;
+export default AuthHeader;

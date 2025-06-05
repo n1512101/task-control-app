@@ -1,8 +1,9 @@
-.loginHeader {
+.authHeader {
   width: 100%;
   min-width: 500px;
   height: 60px;
   position: fixed;
+  z-index: 15;
   top: 0;
   left: 0;
   display: flex;

@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Login from "../pages/Login/Login";
 import Signup from "../pages/Signup/Signup";
 import Home from "../pages/Home/Home";
 import RequireAuth from "../components/RequireAuth/RequireAuth";
@@ -7,13 +6,14 @@ import Tasks from "../components/Tasks/Tasks";
 import Routine from "../components/Routine/Routine";
 import AllTasks from "../components/AllTasks/AllTasks";
 import CreateTask from "../components/CreateTask/CreateTask";
+import Auth from "../pages/Auth/Auth";
 
 // ルートパス設定
 const router = createBrowserRouter(
   [
     {
-      path: "/login",
-      element: <Login />,
+      path: "/auth",
+      element: <Auth />,
     },
     {
       path: "/signup",

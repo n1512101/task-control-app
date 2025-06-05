@@ -8,7 +8,8 @@ import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import IProperty from "../../interfaces/snackbarProperty.interface";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
-import "./LoginForm.scss";
+import { Zap } from "lucide-react";
+import "./AuthPage.scss";
 
 // スキーマ定義
 const schema = z.object({
@@ -22,7 +23,7 @@ const schema = z.object({
 });
 type Schema = z.infer<typeof schema>;
 
-const LoginForm: FC = (): ReactElement => {
+const AuthPage: FC = (): ReactElement => {
   // snackbarに渡すプロパティー
   const [property, setProperty] = useState<IProperty>({
     open: false,
@@ -70,7 +71,7 @@ const LoginForm: FC = (): ReactElement => {
   return (
     <>
       <CustomizedSnackBar handleClose={handleClose} property={property} />
-      <form className="loginForm" onSubmit={handleSubmit(onSubmit)}>
+      {/* <form className="authForm" onSubmit={handleSubmit(onSubmit)}>
         <div className="floating-shapes"></div>
         <div className="emailForm">
           <div>
@@ -93,9 +94,19 @@ const LoginForm: FC = (): ReactElement => {
         <CustomizedButton className="loginBtn" type="submit">
           ログイン
         </CustomizedButton>
-      </form>
+      </form> */}
+      <div className="auth-container">
+        <div className="floating-shapes"></div>
+        <div className="left-section">
+          <div className="left-section-badge">
+            <Zap size={18} />
+            リマインダー付きタスク管理
+          </div>
+        </div>
+        <div className="right-section"></div>
+      </div>
     </>
   );
 };
 
-export default LoginForm;
+export default AuthPage;
