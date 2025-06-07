@@ -1,5 +1,6 @@
 :root[data-theme="light"] {
   --base-color: #101010;
+  --sub-color: #6b7280;
   --second-color: #0d9488;
   --third-color: rgb(69, 69, 233);
   --fourth-color: #4f46e5;
@@ -12,28 +13,44 @@
   --second-background: rgb(235, 235, 235);
   --third-background: #fff;
   --fourth-background: #e6f7f5;
+  --badge-background: linear-gradient(
+    45deg,
+    rgba(79, 70, 229, 0.1),
+    rgba(168, 85, 247, 0.1)
+  );
   --header-background: rgb(245, 247, 254);
-  --input-background: #f9fafb;
+  --input-background: #fff;
+  --input-border: 1px solid rgba(209, 213, 219, 1);
+  --focus-input-border: 1px solid #4f46e5;
+  --input-color: #1f2937;
+  --input-shadow: 0 10px 25px rgba(79, 70, 229, 0.2);
   --border-color: rgba(0, 0, 0, 0.05);
+  --secondary-border-color: rgba(79, 70, 229, 0.3);
   --title-color: #7d7d7d;
   --shadow-color: rgba(0, 0, 0, 0.2);
   --button-color: rgba(135, 207, 235, 0.7);
+  --secondary-button-color: linear-gradient(45deg, #4f46e5, #a855f7);
   --hover-button-color: rgba(135, 207, 235, 1);
   --paper-background: #f7f7f7;
+  --card-background: rgba(255, 255, 255, 0.7);
+  --card-border: 1px solid rgba(255, 255, 255, 0.3);
+  --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   --deleteIcon-color: rgb(149, 157, 169);
   --darkModeIcon-color: #6b7280;
   --icon-background: rgba(0, 0, 0, 0.1);
-  --placeholder-color: rgba(106, 106, 106, 0.8);
+  --placeholder-color: #9ca3af;
   --error-message-background: #fef9c3;
   --floating-shape-color: linear-gradient(
     45deg,
     rgba(79, 70, 229, 0.1),
     rgba(168, 85, 247, 0.1)
   );
+  --form-shadow: 0 15px 50px rgba(0, 0, 0, 0.1);
 }
 
 :root[data-theme="dark"] {
   --base-color: #efefef;
+  --sub-color: #cbd5e1;
   --second-color: #5eead4;
   --third-color: rgb(135, 206, 235);
   --fourth-color: #a855f7;
@@ -47,23 +64,38 @@
   --third-background: #1f2937;
   --fourth-background: #134e4a;
   --header-background: rgba(38, 37, 73, 0.95);
-  --input-background: #888;
+  --badge-background: linear-gradient(
+    45deg,
+    rgba(168, 85, 247, 0.2),
+    rgba(59, 130, 246, 0.2)
+  );
+  --input-background: rgba(255, 255, 255, 0.1);
+  --input-border: 1px solid rgba(255, 255, 255, 0.2);
+  --focus-input-border: 1px solid #a855f7;
+  --input-color: #fff;
+  --input-shadow: 0 10px 25px rgba(168, 85, 247, 0.2);
   --border-color: #444;
+  --secondary-border-color: rgba(168, 85, 247, 0.3);
   --title-color: #87ceeb;
   --shadow-color: rgba(255, 255, 255, 0.2);
   --button-color: rgba(38, 83, 199, 0.7);
+  --secondary-button-color: linear-gradient(45deg, #a855f7, #3b82f6);
   --hover-button-color: rgba(38, 83, 199, 1);
   --paper-background: #26384a;
+  --card-background: rgba(255, 255, 255, 0.05);
+  --card-border: 1px solid rgba(255, 255, 255, 0.1);
+  --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   --deleteIcon-color: rgb(170, 170, 170);
   --darkModeIcon-color: #fbbf24;
   --icon-background: rgba(255, 255, 255, 0.1);
-  --placeholder-color: rgba(230, 230, 230, 0.9);
+  --placeholder-color: rgba(255, 255, 255, 0.5);
   --error-message-background: rgba(254, 249, 195, 0.8);
   --floating-shape-color: linear-gradient(
     45deg,
     rgba(168, 85, 247, 0.1),
     rgba(59, 130, 246, 0.1)
   );
+  --form-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
 }
 
 :root {

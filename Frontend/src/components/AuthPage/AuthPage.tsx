@@ -1,14 +1,14 @@
 import { FC, ReactElement, useContext, useState } from "react";
 import z from "zod";
 import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useLogin from "../../hooks/useLogin.hook";
 import { AuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import IProperty from "../../interfaces/snackbarProperty.interface";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
-import { Zap } from "lucide-react";
+import { Bell, Calendar, Eye, EyeOff, FileCheck, Zap } from "lucide-react";
 import "./AuthPage.scss";
 
 // スキーマ定義
@@ -23,6 +23,25 @@ const schema = z.object({
 });
 type Schema = z.infer<typeof schema>;
 
+// アプリ紹介cardの内容
+const features = [
+  {
+    icon: <FileCheck />,
+    title: "タスク管理",
+    description: "直感的なインターフェースでタスクを簡単に作成・管理",
+  },
+  {
+    icon: <Calendar />,
+    title: "ルーティン管理",
+    description: "日々のルーティンを簡単に設定・管理",
+  },
+  {
+    icon: <Bell />,
+    title: "リマインダー",
+    description: "学習した内容を忘れない為の復習リマインダー機能",
+  },
+];
+
 const AuthPage: FC = (): ReactElement => {
   // snackbarに渡すプロパティー
   const [property, setProperty] = useState<IProperty>({
@@ -30,6 +49,7 @@ const AuthPage: FC = (): ReactElement => {
     message: "",
     severity: "warning",
   });
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   // snackbarを閉じる関数
   const handleClose = () => {
@@ -102,8 +122,57 @@ const AuthPage: FC = (): ReactElement => {
             <Zap size={18} />
             リマインダー付きタスク管理
           </div>
+          <div className="left-section-title">タスクを簡単に管理</div>
+          <div className="left-section-description">
+            直感的なインターフェースで、タスクの追加や編集が簡単に行えます。
+          </div>
+          <div className="feature-grid">
+            {features.map((feature, index) => (
+              <div className="feature-card" key={index}>
+                <div className="feature-icon">{feature.icon}</div>
+                <div className="feature-title">{feature.title}</div>
+                <div className="feature-description">{feature.description}</div>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="right-section"></div>
+        <div className="right-section">
+          <div className="login-container">
+            <div className="login-title">ログインしてタスクを管理しよう！</div>
+            <form className="login-form">
+              <div className="form-group">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-input"
+                  placeholder="your-email@example.com"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Password</label>
+                <div className="password-container">
+                  <input
+                    type="password"
+                    className="form-input"
+                    placeholder="••••••••"
+                  />
+                  <button
+                    className="password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    type="button"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+              </div>
+              <button className="form-button">ログイン</button>
+            </form>
+            <div className="signup-link">
+              <span>アカウントをお持ちでないですか？ </span>
+              <span className="signup-link-text">サインアップ</span>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );
