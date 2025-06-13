@@ -1,12 +1,10 @@
-import { FC, ReactElement, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { ReactElement, useState } from "react";
 import z from "zod";
+import { Eye, EyeOff } from "lucide-react";
 import useSignup from "../../hooks/useSignup.hook";
-import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
-import IProperty from "../../interfaces/snackbarProperty.interface";
-import CustomizedButton from "../CustomizedButton/CustomizedButton";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import "./SignupForm.scss";
 
 // スキーマ定義
@@ -34,25 +32,20 @@ const schema = z
   });
 type Schema = z.infer<typeof schema>;
 
-const SignupForm: FC = (): ReactElement => {
-  // snackbarに渡すプロパティー
-  const [property, setProperty] = useState<IProperty>({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+const SignupForm = ({
+  isFlipped,
+  setIsAnimating,
+  handleFlip,
+  setProperty,
+}: {
+  isFlipped: boolean;
+  setIsAnimating: (isAnimating: boolean) => void;
+  handleFlip: () => void;
+  setProperty: (property: ISnackbarProperty) => void;
+}): ReactElement => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const { mutate } = useSignup();
-  const navigate = useNavigate();
-
-  // snackbarを閉じる関数
-  const handleClose = () => {
-    setProperty({ ...property, open: false });
-    // サインアップ成功の場合、ログインページへ遷移する
-    if (property.severity === "success") {
-      navigate("/login");
-    }
-  };
 
   // react-hook-form
   const {
@@ -71,6 +64,7 @@ const SignupForm: FC = (): ReactElement => {
           message: data.message,
           severity: "success",
         });
+        handleFlip(); // ログインフォームにもどる
       },
       // サインアップ失敗の場合
       onError: (error) => {
@@ -84,58 +78,88 @@ const SignupForm: FC = (): ReactElement => {
   };
 
   return (
-    <>
-      <CustomizedSnackBar handleClose={handleClose} property={property} />
-      <form className="signupForm" onSubmit={handleSubmit(onSubmit)}>
-        <div className="emailForm">
-          <div>
-            <span>Email: </span>
-            <input {...register("email")} placeholder="メールアドレスを入力" />
-          </div>
-          <div className="errorMessage">
+    <div
+      className="signup-container"
+      style={{ transform: `rotateY(${isFlipped ? 360 : 180}deg)` }}
+      onTransitionEnd={() => setIsAnimating(false)}
+    >
+      <div className="signup-title">アカウントを作成しよう！</div>
+      <form className="signup-form" onSubmit={handleSubmit(onSubmit)}>
+        <div className="form-group">
+          <label className="form-label">Email</label>
+          <input
+            type="email"
+            className="form-input"
+            placeholder="your-email@example.com"
+            {...register("email")}
+          />
+          <div className="error-message">
             {errors.email && <span>{errors.email.message}</span>}
           </div>
         </div>
-        <div className="nameForm">
-          <div>
-            <span>Name: </span>
-            <input {...register("name")} placeholder="3-20文字を入力" />
-          </div>
-          <div className="errorMessage">
+        <div className="form-group">
+          <label className="form-label">Name</label>
+          <input
+            type="text"
+            className="form-input"
+            placeholder="Your Name"
+            {...register("name")}
+          />
+          <div className="error-message">
             {errors.name && <span>{errors.name.message}</span>}
           </div>
         </div>
-        <div className="passwordForm">
-          <div>
-            <span>Password: </span>
+        <div className="form-group">
+          <label className="form-label">Password</label>
+          <div className="password-container">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
+              className="form-input"
+              placeholder="••••••••"
               {...register("password")}
-              placeholder="6-20文字を入力"
             />
+            <button
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+              type="button"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
-          <div className="errorMessage">
+          <div className="error-message">
             {errors.password && <span>{errors.password.message}</span>}
           </div>
         </div>
-        <div className="confirmForm">
-          <div>
-            <span>Confirm: </span>
+        <div className="form-group">
+          <label className="form-label">Confirm Password</label>
+          <div className="password-container">
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
+              className="form-input"
+              placeholder="••••••••"
               {...register("confirm")}
-              placeholder="6-20文字を入力"
             />
+            <button
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+              type="button"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
-          <div className="errorMessage">
+          <div className="error-message">
             {errors.confirm && <span>{errors.confirm.message}</span>}
           </div>
         </div>
-        <CustomizedButton className="signupBtn" type="submit">
-          サインアップ
-        </CustomizedButton>
+        <button className="form-button">サインアップ</button>
       </form>
-    </>
+      <div className="login-link">
+        <span>すでにアカウントをお持ちですか？ </span>
+        <span className="login-link-text" onClick={handleFlip}>
+          ログイン
+        </span>
+      </div>
+    </div>
   );
 };
 

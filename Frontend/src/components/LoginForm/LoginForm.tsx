@@ -1,13 +1,12 @@
-import { FC, ReactElement, useContext, useState } from "react";
+import { ReactElement, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import z from "zod";
-import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useLogin from "../../hooks/useLogin.hook";
+import { Eye, EyeOff } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import IProperty from "../../interfaces/snackbarProperty.interface";
-import CustomizedButton from "../CustomizedButton/CustomizedButton";
+import useLogin from "../../hooks/useLogin.hook";
+import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import "./LoginForm.scss";
 
 // スキーマ定義
@@ -22,18 +21,18 @@ const schema = z.object({
 });
 type Schema = z.infer<typeof schema>;
 
-const LoginForm: FC = (): ReactElement => {
-  // snackbarに渡すプロパティー
-  const [property, setProperty] = useState<IProperty>({
-    open: false,
-    message: "",
-    severity: "warning",
-  });
-
-  // snackbarを閉じる関数
-  const handleClose = () => {
-    setProperty({ ...property, open: false });
-  };
+const LoginForm = ({
+  isFlipped,
+  setIsAnimating,
+  handleFlip,
+  setProperty,
+}: {
+  isFlipped: boolean;
+  setIsAnimating: (isAnimating: boolean) => void;
+  handleFlip: () => void;
+  setProperty: (property: ISnackbarProperty) => void;
+}): ReactElement => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const { mutate } = useLogin();
   const { setAccessToken } = useContext(AuthContext);
@@ -68,33 +67,55 @@ const LoginForm: FC = (): ReactElement => {
   };
 
   return (
-    <>
-      <CustomizedSnackBar handleClose={handleClose} property={property} />
-      <form className="loginForm" onSubmit={handleSubmit(onSubmit)}>
-        <div className="floating-shapes"></div>
-        <div className="emailForm">
-          <div>
-            <span>Email: </span>
-            <input {...register("email")} />
-          </div>
-          <div className="errorMessage">
+    <div
+      className="login-container"
+      style={{ transform: `rotateY(${isFlipped ? 180 : 0}deg)` }}
+      onTransitionEnd={() => setIsAnimating(false)}
+    >
+      <div className="login-title">ログインしてタスクを管理しよう！</div>
+      <form className="login-form" onSubmit={handleSubmit(onSubmit)}>
+        <div className="form-group">
+          <label className="form-label">Email</label>
+          <input
+            type="text"
+            className="form-input"
+            placeholder="your-email@example.com"
+            {...register("email")}
+          />
+          <div className="error-message">
             {errors.email && <span>{errors.email.message}</span>}
           </div>
         </div>
-        <div className="passwordForm">
-          <div>
-            <span>Password: </span>
-            <input {...register("password")} type="password" />
+        <div className="form-group">
+          <label className="form-label">Password</label>
+          <div className="password-container">
+            <input
+              type={showPassword ? "text" : "password"}
+              className="form-input"
+              placeholder="••••••••"
+              {...register("password")}
+            />
+            <button
+              className="password-toggle"
+              onClick={() => setShowPassword(!showPassword)}
+              type="button"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
-          <div className="errorMessage">
+          <div className="error-message">
             {errors.password && <span>{errors.password.message}</span>}
           </div>
         </div>
-        <CustomizedButton className="loginBtn" type="submit">
-          ログイン
-        </CustomizedButton>
+        <button className="form-button">ログイン</button>
       </form>
-    </>
+      <div className="signup-link">
+        <span>アカウントをお持ちでないですか？ </span>
+        <span className="signup-link-text" onClick={handleFlip}>
+          サインアップ
+        </span>
+      </div>
+    </div>
   );
 };
 

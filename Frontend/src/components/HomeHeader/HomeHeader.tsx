@@ -35,7 +35,7 @@ const HomeHeader: FC<PropsType> = ({ open, setOpen }): ReactElement => {
       console.log(error);
     }
     setAccessToken(null);
-    navigate("/login");
+    navigate("/auth");
   };
 
   return (
