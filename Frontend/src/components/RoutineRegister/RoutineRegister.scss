@@ -2,7 +2,8 @@
   margin: 20px;
   width: 360px;
   border-radius: 12px;
-  background-color: var(--paper-background);
+  background-color: var(--card-background);
+  border: var(--card-border);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   grid-area: 1 / 1 / 2 / 2;
@@ -95,6 +96,7 @@
         background-color: var(--input-background);
         resize: none;
         outline: none;
+        color: var(--input-color);
         &::placeholder {
           color: var(--placeholder-color);
         }

@@ -5,7 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dbConnect from "./src/config/dbConnect";
 import addRoutes from "./src/config/routes.config";
-import scheduledReviewReminders from "./src/mailer/reviewReminder";
+import scheduledReviewReminders from "./src/regularProcessing/reviewReminder";
+import initializeRoutines from "./src/regularProcessing/initializeRoutines";
 
 // データベース接続
 dbConnect();
@@ -26,6 +27,8 @@ app.use(
 addRoutes(app);
 // 定期的にリマインダーメール送信
 scheduledReviewReminders();
+// 毎日0時にルーティンを初期化する
+initializeRoutines();
 
 app.listen(port, () => {
   console.log("Server is running.");
