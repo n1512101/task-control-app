@@ -1,5 +1,4 @@
 import { createBrowserRouter } from "react-router-dom";
-import Signup from "../pages/Signup/Signup";
 import Home from "../pages/Home/Home";
 import RequireAuth from "../components/RequireAuth/RequireAuth";
 import Tasks from "../components/Tasks/Tasks";
@@ -14,10 +13,6 @@ const router = createBrowserRouter(
     {
       path: "/auth",
       element: <Auth />,
-    },
-    {
-      path: "/signup",
-      element: <Signup />,
     },
     {
       path: "/home",
