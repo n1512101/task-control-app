@@ -12,7 +12,7 @@ import initializeRoutines from "./src/regularProcessing/initializeRoutines";
 dbConnect();
 
 const app: Express = express();
-const port = process.env.SERVER_PORT;
+const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cookieParser());
