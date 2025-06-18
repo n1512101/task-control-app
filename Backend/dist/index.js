@@ -15,7 +15,7 @@ const initializeRoutines_1 = __importDefault(require("./src/regularProcessing/in
 // データベース接続
 (0, dbConnect_1.default)();
 const app = (0, express_1.default)();
-const port = process.env.SERVER_PORT;
+const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
 app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)({
@@ -29,5 +29,5 @@ app.use((0, cors_1.default)({
 // 毎日0時にルーティンを初期化する
 (0, initializeRoutines_1.default)();
 app.listen(port, () => {
-    console.log("Server is running.");
+    console.log(`Server is running on port ${port}`);
 });
