@@ -17,11 +17,11 @@ const initializeRoutines_1 = __importDefault(require("./src/regularProcessing/in
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
 app.use(express_1.default.json());
-app.use((0, cookie_parser_1.default)());
 app.use((0, cors_1.default)({
     origin: process.env.FRONT_END_URL,
     credentials: true,
 }));
+app.use((0, cookie_parser_1.default)());
 // appにrouterを定義する
 (0, routes_config_1.default)(app);
 // 定期的にリマインダーメール送信
