@@ -56,7 +56,7 @@ export default class UsersController {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
         maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
       });
 
@@ -110,7 +110,7 @@ export default class UsersController {
       res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
       });
       await RefreshToken.deleteOne({ userId: user.id });
       res.status(200).json({ message: "ログアウト成功！" });

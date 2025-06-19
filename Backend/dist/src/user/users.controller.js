@@ -57,13 +57,11 @@ let UsersController = class UsersController {
                     refreshToken,
                 });
                 yield newRefreshToken.save();
-                console.log("process.env.NODE_ENV", process.env.NODE_ENV);
-                console.log("process.env.NODE_ENV === 'production'", process.env.NODE_ENV === "production");
                 // httponly cookieにrefreshTokenを保存する
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
-                    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+                    sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
                     maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
                 });
                 res.status(200).json({ accessToken });
@@ -111,7 +109,7 @@ let UsersController = class UsersController {
                 res.clearCookie("refreshToken", {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
-                    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+                    sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
                 });
                 yield refreshToken_model_1.RefreshToken.deleteOne({ userId: user.id });
                 res.status(200).json({ message: "ログアウト成功！" });

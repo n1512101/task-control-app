@@ -54,7 +54,7 @@ let AuthRouter = class AuthRouter {
                 res.clearCookie("refreshToken", {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
-                    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+                    sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
                 });
                 yield token.deleteOne();
                 // 新しいリフレッシュトークンを発行し、保存する
@@ -67,7 +67,7 @@ let AuthRouter = class AuthRouter {
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
-                    sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+                    sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
                     maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
                 });
                 res.status(200).json({ accessToken });
