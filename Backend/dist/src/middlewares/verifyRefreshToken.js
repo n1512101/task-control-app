@@ -7,6 +7,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 // refreshTokenが有効かを確認するミドルウェア
 const verifyRefreshToken = (req, res, next) => {
     const refreshToken = req.cookies.refreshToken;
+    console.log("refreshToken:", refreshToken);
     // refreshTokenがない場合
     if (!refreshToken) {
         res.status(401).json({ message: "リフレッシュトークンが必要です" });
