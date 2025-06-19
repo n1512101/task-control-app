@@ -57,6 +57,8 @@ let UsersController = class UsersController {
                     refreshToken,
                 });
                 yield newRefreshToken.save();
+                console.log("process.env.NODE_ENV", process.env.NODE_ENV);
+                console.log("process.env.NODE_ENV === 'production'", process.env.NODE_ENV === "production");
                 // httponly cookieにrefreshTokenを保存する
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
