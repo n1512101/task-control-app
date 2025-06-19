@@ -40,12 +40,14 @@ let AuthRouter = class AuthRouter {
         // refreshToken認証API
         this.router.post("/refresh-token", verifyRefreshToken_1.default, (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log("process.env.NODE_ENV:", process.env.NODE_ENV);
                 // データベース内からユーザーを確認
                 const token = yield refreshToken_model_1.RefreshToken.findOne({
                     userId: req.user.id,
                     refreshToken: req.cookies.refreshToken,
                 });
                 if (!token) {
+                    console.log("リフレッシュトークンが見つかりません");
                     throw new Error();
                 }
                 // 新しいアクセストークンを発行する
