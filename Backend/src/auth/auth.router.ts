@@ -51,6 +51,7 @@ export default class AuthRouter {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+            domain: "onrender.com",
           });
           await token.deleteOne();
 
@@ -71,6 +72,7 @@ export default class AuthRouter {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+            domain: "onrender.com",
             maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
           });
 

@@ -57,6 +57,7 @@ export default class UsersController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        domain: "onrender.com",
         maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
       });
 
@@ -111,6 +112,7 @@ export default class UsersController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        domain: "onrender.com",
       });
       await RefreshToken.deleteOne({ userId: user.id });
       res.status(200).json({ message: "ログアウト成功！" });
