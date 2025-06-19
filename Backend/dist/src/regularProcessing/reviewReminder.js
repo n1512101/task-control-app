@@ -132,8 +132,7 @@ function reviewReminders() {
 }
 // 毎日のUTC時間の23時(日本時間8時)に実行する
 function scheduledReviewReminders() {
-    node_cron_1.default.schedule("0 25 0 * * *", () => {
-        console.log("メール送信。");
+    node_cron_1.default.schedule("0 0 23 * * *", () => {
         reviewReminders();
     });
 }

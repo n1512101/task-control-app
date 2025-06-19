@@ -50,7 +50,7 @@ export default class AuthRouter {
           res.clearCookie("refreshToken", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
           });
           await token.deleteOne();
 
@@ -70,7 +70,7 @@ export default class AuthRouter {
           res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
             maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
           });
 
