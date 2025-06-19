@@ -3,6 +3,7 @@
   min-height: calc(100vh - 60px);
   background: var(--base-background);
   display: flex;
+  justify-content: center;
   position: relative;
   .floating-shapes {
     position: absolute;
@@ -33,6 +34,7 @@
   }
   .left-section {
     flex: 1;
+    max-width: 700px;
     padding: 3rem;
     display: flex;
     flex-direction: column;
@@ -91,6 +93,7 @@
   }
   .right-section {
     flex: 1;
+    max-width: 700px;
     padding: 3rem;
     perspective: 1000px;
     display: grid;

@@ -24,7 +24,7 @@ const RequireAuth = ({ children }: { children: ReactNode }) => {
   });
 
   useEffect(() => {
-    if (isError) navigate("/login");
+    if (isError) navigate("/auth");
   }, [isError, navigate]);
 
   if (isLoading) {
