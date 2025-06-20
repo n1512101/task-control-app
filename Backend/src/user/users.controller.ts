@@ -17,8 +17,18 @@ export default class UsersController {
   private generateDeviceId(req: Request): string {
     // User-AgentとIPアドレスを組み合わせてデバイスIDを生成
     const userAgent = req.headers["user-agent"] || "";
-    const ip = req.ip || "";
-    const deviceString = `${userAgent}-${ip}`;
+
+    // IPアドレス取得
+    const ip =
+      req.ip ||
+      req.headers["x-forwarded-for"] ||
+      req.headers["x-real-ip"] ||
+      "";
+
+    // IPアドレスが配列の場合は最初の要素を使用
+    const clientIp = Array.isArray(ip) ? ip[0] : ip;
+
+    const deviceString = `${userAgent}-${clientIp}`;
     return crypto.createHash("sha256").update(deviceString).digest("hex");
   }
 
@@ -74,7 +84,6 @@ export default class UsersController {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
-        domain: "onrender.com",
         maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
       });
 
@@ -117,34 +126,65 @@ export default class UsersController {
   public async logout(req: Request, res: Response) {
     try {
       const refreshToken = req.cookies.refreshToken;
-      if (!refreshToken) throw new Error();
 
-      const user = jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET as string
-      ) as JwtPayload;
+      // リフレッシュトークンが存在しない場合は、cookieのみクリアして成功レスポンスを返す
+      if (!refreshToken) {
+        res.clearCookie("refreshToken", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        });
+        return res.status(200).json({ message: "ログアウト成功！" });
+      }
 
-      // デバイスIDを生成
-      const deviceId = this.generateDeviceId(req);
+      try {
+        const user = jwt.verify(
+          refreshToken,
+          process.env.REFRESH_TOKEN_SECRET as string
+        ) as JwtPayload;
 
-      // リフレッシュトークンを破棄する
-      res.clearCookie("refreshToken", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
-        domain: "onrender.com",
-      });
-      console.log("userId", user.id);
-      console.log("deviceId", deviceId);
-      // 特定のデバイスのリフレッシュトークンのみを削除
-      const result = await RefreshToken.deleteOne({
-        userId: user.id,
-        deviceId,
-      });
-      console.log("result", result);
-      res.status(200).json({ message: "ログアウト成功！" });
+        // デバイスIDを生成
+        const deviceId = this.generateDeviceId(req);
+
+        // リフレッシュトークンを破棄する
+        res.clearCookie("refreshToken", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        });
+
+        // 特定のデバイスのリフレッシュトークンのみを削除
+        await RefreshToken.deleteOne({
+          userId: user.id,
+          deviceId,
+        });
+
+        res.status(200).json({ message: "ログアウト成功！" });
+      } catch (jwtError) {
+        // JWT検証に失敗した場合でも、cookieはクリアする
+        console.error("JWT verification failed:", jwtError);
+        res.clearCookie("refreshToken", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        });
+        res.status(200).json({ message: "ログアウト成功！" });
+      }
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      console.error("Logout error:", error);
+      // エラーが発生しても、cookieはクリアを試行する
+      try {
+        res.clearCookie("refreshToken", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        });
+      } catch (clearCookieError) {
+        console.error("Failed to clear cookie:", clearCookieError);
+      }
+      res
+        .status(500)
+        .json({ message: "ログアウト処理中にエラーが発生しました" });
     }
   }
 }
