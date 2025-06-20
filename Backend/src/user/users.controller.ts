@@ -3,6 +3,7 @@ import { injectable } from "inversify";
 import { matchedData } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import crypto from "crypto";
 import { ILoginUser, IUser } from "./user.interface";
 import { User } from "../models/user.model";
 import { salt } from "../config/utils";
@@ -11,6 +12,15 @@ import { IRefreshToken, RefreshToken } from "../models/refreshToken.model";
 @injectable()
 export default class UsersController {
   constructor() {}
+
+  // デバイスIDを生成する関数
+  private generateDeviceId(req: Request): string {
+    // User-AgentとIPアドレスを組み合わせてデバイスIDを生成
+    const userAgent = req.headers["user-agent"] || "";
+    const ip = req.ip || "";
+    const deviceString = `${userAgent}-${ip}`;
+    return crypto.createHash("sha256").update(deviceString).digest("hex");
+  }
 
   // ログイン時の処理
   public async login(req: Request<{}, {}, ILoginUser>, res: Response) {
@@ -32,6 +42,9 @@ export default class UsersController {
         return res.status(401).json({ message: "パスワードが間違っています" });
       }
 
+      // デバイスIDを生成
+      const deviceId = this.generateDeviceId(req);
+
       // アクセストークン生成
       const accessToken = jwt.sign(
         { id: user._id },
@@ -45,10 +58,14 @@ export default class UsersController {
         { expiresIn: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) }
       );
 
+      // 既存の同じデバイスのリフレッシュトークンを削除
+      await RefreshToken.deleteOne({ userId: user._id, deviceId });
+
       // refreshTokenをデータベースに保存する
       const newRefreshToken = new RefreshToken<IRefreshToken>({
         userId: user._id,
         refreshToken,
+        deviceId,
       });
       await newRefreshToken.save();
 
@@ -106,13 +123,18 @@ export default class UsersController {
         process.env.REFRESH_TOKEN_SECRET as string
       ) as JwtPayload;
 
+      // デバイスIDを生成
+      const deviceId = this.generateDeviceId(req);
+
       // リフレッシュトークンを破棄する
       res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
       });
-      await RefreshToken.deleteOne({ userId: user.id });
+
+      // 特定のデバイスのリフレッシュトークンのみを削除
+      await RefreshToken.deleteOne({ userId: user.id, deviceId });
       res.status(200).json({ message: "ログアウト成功！" });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
