@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { injectable } from "inversify";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import verifyAccessToken from "../middlewares/verifyAccessToken";
 import verifyRefreshToken from "../middlewares/verifyRefreshToken";
 import { IRefreshToken, RefreshToken } from "../models/refreshToken.model";
@@ -12,6 +13,15 @@ export default class AuthRouter {
   constructor() {
     this.router = Router();
     this.initializeRoutes();
+  }
+
+  // デバイスIDを生成する関数
+  private generateDeviceId(req: Request): string {
+    // User-AgentとIPアドレスを組み合わせてデバイスIDを生成
+    const userAgent = req.headers["user-agent"] || "";
+    const ip = req.ip || "";
+    const deviceString = `${userAgent}-${ip}`;
+    return crypto.createHash("sha256").update(deviceString).digest("hex");
   }
 
   private initializeRoutes() {
@@ -30,10 +40,14 @@ export default class AuthRouter {
       verifyRefreshToken,
       async (req: Request, res: Response) => {
         try {
+          // デバイスIDを生成
+          const deviceId = this.generateDeviceId(req);
+
           // データベース内からユーザーを確認
           const token = await RefreshToken.findOne({
             userId: req.user.id,
             refreshToken: req.cookies.refreshToken,
+            deviceId,
           });
           if (!token) {
             throw new Error();
@@ -65,6 +79,7 @@ export default class AuthRouter {
           const newRefreshToken = new RefreshToken<IRefreshToken>({
             userId: req.user.id,
             refreshToken,
+            deviceId,
           });
           await newRefreshToken.save();
 
