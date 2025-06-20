@@ -134,9 +134,14 @@ export default class UsersController {
         sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
         domain: "onrender.com",
       });
-
+      console.log("userId", user.id);
+      console.log("deviceId", deviceId);
       // 特定のデバイスのリフレッシュトークンのみを削除
-      await RefreshToken.deleteOne({ userId: user.id, deviceId });
+      const result = await RefreshToken.deleteOne({
+        userId: user.id,
+        deviceId,
+      });
+      console.log("result", result);
       res.status(200).json({ message: "ログアウト成功！" });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
