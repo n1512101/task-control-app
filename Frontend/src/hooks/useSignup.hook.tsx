@@ -5,10 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 // サインアップする際に動作する関数
 const signupFn = async (user: IUser) => {
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BACK_API_URL}/user/signup`,
-      user
-    );
+    const response = await axios.post(`/user/signup`, user);
     return response.data;
   } catch (error: any) {
     const errorMessage =

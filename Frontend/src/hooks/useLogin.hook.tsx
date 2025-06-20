@@ -5,11 +5,9 @@ import { useMutation } from "@tanstack/react-query";
 // ログインする際に動作する関数
 const login = async (user: ILoginUser) => {
   try {
-    const response = await axios.post(
-      `${import.meta.env.VITE_BACK_API_URL}/user/login`,
-      user,
-      { withCredentials: true }
-    );
+    const response = await axios.post(`/user/login`, user, {
+      withCredentials: true,
+    });
     return response.data;
   } catch (error: any) {
     const errorMessage =
