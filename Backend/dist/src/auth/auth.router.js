@@ -37,8 +37,14 @@ let AuthRouter = class AuthRouter {
     generateDeviceId(req) {
         // User-AgentとIPアドレスを組み合わせてデバイスIDを生成
         const userAgent = req.headers["user-agent"] || "";
-        const ip = req.ip || "";
-        const deviceString = `${userAgent}-${ip}`;
+        // IPアドレス取得
+        const ip = req.ip ||
+            req.headers["x-forwarded-for"] ||
+            req.headers["x-real-ip"] ||
+            "";
+        // IPアドレスが配列の場合は最初の要素を使用
+        const clientIp = Array.isArray(ip) ? ip[0] : ip;
+        const deviceString = `${userAgent}-${clientIp}`;
         return crypto_1.default.createHash("sha256").update(deviceString).digest("hex");
     }
     initializeRoutes() {
@@ -67,7 +73,6 @@ let AuthRouter = class AuthRouter {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
                     sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
-                    domain: "onrender.com",
                 });
                 yield token.deleteOne();
                 // 新しいリフレッシュトークンを発行し、保存する
@@ -82,7 +87,6 @@ let AuthRouter = class AuthRouter {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
                     sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
-                    domain: "onrender.com",
                     maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
                 });
                 res.status(200).json({ accessToken });
