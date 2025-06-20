@@ -7,7 +7,7 @@ const useAxiosAuth = () => {
   const { accessToken, setAccessToken } = useContext(AuthContext);
 
   const instance = axios.create({
-    baseURL: "/",
+    baseURL: import.meta.env.VITE_BACK_API_URL,
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 
@@ -24,7 +24,7 @@ const useAxiosAuth = () => {
         // リフレッシュトークン認証
         try {
           const refreshResult = await axios.post(
-            `auth/refresh-token`,
+            `${import.meta.env.VITE_BACK_API_URL}/auth/refresh-token`,
             {},
             { withCredentials: true }
           );

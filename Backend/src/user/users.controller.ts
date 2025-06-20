@@ -83,7 +83,7 @@ export default class UsersController {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        sameSite: "strict",
         maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
       });
 
@@ -132,7 +132,7 @@ export default class UsersController {
         res.clearCookie("refreshToken", {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+          sameSite: "strict",
         });
         return res.status(200).json({ message: "ログアウト成功！" });
       }
@@ -150,7 +150,7 @@ export default class UsersController {
         res.clearCookie("refreshToken", {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+          sameSite: "strict",
         });
 
         // 特定のデバイスのリフレッシュトークンのみを削除
@@ -166,7 +166,7 @@ export default class UsersController {
         res.clearCookie("refreshToken", {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+          sameSite: "strict",
         });
         res.status(200).json({ message: "ログアウト成功！" });
       }
@@ -177,7 +177,7 @@ export default class UsersController {
         res.clearCookie("refreshToken", {
           httpOnly: true,
           secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+          sameSite: "strict",
         });
       } catch (clearCookieError) {
         console.error("Failed to clear cookie:", clearCookieError);

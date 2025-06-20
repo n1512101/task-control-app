@@ -81,7 +81,7 @@ let UsersController = class UsersController {
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
-                    sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                    sameSite: "strict",
                     maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
                 });
                 res.status(200).json({ accessToken });
@@ -127,7 +127,7 @@ let UsersController = class UsersController {
                     res.clearCookie("refreshToken", {
                         httpOnly: true,
                         secure: process.env.NODE_ENV === "production",
-                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                        sameSite: "strict",
                     });
                     return res.status(200).json({ message: "ログアウト成功！" });
                 }
@@ -139,7 +139,7 @@ let UsersController = class UsersController {
                     res.clearCookie("refreshToken", {
                         httpOnly: true,
                         secure: process.env.NODE_ENV === "production",
-                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                        sameSite: "strict",
                     });
                     // 特定のデバイスのリフレッシュトークンのみを削除
                     yield refreshToken_model_1.RefreshToken.deleteOne({
@@ -154,7 +154,7 @@ let UsersController = class UsersController {
                     res.clearCookie("refreshToken", {
                         httpOnly: true,
                         secure: process.env.NODE_ENV === "production",
-                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                        sameSite: "strict",
                     });
                     res.status(200).json({ message: "ログアウト成功！" });
                 }
@@ -166,7 +166,7 @@ let UsersController = class UsersController {
                     res.clearCookie("refreshToken", {
                         httpOnly: true,
                         secure: process.env.NODE_ENV === "production",
-                        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                        sameSite: "strict",
                     });
                 }
                 catch (clearCookieError) {
