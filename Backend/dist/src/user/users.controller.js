@@ -25,11 +25,20 @@ const inversify_1 = require("inversify");
 const express_validator_1 = require("express-validator");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const crypto_1 = __importDefault(require("crypto"));
 const user_model_1 = require("../models/user.model");
 const utils_1 = require("../config/utils");
 const refreshToken_model_1 = require("../models/refreshToken.model");
 let UsersController = class UsersController {
     constructor() { }
+    // デバイスIDを生成する関数
+    generateDeviceId(req) {
+        // User-AgentとIPアドレスを組み合わせてデバイスIDを生成
+        const userAgent = req.headers["user-agent"] || "";
+        const ip = req.ip || "";
+        const deviceString = `${userAgent}-${ip}`;
+        return crypto_1.default.createHash("sha256").update(deviceString).digest("hex");
+    }
     // ログイン時の処理
     login(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -47,14 +56,19 @@ let UsersController = class UsersController {
                 if (!result) {
                     return res.status(401).json({ message: "パスワードが間違っています" });
                 }
+                // デバイスIDを生成
+                const deviceId = this.generateDeviceId(req);
                 // アクセストークン生成
                 const accessToken = jsonwebtoken_1.default.sign({ id: user._id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRY) });
                 // リフレッシュトークン生成
                 const refreshToken = jsonwebtoken_1.default.sign({ id: user._id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: parseInt(process.env.REFRESH_TOKEN_EXPIRY) });
+                // 既存の同じデバイスのリフレッシュトークンを削除
+                yield refreshToken_model_1.RefreshToken.deleteOne({ userId: user._id, deviceId });
                 // refreshTokenをデータベースに保存する
                 const newRefreshToken = new refreshToken_model_1.RefreshToken({
                     userId: user._id,
                     refreshToken,
+                    deviceId,
                 });
                 yield newRefreshToken.save();
                 // httponly cookieにrefreshTokenを保存する
@@ -62,6 +76,7 @@ let UsersController = class UsersController {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
                     sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                    domain: "onrender.com",
                     maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
                 });
                 res.status(200).json({ accessToken });
@@ -105,13 +120,17 @@ let UsersController = class UsersController {
                 if (!refreshToken)
                     throw new Error();
                 const user = jsonwebtoken_1.default.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+                // デバイスIDを生成
+                const deviceId = this.generateDeviceId(req);
                 // リフレッシュトークンを破棄する
                 res.clearCookie("refreshToken", {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
                     sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                    domain: "onrender.com",
                 });
-                yield refreshToken_model_1.RefreshToken.deleteOne({ userId: user.id });
+                // 特定のデバイスのリフレッシュトークンのみを削除
+                yield refreshToken_model_1.RefreshToken.deleteOne({ userId: user.id, deviceId });
                 res.status(200).json({ message: "ログアウト成功！" });
             }
             catch (error) {

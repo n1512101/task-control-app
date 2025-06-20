@@ -13,6 +13,11 @@ const refreshTokenSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    deviceId: {
+        type: String,
+        required: true,
+        index: true,
+    },
     /* expiresでTTLの時間を指定する */
     createdAt: {
         type: Date,

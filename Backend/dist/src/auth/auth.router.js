@@ -24,6 +24,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const inversify_1 = require("inversify");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const crypto_1 = __importDefault(require("crypto"));
 const verifyAccessToken_1 = __importDefault(require("../middlewares/verifyAccessToken"));
 const verifyRefreshToken_1 = __importDefault(require("../middlewares/verifyRefreshToken"));
 const refreshToken_model_1 = require("../models/refreshToken.model");
@@ -31,6 +32,14 @@ let AuthRouter = class AuthRouter {
     constructor() {
         this.router = (0, express_1.Router)();
         this.initializeRoutes();
+    }
+    // デバイスIDを生成する関数
+    generateDeviceId(req) {
+        // User-AgentとIPアドレスを組み合わせてデバイスIDを生成
+        const userAgent = req.headers["user-agent"] || "";
+        const ip = req.ip || "";
+        const deviceString = `${userAgent}-${ip}`;
+        return crypto_1.default.createHash("sha256").update(deviceString).digest("hex");
     }
     initializeRoutes() {
         // accessToken認証API
@@ -40,10 +49,13 @@ let AuthRouter = class AuthRouter {
         // refreshToken認証API
         this.router.post("/refresh-token", verifyRefreshToken_1.default, (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
+                // デバイスIDを生成
+                const deviceId = this.generateDeviceId(req);
                 // データベース内からユーザーを確認
                 const token = yield refreshToken_model_1.RefreshToken.findOne({
                     userId: req.user.id,
                     refreshToken: req.cookies.refreshToken,
+                    deviceId,
                 });
                 if (!token) {
                     throw new Error();
@@ -55,6 +67,7 @@ let AuthRouter = class AuthRouter {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
                     sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                    domain: "onrender.com",
                 });
                 yield token.deleteOne();
                 // 新しいリフレッシュトークンを発行し、保存する
@@ -62,12 +75,14 @@ let AuthRouter = class AuthRouter {
                 const newRefreshToken = new refreshToken_model_1.RefreshToken({
                     userId: req.user.id,
                     refreshToken,
+                    deviceId,
                 });
                 yield newRefreshToken.save();
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
                     sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+                    domain: "onrender.com",
                     maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY) * 1000,
                 });
                 res.status(200).json({ accessToken });
