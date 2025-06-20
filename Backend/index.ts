@@ -21,7 +21,7 @@ app.use(cookieParser());
 addRoutes(app);
 
 // Reactアプリのホスティング設定
-const root = path.join(__dirname, "public");
+const root = path.join(__dirname, "..", "public");
 app.use(express.static(root));
 // SPA対応：すべてのその他のリクエストをindex.htmlにフォールバック
 app.get("*", (req, res) => {
