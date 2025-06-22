@@ -41,14 +41,6 @@
         display: flex;
         gap: 20px;
       }
-      .right {
-        font-size: 13px;
-        color: var(--title-color);
-        cursor: pointer;
-        &:hover {
-          opacity: 0.7;
-        }
-      }
     }
     .no-task {
       text-align: center;
@@ -84,9 +76,6 @@
         .left {
           height: 30px;
           gap: 10px;
-        }
-        .right {
-          font-size: 12px;
         }
       }
       .all-tasks-container {

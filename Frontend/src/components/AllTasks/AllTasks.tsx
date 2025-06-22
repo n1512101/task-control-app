@@ -14,6 +14,7 @@ import CustomizedModal from "../Modal/Modal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import useDeleteTask from "../../hooks/useDeleteTask.hook";
 import TaskCard from "../TaskCard/TaskCard";
+import SelectCompletedTaskButton from "../SelectCompletedTaskButton/SelectCompletedTaskButton";
 import "./AllTasks.scss";
 
 interface CommonButtonProps {
@@ -195,12 +196,10 @@ const AllTasks: FC = (): ReactElement => {
                 onClick={() => setOpenCalendar(true)}
               />
             </div>
-            <span
-              className="right"
-              onClick={() => setOnlyPending(!onlyPending)}
-            >
-              {onlyPending ? "全て表示" : "未完了のみ表示"}
-            </span>
+            <SelectCompletedTaskButton
+              onlyPending={onlyPending}
+              setOnlyPending={setOnlyPending}
+            />
           </div>
           {tasksDate.length === 0 ||
           (selectedDate && !tasksDate.includes(selectedDate)) ? (

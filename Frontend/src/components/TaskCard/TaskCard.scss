@@ -20,6 +20,10 @@
     margin: 10px 20px;
     color: var(--base-color);
     word-wrap: break-word;
+    &.task-completed {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
   }
   .controller {
     display: flex;
