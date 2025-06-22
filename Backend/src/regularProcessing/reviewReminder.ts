@@ -26,12 +26,17 @@ async function sendMail(
     subject: subject,
     text: body,
   };
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
+
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, function (error: any, info: any) {
+      if (error) {
+        console.error("メール送信エラー:", error);
+        reject(error);
+      } else {
+        console.log("Email sent: " + info.response);
+        resolve();
+      }
+    });
   });
 }
 // ユーザーごとのタスクをグループ化する関数
@@ -65,15 +70,14 @@ async function processUserTasks(
 
     // 各タスクの更新内容を計算する
     const bulkOperations = userTasks.map((task) => {
-      let daysToAdd = 1;
-      if (task.reminderCount === 1) {
-        daysToAdd = 3;
-      } else if (task.reminderCount === 2) {
-        daysToAdd = 7;
-      } else if (task.reminderCount === 3) {
-        daysToAdd = 10;
-      }
-      const nextReminderAt = dayjs().add(daysToAdd, "day").format("YYYY-MM-DD");
+      // メール送信回数reminderCountと次回のリマインダー日付nextReminderAtを更新
+      const count = task.reminderCount;
+      const nextReminderAt =
+        count === 2
+          ? null
+          : dayjs()
+              .add(count === 0 ? 7 : 14, "day")
+              .format("YYYY-MM-DD");
 
       return {
         updateOne: {
@@ -111,7 +115,7 @@ async function reviewReminders() {
     const tasks = await Task.find({
       category: "study",
       status: "done",
-      reminderCount: { $lt: 4 },
+      reminderCount: { $lt: 3 },
       nextReminderAt: { $lte: date },
     });
     // tasksByUser: userIdがキー、タスク内容が値となるMap型配列
@@ -127,8 +131,17 @@ async function reviewReminders() {
 
 // 毎日のUTC時間の23時(日本時間8時)に実行する
 function scheduledReviewReminders() {
-  cron.schedule("0 0 23 * * *", () => {
-    reviewReminders();
+  cron.schedule("0 0 23 * * *", async () => {
+    console.log("scheduledReviewReminders: 実行開始");
+    try {
+      await reviewReminders();
+      console.log("scheduledReviewReminders: 実行完了");
+    } catch (error) {
+      console.error(
+        "scheduledReviewReminders: 実行中にエラーが発生しました:",
+        error
+      );
+    }
   });
 }
 
