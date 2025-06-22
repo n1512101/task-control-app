@@ -13,6 +13,7 @@ import CustomizedModal from "../Modal/Modal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import TaskCard from "../TaskCard/TaskCard";
 import useDeleteTask from "../../hooks/useDeleteTask.hook";
+import SelectCompletedTaskButton from "../SelectCompletedTaskButton/SelectCompletedTaskButton";
 import "./Tasks.scss";
 
 const Tasks: FC = (): ReactElement => {
@@ -121,12 +122,10 @@ const Tasks: FC = (): ReactElement => {
             <span className="left">
               {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
             </span>
-            <span
-              className="right"
-              onClick={() => setOnlyPending(!onlyPending)}
-            >
-              {onlyPending ? "全て表示" : "未完了のみ表示"}
-            </span>
+            <SelectCompletedTaskButton
+              onlyPending={onlyPending}
+              setOnlyPending={setOnlyPending}
+            />
           </div>
           <div className="tasks-container">
             <div className="tasks-header">

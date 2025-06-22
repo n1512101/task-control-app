@@ -116,6 +116,7 @@ const TaskCard: FC<IProps> = ({
         scale: 1.03,
         boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
         transition: { duration: 0.2 },
+        borderColor: "#aaa",
       }}
     >
       <span
@@ -144,7 +145,9 @@ const TaskCard: FC<IProps> = ({
           onChange={(e) => setText(e.target.value)}
         />
       ) : (
-        <p className="content">{text}</p>
+        <p className={`content ${task.status === "done" && "task-completed"}`}>
+          {text}
+        </p>
       )}
 
       <div className="controller">

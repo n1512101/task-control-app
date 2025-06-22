@@ -13,6 +13,7 @@ import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import CustomizedModal from "../Modal/Modal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import useDeleteRoutine from "../../hooks/useDeleteTask.hook";
+import SelectCompletedTaskButton from "../SelectCompletedTaskButton/SelectCompletedTaskButton";
 import "./Routine.scss";
 
 // 今週のルーティンコンポーネント
@@ -151,12 +152,10 @@ const Routine: FC = (): ReactElement => {
             <span className="left">
               {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
             </span>
-            <span
-              className="right"
-              onClick={() => setOnlyPending(!onlyPending)}
-            >
-              {onlyPending ? "全て表示" : "未完了のみ表示"}
-            </span>
+            <SelectCompletedTaskButton
+              onlyPending={onlyPending}
+              setOnlyPending={setOnlyPending}
+            />
           </div>
           {/* 週ごとのルーティンコンテナ */}
           <div className="routine-container">
