@@ -134,7 +134,7 @@ function reviewReminders() {
 }
 // 毎日のUTC時間の23時(日本時間8時)に実行する
 function scheduledReviewReminders() {
-    node_cron_1.default.schedule("0 0 1 * * *", () => __awaiter(this, void 0, void 0, function* () {
+    node_cron_1.default.schedule("0 0 4 * * *", () => __awaiter(this, void 0, void 0, function* () {
         console.log("scheduledReviewReminders: 実行開始");
         try {
             yield reviewReminders();
