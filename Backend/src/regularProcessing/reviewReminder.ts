@@ -129,9 +129,9 @@ async function reviewReminders() {
   }
 }
 
-// 毎日のUTC時間の23時(日本時間8時)に実行する
+// 毎日のUTC時間の1時(日本時間10時)に実行する
 function scheduledReviewReminders() {
-  cron.schedule("0 0 23 * * *", async () => {
+  cron.schedule("0 0 1 * * *", async () => {
     console.log("scheduledReviewReminders: 実行開始");
     try {
       await reviewReminders();
