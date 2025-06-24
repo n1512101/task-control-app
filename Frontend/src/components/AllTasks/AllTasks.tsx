@@ -268,23 +268,26 @@ const messages = {
 const formats = {
   monthHeaderFormat: (date: Date) => dayjs(date).format("YYYY年M月"),
   dayHeaderFormat: (date: Date) => dayjs(date).format("YYYY年M月D日 (ddd)"),
-  dayRangeHeaderFormat: ({ start, end }: { start: Date; end: Date }) => {
-    const startDate = dayjs(start);
-    const endDate = dayjs(end);
-
-    if (startDate.month() === endDate.month()) {
-      return `${startDate.format("YYYY年M月D日")} - ${endDate.format("D日")}`;
-    } else if (startDate.year() === endDate.year()) {
-      return `${startDate.format("YYYY年M月D日")} - ${endDate.format(
-        "M月D日"
-      )}`;
-    } else {
-      return `${startDate.format("YYYY年M月D日")} - ${endDate.format(
-        "YYYY年M月D日"
-      )}`;
-    }
-  },
 };
+
+const dummyEvents = [
+  {
+    title: "会議",
+    start: new Date(2025, 5, 10, 10, 0), // 2025年6月10日 10:00
+    end: new Date(2025, 5, 10, 11, 0),
+  },
+  {
+    title: "ランチ",
+    start: new Date(2025, 5, 12, 12, 0), // 2025年6月12日 12:00
+    end: new Date(2025, 5, 12, 14, 30),
+  },
+  {
+    title: "プロジェクト締切",
+    start: new Date(2025, 5, 15, 0, 0), // 2025年6月15日 終日
+    end: new Date(2025, 5, 15, 23, 59),
+    allDay: true,
+  },
+];
 
 const AllTasks: FC = (): ReactElement => {
   const [date, setDate] = useState<Date>(new Date());
@@ -314,7 +317,7 @@ const AllTasks: FC = (): ReactElement => {
         views={["month", "day"]}
         defaultView="month"
         localizer={localizer}
-        events={[]}
+        events={dummyEvents}
         date={date}
         view={view}
         messages={messages}

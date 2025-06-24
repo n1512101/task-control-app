@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import Switch from "@mui/material/Switch";
 import dayjs from "dayjs";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import { ICategory } from "../../interfaces/task.interface";
@@ -84,7 +85,7 @@ const TaskRegister: FC<IProps> = ({
         </h2>
       </div>
       <div className="task-form-content">
-        <div className="form-date-section">
+        {/* <div className="form-date-section">
           <div className="section-title">
             <span className="section-number">1</span>
             <span>日付を選択</span>
@@ -127,6 +128,48 @@ const TaskRegister: FC<IProps> = ({
               }}
             />
           </LocalizationProvider>
+        </div> */}
+        <div className="form-date-section">
+          <div className="section-title">
+            <span className="section-number">1</span>
+            <span>日時設定</span>
+          </div>
+          <div className="all-day-toggle">
+            <Switch />
+            <span className="toggle-label">終日のタスク</span>
+          </div>
+          <div className="datetime-container">
+            <div className="datetime-group">
+              <div className="datetime-label">開始日時</div>
+              <input
+                type="date"
+                className="input-field"
+                id="startDate"
+                value="2025-06-24"
+              />
+              <input
+                type="time"
+                className="input-field time-input"
+                id="startTime"
+                value="09:00"
+              />
+            </div>
+            <div className="datetime-group">
+              <div className="datetime-label">終了日時</div>
+              <input
+                type="date"
+                className="input-field"
+                id="endDate"
+                value="2025-06-24"
+              />
+              <input
+                type="time"
+                className="input-field time-input"
+                id="endTime"
+                value="10:00"
+              />
+            </div>
+          </div>
         </div>
         <div className="form-section">
           <div className="section-title">
