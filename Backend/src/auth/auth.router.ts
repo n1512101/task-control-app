@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import { injectable } from "inversify";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import verifyAccessToken from "../middlewares/verifyAccessToken";
 import verifyRefreshToken from "../middlewares/verifyRefreshToken";
 import { IRefreshToken, RefreshToken } from "../models/refreshToken.model";
@@ -12,6 +13,25 @@ export default class AuthRouter {
   constructor() {
     this.router = Router();
     this.initializeRoutes();
+  }
+
+  // デバイスIDを生成する関数
+  private generateDeviceId(req: Request): string {
+    // User-AgentとIPアドレスを組み合わせてデバイスIDを生成
+    const userAgent = req.headers["user-agent"] || "";
+
+    // IPアドレス取得
+    const ip =
+      req.ip ||
+      req.headers["x-forwarded-for"] ||
+      req.headers["x-real-ip"] ||
+      "";
+
+    // IPアドレスが配列の場合は最初の要素を使用
+    const clientIp = Array.isArray(ip) ? ip[0] : ip;
+
+    const deviceString = `${userAgent}-${clientIp}`;
+    return crypto.createHash("sha256").update(deviceString).digest("hex");
   }
 
   private initializeRoutes() {
@@ -30,10 +50,14 @@ export default class AuthRouter {
       verifyRefreshToken,
       async (req: Request, res: Response) => {
         try {
+          // デバイスIDを生成
+          const deviceId = this.generateDeviceId(req);
+
           // データベース内からユーザーを確認
           const token = await RefreshToken.findOne({
             userId: req.user.id,
             refreshToken: req.cookies.refreshToken,
+            deviceId,
           });
           if (!token) {
             throw new Error();
@@ -50,7 +74,7 @@ export default class AuthRouter {
           res.clearCookie("refreshToken", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
           });
           await token.deleteOne();
 
@@ -64,13 +88,14 @@ export default class AuthRouter {
           const newRefreshToken = new RefreshToken<IRefreshToken>({
             userId: req.user.id,
             refreshToken,
+            deviceId,
           });
           await newRefreshToken.save();
 
           res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+            sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
             maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
           });
 

@@ -1,100 +1,167 @@
+// .all-tasks {
+//   margin-top: 60px;
+//   padding: 10px;
+//   min-height: 100vh;
+//   background: var(--base-background);
+//   .error {
+//     position: absolute;
+//     top: 50%;
+//     left: 50%;
+//     transform: translate(-50%, -50%);
+//     text-align: center;
+//   }
+//   .all-tasks-content {
+//     margin: 10px 20px;
+//     .all-tasks-calendar {
+//       position: fixed;
+//       inset: 0;
+//       margin: auto;
+//       color: var(--base-color);
+//       background-color: var(--third-background);
+//       z-index: 10;
+//     }
+//     .all-tasks-calendar-background {
+//       position: fixed;
+//       top: 0;
+//       left: 0;
+//       width: 100%;
+//       min-height: 100vh;
+//       background-color: rgba(0, 0, 0, 0.6);
+//       z-index: 5;
+//     }
+//     .all-tasks-header {
+//       max-width: 900px;
+//       min-width: 470px;
+//       margin: 10px auto 20px;
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: center;
+//       .left {
+//         height: 34px;
+//         display: flex;
+//         gap: 20px;
+//       }
+//     }
+//     .no-task {
+//       text-align: center;
+//     }
+//     .all-tasks-container {
+//       max-width: 900px;
+//       min-width: 470px;
+//       margin: 0 auto;
+//       padding: 20px;
+//       margin-bottom: 20px;
+//       background-color: var(--third-background);
+//       border-radius: 16px;
+//       box-shadow: 0 2px 6px var(--shadow-color);
+//       display: grid;
+//       grid-template-columns: repeat(auto-fill, minmax(273px, 1fr));
+//       gap: 20px;
+//       .all-tasks-date {
+//         grid-column: 1 / -1;
+//         padding: 0 10px;
+//         font-weight: bold;
+//         font-size: 20px;
+//       }
+//     }
+//   }
+// }
+
+// @media (max-width: 480px) {
+//   .all-tasks {
+//     .all-tasks-content {
+//       margin: 10px;
+//       .all-tasks-header {
+//         min-width: unset;
+//         .left {
+//           height: 30px;
+//           gap: 10px;
+//         }
+//       }
+//       .all-tasks-container {
+//         min-width: unset;
+//         padding: 15px;
+//         grid-template-columns: 1fr;
+//         gap: 15px;
+//       }
+//     }
+//   }
+// }
+
 .all-tasks {
   margin-top: 60px;
   padding: 10px;
   min-height: 100vh;
   background: var(--base-background);
-  .error {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
+  .rbc-calendar {
+    background-color: var(--third-background);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 6px var(--shadow-color);
+    height: 700px;
+    max-width: 900px;
+    min-width: 500px;
+    margin: 0 auto;
   }
-  .all-tasks-content {
-    margin: 10px 20px;
-    .all-tasks-calendar {
-      position: fixed;
-      inset: 0;
-      margin: auto;
-      color: var(--base-color);
+  // カレンダーの枠線の色
+  .rbc-month-view,
+  .rbc-month-row,
+  .rbc-header,
+  .rbc-day-bg,
+  .rbc-time-view,
+  .rbc-time-header-content,
+  .rbc-time-content,
+  .rbc-timeslot-group,
+  .rbc-events-container {
+    border-color: var(--calendar-border-color);
+  }
+  .rbc-header {
+    padding: 8px;
+  }
+  .rbc-month-row .rbc-today.rbc-day-bg {
+    background-color: var(--calendar-cell-background);
+  }
+  .rbc-now > button {
+    color: orange;
+  }
+  .rbc-off-range-bg {
+    background-color: var(--secondary-calendar-cell-background);
+  }
+  .rbc-time-header {
+    border-right: none;
+    .rbc-row-content {
       background-color: var(--third-background);
-      z-index: 10;
-    }
-    .all-tasks-calendar-background {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      min-height: 100vh;
-      background-color: rgba(0, 0, 0, 0.6);
-      z-index: 5;
-    }
-    .all-tasks-header {
-      max-width: 900px;
-      min-width: 470px;
-      margin: 10px auto 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      .left {
-        height: 34px;
-        display: flex;
-        gap: 20px;
-      }
-      .right {
-        font-size: 13px;
-        color: var(--title-color);
-        cursor: pointer;
-        &:hover {
-          opacity: 0.7;
-        }
-      }
-    }
-    .no-task {
-      text-align: center;
-    }
-    .all-tasks-container {
-      max-width: 900px;
-      min-width: 470px;
-      margin: 0 auto;
-      padding: 20px;
-      margin-bottom: 20px;
-      background-color: var(--third-background);
-      border-radius: 16px;
-      box-shadow: 0 2px 6px var(--shadow-color);
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(273px, 1fr));
-      gap: 20px;
-      .all-tasks-date {
-        grid-column: 1 / -1;
-        padding: 0 10px;
-        font-weight: bold;
-        font-size: 20px;
-      }
     }
   }
-}
-
-@media (max-width: 480px) {
-  .all-tasks {
-    .all-tasks-content {
-      margin: 10px;
-      .all-tasks-header {
-        min-width: unset;
-        .left {
-          height: 30px;
-          gap: 10px;
-        }
-        .right {
-          font-size: 12px;
-        }
-      }
-      .all-tasks-container {
-        min-width: unset;
-        padding: 15px;
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
+  .rbc-time-gutter > .rbc-timeslot-group {
+    padding-top: 7px;
+  }
+  .rbc-time-content {
+    background-color: var(--third-background);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
+  .rbc-day-slot > .rbc-timeslot-group > .rbc-time-slot {
+    background-color: var(--third-background);
+    border-top: none;
+  }
+  .rbc-toolbar button {
+    background-color: var(--secondary-background);
+    color: var(--base-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    &.rbc-active {
+      background-color: var(--calendar-cell-background);
+    }
+  }
+  .rbc-toolbar {
+    padding: 8px;
+    flex-direction: row;
+  }
+  // .rbc-event {
+  //   background-color: lightseagreen;
+  // }
 }

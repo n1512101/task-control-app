@@ -3,6 +3,7 @@ import { model, Model, Schema, Types } from "mongoose";
 export interface IRefreshToken {
   userId: Types.ObjectId;
   refreshToken: string;
+  deviceId: string;
   createdAt?: Date;
 }
 
@@ -16,6 +17,11 @@ const refreshTokenSchema: Schema<IRefreshToken> = new Schema({
   refreshToken: {
     type: String,
     required: true,
+  },
+  deviceId: {
+    type: String,
+    required: true,
+    index: true,
   },
   /* expiresでTTLの時間を指定する */
   createdAt: {

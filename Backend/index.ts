@@ -15,13 +15,13 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cookieParser());
 app.use(
   cors({
     origin: process.env.FRONT_END_URL,
     credentials: true,
   })
 );
+app.use(cookieParser());
 
 // appにrouterを定義する
 addRoutes(app);

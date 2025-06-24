@@ -3,6 +3,7 @@ import { injectable } from "inversify";
 import { matchedData } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import crypto from "crypto";
 import { ILoginUser, IUser } from "./user.interface";
 import { User } from "../models/user.model";
 import { salt } from "../config/utils";
@@ -11,6 +12,25 @@ import { IRefreshToken, RefreshToken } from "../models/refreshToken.model";
 @injectable()
 export default class UsersController {
   constructor() {}
+
+  // デバイスIDを生成する関数
+  private generateDeviceId(req: Request): string {
+    // User-AgentとIPアドレスを組み合わせてデバイスIDを生成
+    const userAgent = req.headers["user-agent"] || "";
+
+    // IPアドレス取得
+    const ip =
+      req.ip ||
+      req.headers["x-forwarded-for"] ||
+      req.headers["x-real-ip"] ||
+      "";
+
+    // IPアドレスが配列の場合は最初の要素を使用
+    const clientIp = Array.isArray(ip) ? ip[0] : ip;
+
+    const deviceString = `${userAgent}-${clientIp}`;
+    return crypto.createHash("sha256").update(deviceString).digest("hex");
+  }
 
   // ログイン時の処理
   public async login(req: Request<{}, {}, ILoginUser>, res: Response) {
@@ -32,6 +52,9 @@ export default class UsersController {
         return res.status(401).json({ message: "パスワードが間違っています" });
       }
 
+      // デバイスIDを生成
+      const deviceId = this.generateDeviceId(req);
+
       // アクセストークン生成
       const accessToken = jwt.sign(
         { id: user._id },
@@ -45,10 +68,14 @@ export default class UsersController {
         { expiresIn: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) }
       );
 
+      // 既存の同じデバイスのリフレッシュトークンを削除
+      await RefreshToken.deleteOne({ userId: user._id, deviceId });
+
       // refreshTokenをデータベースに保存する
       const newRefreshToken = new RefreshToken<IRefreshToken>({
         userId: user._id,
         refreshToken,
+        deviceId,
       });
       await newRefreshToken.save();
 
@@ -56,7 +83,7 @@ export default class UsersController {
       res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
         maxAge: parseInt(process.env.REFRESH_TOKEN_EXPIRY as string) * 1000,
       });
 
@@ -99,23 +126,65 @@ export default class UsersController {
   public async logout(req: Request, res: Response) {
     try {
       const refreshToken = req.cookies.refreshToken;
-      if (!refreshToken) throw new Error();
 
-      const user = jwt.verify(
-        refreshToken,
-        process.env.REFRESH_TOKEN_SECRET as string
-      ) as JwtPayload;
+      // リフレッシュトークンが存在しない場合は、cookieのみクリアして成功レスポンスを返す
+      if (!refreshToken) {
+        res.clearCookie("refreshToken", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        });
+        return res.status(200).json({ message: "ログアウト成功！" });
+      }
 
-      // リフレッシュトークンを破棄する
-      res.clearCookie("refreshToken", {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
-      });
-      await RefreshToken.deleteOne({ userId: user.id });
-      res.status(200).json({ message: "ログアウト成功！" });
+      try {
+        const user = jwt.verify(
+          refreshToken,
+          process.env.REFRESH_TOKEN_SECRET as string
+        ) as JwtPayload;
+
+        // デバイスIDを生成
+        const deviceId = this.generateDeviceId(req);
+
+        // リフレッシュトークンを破棄する
+        res.clearCookie("refreshToken", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        });
+
+        // 特定のデバイスのリフレッシュトークンのみを削除
+        await RefreshToken.deleteOne({
+          userId: user.id,
+          deviceId,
+        });
+
+        res.status(200).json({ message: "ログアウト成功！" });
+      } catch (jwtError) {
+        // JWT検証に失敗した場合でも、cookieはクリアする
+        console.error("JWT verification failed:", jwtError);
+        res.clearCookie("refreshToken", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        });
+        res.status(200).json({ message: "ログアウト成功！" });
+      }
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      console.error("Logout error:", error);
+      // エラーが発生しても、cookieはクリアを試行する
+      try {
+        res.clearCookie("refreshToken", {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+        });
+      } catch (clearCookieError) {
+        console.error("Failed to clear cookie:", clearCookieError);
+      }
+      res
+        .status(500)
+        .json({ message: "ログアウト処理中にエラーが発生しました" });
     }
   }
 }
