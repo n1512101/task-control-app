@@ -13,6 +13,7 @@
   --second-background: rgb(235, 235, 235);
   --third-background: #fff;
   --fourth-background: #e6f7f5;
+  --fifth-background: #f4f3f3;
   --badge-background: linear-gradient(
     45deg,
     rgba(79, 70, 229, 0.1),
@@ -50,6 +51,7 @@
   --calendar-cell-background: #d7e5f5;
   --secondary-calendar-cell-background: rgb(226, 226, 226);
   --calendar-border-color: #ddd;
+  --icon-color: #6b7280;
 }
 
 :root[data-theme="dark"] {
@@ -67,6 +69,7 @@
   --second-background: #494848;
   --third-background: #2c3848;
   --fourth-background: #134e4a;
+  --fifth-background: rgba(255, 255, 255, 0.05);
   --header-background: rgba(38, 37, 73, 0.95);
   --badge-background: linear-gradient(
     45deg,
@@ -104,6 +107,7 @@
   --calendar-cell-background: #6a7481;
   --secondary-calendar-cell-background: #444;
   --calendar-border-color: #999;
+  --icon-color: #989da6;
 }
 
 :root {

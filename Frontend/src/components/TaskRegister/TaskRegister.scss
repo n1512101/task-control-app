@@ -1,6 +1,6 @@
 .task-form-container {
   margin: 20px;
-  width: 360px;
+  width: 380px;
   border-radius: 12px;
   background-color: var(--card-background);
   border: var(--card-border);
@@ -25,32 +25,45 @@
   }
   .task-form-content {
     padding: 16px;
-    // .form-date-section {
-    //   margin-bottom: 24px;
-    //   display: flex;
-    //   align-items: baseline;
-    //   gap: 20px;
-    //   flex-direction: row;
-    //   .section-title {
-    //     display: flex;
-    //     align-items: center;
-    //     margin-bottom: 8px;
-    //     flex-shrink: 0;
-    //     .section-number {
-    //       background-color: #0d9488;
-    //       color: white;
-    //       width: 24px;
-    //       height: 24px;
-    //       text-align: center;
-    //       line-height: 24px;
-    //       border-radius: 50%;
-    //       margin-right: 8px;
-    //       font-size: 14px;
-    //     }
-    //   }
-    // }
+    .form-date-section {
+      .date-time-selector {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        .all-day-toggle {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          background-color: var(--fifth-background);
+          padding: 4px;
+          border-radius: 8px;
+          .toggle-label {
+            font-weight: bold;
+          }
+        }
+        .datetime-container {
+          width: 100%;
+          display: flex;
+          justify-content: space-between;
+          .datetime-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--fifth-background);
+            padding: 10px 14px;
+            border-radius: 14px;
+            gap: 6px;
+            .datetime-label {
+              font-size: 14px;
+            }
+          }
+        }
+      }
+    }
     .form-section {
-      margin-bottom: 24px;
+      margin-bottom: 12px;
       .section-title {
         display: flex;
         align-items: center;
@@ -65,27 +78,6 @@
           border-radius: 50%;
           margin-right: 8px;
           font-size: 14px;
-        }
-      }
-      .type-selector {
-        display: flex;
-        width: 100%;
-        border-radius: 8px;
-        overflow: hidden;
-        border: 1px solid #e5e7eb;
-        .type-button {
-          flex: 1;
-          padding: 12px 0;
-          border: none;
-          background-color: var(--third-background);
-          cursor: pointer;
-          font-size: 14px;
-          transition: background-color 0.3s ease;
-          color: var(--base-color);
-        }
-        .type-button-active {
-          background-color: var(--fourth-background);
-          color: var(--second-color);
         }
       }
       .category-selector {
@@ -142,7 +134,6 @@
       padding: 12px;
       border-radius: 999px;
       border: none;
-      margin-top: 8px;
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.2s ease;
