@@ -2,14 +2,12 @@ import { FC, ReactElement, useState } from "react";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Switch from "@mui/material/Switch";
 import dayjs from "dayjs";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import { ICategory } from "../../interfaces/task.interface";
 import useCreateTask from "../../hooks/useCreateTask.hook";
+import CalendarAndTimePicker from "../CalendarAndTimePicker/CalendarAndTimePicker";
 import "./TaskRegister.scss";
 
 // フォームスキーマ定義
@@ -31,7 +29,13 @@ const TaskRegister: FC<IProps> = ({
   handleFlip,
   setIsAnimating,
 }): ReactElement => {
-  const [date, setDate] = useState<string>(dayjs().format("YYYY-MM-DD"));
+  const [isAllDay, setIsAllDay] = useState<boolean>(false);
+  const [startDay, setStartDay] = useState<string>(
+    dayjs().format("YYYY-MM-DD")
+  );
+  const [endDay, setEndDay] = useState<string>(dayjs().format("YYYY-MM-DD"));
+  const [startTime, setStartTime] = useState<string>(dayjs().format("HH:mm"));
+  const [endTime, setEndTime] = useState<string>(dayjs().format("HH:mm"));
   const [category, setCategory] = useState<ICategory>("study");
 
   const { mutate } = useCreateTask();
@@ -46,8 +50,14 @@ const TaskRegister: FC<IProps> = ({
 
   // タスク作成ボタンを押した際に動作する関数
   const onSubmit = (data: Schema) => {
+    const startDate = isAllDay
+      ? dayjs(`${startDay} 00:00`).format("YYYY-MM-DDTHH:mm")
+      : dayjs(`${startDay} ${startTime}`).format("YYYY-MM-DDTHH:mm");
+    const endDate = isAllDay
+      ? dayjs(`${startDay} 23:59`).format("YYYY-MM-DDTHH:mm")
+      : dayjs(`${endDay} ${endTime}`).format("YYYY-MM-DDTHH:mm");
     mutate(
-      { ...data, status: "pending", category, date },
+      { ...data, status: "pending", category, startDate, endDate },
       {
         // タスク作成成功の場合
         onSuccess: (response) => {
@@ -85,89 +95,38 @@ const TaskRegister: FC<IProps> = ({
         </h2>
       </div>
       <div className="task-form-content">
-        {/* <div className="form-date-section">
-          <div className="section-title">
-            <span className="section-number">1</span>
-            <span>日付を選択</span>
-          </div>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              defaultValue={dayjs()}
-              disablePast
-              onChange={(e) => setDate(e?.format("YYYY-MM-DD")!)}
-              slotProps={{
-                textField: {
-                  sx: {
-                    "& .MuiPickersInputBase-sectionsContainer": {
-                      color: "var(--base-color)",
-                    },
-                    "& .MuiButtonBase-root": {
-                      color: "var(--icon-color)",
-                    },
-                    "& .MuiPickersOutlinedInput-root": {
-                      border: "1px solid #e5e7eb",
-                    },
-                    "& .MuiPickersInputBase-root": {
-                      height: "40px",
-                    },
-                  },
-                },
-                popper: {
-                  sx: {
-                    "& .MuiPaper-root": {
-                      backgroundColor: "#f0f8ff", // カレンダーポップアップの背景色
-                    },
-                    "& .MuiTypography-root": {
-                      color: "#000080", // カレンダー内のテキストの色
-                    },
-                    "& .MuiPickersDay-root": {
-                      color: "#000080", // 日付の文字色
-                    },
-                  },
-                },
-              }}
-            />
-          </LocalizationProvider>
-        </div> */}
-        <div className="form-date-section">
+        <div className="form-section form-date-section">
           <div className="section-title">
             <span className="section-number">1</span>
             <span>日時設定</span>
           </div>
-          <div className="all-day-toggle">
-            <Switch />
-            <span className="toggle-label">終日のタスク</span>
-          </div>
-          <div className="datetime-container">
-            <div className="datetime-group">
-              <div className="datetime-label">開始日時</div>
-              <input
-                type="date"
-                className="input-field"
-                id="startDate"
-                value="2025-06-24"
+          <div className="date-time-selector">
+            <div className="all-day-toggle">
+              <Switch
+                checked={isAllDay}
+                onChange={() => setIsAllDay(!isAllDay)}
               />
-              <input
-                type="time"
-                className="input-field time-input"
-                id="startTime"
-                value="09:00"
-              />
+              <span className="toggle-label">終日のタスク</span>
             </div>
-            <div className="datetime-group">
-              <div className="datetime-label">終了日時</div>
-              <input
-                type="date"
-                className="input-field"
-                id="endDate"
-                value="2025-06-24"
-              />
-              <input
-                type="time"
-                className="input-field time-input"
-                id="endTime"
-                value="10:00"
-              />
+            <div className="datetime-container">
+              <div className="datetime-group">
+                <div className="datetime-label">開始日時</div>
+                <CalendarAndTimePicker
+                  setDay={setStartDay}
+                  setTime={setStartTime}
+                  alwaysAvailable={true}
+                  isAllDay={isAllDay}
+                />
+              </div>
+              <div className="datetime-group">
+                <div className="datetime-label">終了日時</div>
+                <CalendarAndTimePicker
+                  setDay={setEndDay}
+                  setTime={setEndTime}
+                  alwaysAvailable={false}
+                  isAllDay={isAllDay}
+                />
+              </div>
             </div>
           </div>
         </div>

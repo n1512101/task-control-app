@@ -2,7 +2,8 @@ export type IRepeatType = "daily" | "weekly";
 export type ICategory = "study" | "job" | "recreation" | "exercise";
 
 export interface ITask {
-  date: string;
+  startDate: string;
+  endDate: string;
   category: ICategory;
   description: string;
   status: "pending" | "done";
