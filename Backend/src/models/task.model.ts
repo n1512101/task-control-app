@@ -24,10 +24,14 @@ const taskSchema: Schema<ITaskSchema> = new Schema({
     enum: ["pending", "done"],
     required: true,
   },
-  date: {
+  startDate: {
     type: Date,
     required: true,
     index: { expires: parseInt(process.env.TASK_EXPIRY as string) },
+  },
+  endDate: {
+    type: Date,
+    required: true,
   },
   completedAt: {
     type: Date,
@@ -42,6 +46,10 @@ const taskSchema: Schema<ITaskSchema> = new Schema({
   nextReminderAt: {
     type: Date,
     default: null,
+  },
+  isAllDay: {
+    type: Boolean,
+    required: true,
   },
 });
 

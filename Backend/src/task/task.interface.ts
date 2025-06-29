@@ -4,7 +4,9 @@ export interface ITask {
   category: "study" | "job" | "recreation" | "exercise";
   description: string;
   status: "pending" | "done";
-  date: Date;
+  startDate: Date;
+  endDate: Date;
+  isAllDay: boolean;
 }
 
 export interface ITaskWithID extends ITask {

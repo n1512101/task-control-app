@@ -242,11 +242,13 @@
 
 // export default AllTasks;
 
-import { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 import { Calendar, dayjsLocalizer, View, SlotInfo } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+import useGetAllTasks from "../../hooks/useGetAllTasks.hook";
+import { ITask } from "../../interfaces/task.interface";
 import "./AllTasks.scss";
 
 // dayjsのロケールを日本語に設定
@@ -275,23 +277,90 @@ const dummyEvents = [
     title: "会議",
     start: new Date(2025, 5, 10, 10, 0), // 2025年6月10日 10:00
     end: new Date(2025, 5, 10, 11, 0),
+    allDay: false,
+    category: "study",
+    status: "done",
   },
   {
     title: "ランチ",
     start: new Date(2025, 5, 12, 12, 0), // 2025年6月12日 12:00
     end: new Date(2025, 5, 12, 14, 30),
+    allDay: false,
+    category: "recreation",
+    status: "done",
   },
   {
     title: "プロジェクト締切",
     start: new Date(2025, 5, 15, 0, 0), // 2025年6月15日 終日
     end: new Date(2025, 5, 15, 23, 59),
     allDay: true,
+    category: "exercise",
+    status: "done",
   },
 ];
+
+// カテゴリーごとにイベントの背景色を設定する関数
+const eventPropGetter = (event: any) => {
+  let backgroundColor = "";
+  let textDecoration = "";
+  let opacity = 1;
+  switch (event.category) {
+    case "study":
+      backgroundColor = "rgba(255, 0, 0, 0.6)";
+      break;
+    case "job":
+      backgroundColor = "rgba(3, 170, 3, 0.6)";
+      break;
+    case "recreation":
+      backgroundColor = "rgba(2, 147, 237, 0.6)";
+      break;
+    case "exercise":
+      backgroundColor = "rgba(221, 144, 1, 0.6)";
+      break;
+    default:
+      backgroundColor = "rgba(255, 255, 255, 0.6)";
+      break;
+  }
+  switch (event.status) {
+    case "done":
+      textDecoration = "line-through var(--base-color) double";
+      opacity = 0.6;
+      break;
+    case "pending":
+      textDecoration = "none";
+      break;
+  }
+  return {
+    style: {
+      backgroundColor,
+      textDecoration,
+      opacity,
+    },
+  };
+};
 
 const AllTasks: FC = (): ReactElement => {
   const [date, setDate] = useState<Date>(new Date());
   const [view, setView] = useState<View>("month");
+  const [tasks, setTasks] = useState([]);
+
+  // タスク取得hook
+  const { data, isSuccess, isPending, isError, refetch } = useGetAllTasks();
+
+  // 初期データ同期(初回のみ)
+  useEffect(() => {
+    if (isSuccess) {
+      const fixedTasks = data.tasks.map((task: ITask) => ({
+        title: task.description,
+        start: dayjs(task.startDate).add(-9, "hour").toDate(),
+        end: dayjs(task.endDate).add(-9, "hour").toDate(),
+        allDay: task.isAllDay,
+        category: task.category,
+        status: task.status,
+      }));
+      setTasks(fixedTasks);
+    }
+  }, [isSuccess, data]);
 
   // スロットを選択した際に動作する関数
   const handleSelectSlot = (slotInfo: SlotInfo) => {
@@ -317,7 +386,8 @@ const AllTasks: FC = (): ReactElement => {
         views={["month", "day"]}
         defaultView="month"
         localizer={localizer}
-        events={dummyEvents}
+        events={tasks}
+        eventPropGetter={eventPropGetter}
         date={date}
         view={view}
         messages={messages}

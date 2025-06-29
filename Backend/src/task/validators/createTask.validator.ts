@@ -18,9 +18,19 @@ export const createTaskValidator = [
     .withMessage("タスクの状態が必要です")
     .isIn(["pending"])
     .withMessage("状態の値が間違っています"),
-  body("date")
+  body("startDate")
     .notEmpty()
     .withMessage("日付が必要です")
     .isISO8601()
     .withMessage("日付の形式が正しくありません"),
+  body("endDate")
+    .notEmpty()
+    .withMessage("日付が必要です")
+    .isISO8601()
+    .withMessage("日付の形式が正しくありません"),
+  body("isAllDay")
+    .notEmpty()
+    .withMessage("終日かどうかが必要です")
+    .isBoolean()
+    .withMessage("終日かどうかの値が間違っています"),
 ];

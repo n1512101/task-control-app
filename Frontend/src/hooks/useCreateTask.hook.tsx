@@ -11,7 +11,7 @@ export default function useCreateTask() {
       return response.data;
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.message ?? "予期せぬエラーが発生しました";
+        error?.response?.data[0]?.msg ?? "予期せぬエラーが発生しました";
       throw new Error(errorMessage);
     }
   };

@@ -57,7 +57,14 @@ const TaskRegister: FC<IProps> = ({
       ? dayjs(`${startDay} 23:59`).format("YYYY-MM-DDTHH:mm")
       : dayjs(`${endDay} ${endTime}`).format("YYYY-MM-DDTHH:mm");
     mutate(
-      { ...data, status: "pending", category, startDate, endDate },
+      {
+        ...data,
+        status: "pending",
+        category,
+        startDate,
+        endDate,
+        isAllDay,
+      },
       {
         // タスク作成成功の場合
         onSuccess: (response) => {
