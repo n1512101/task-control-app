@@ -7,7 +7,7 @@ export default function useGetAllTasks() {
   const getAllTasks = async () => {
     try {
       const tasks = await axiosAuth.get("/task/all");
-      return tasks;
+      return tasks.data;
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message ?? "予期せぬエラーが発生しました";

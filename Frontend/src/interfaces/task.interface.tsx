@@ -7,6 +7,7 @@ export interface ITask {
   category: ICategory;
   description: string;
   status: "pending" | "done";
+  isAllDay: boolean;
 }
 
 // APIから帰ってくるタスクの型

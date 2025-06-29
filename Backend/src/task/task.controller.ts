@@ -30,9 +30,14 @@ export default class TaskController {
   // タスク取得時の処理
   public async getTasks(req: Request, res: Response) {
     try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      tomorrow.setHours(0, 0, 0, 0);
       const tasks = await Task.find({
         userId: req.user.id,
-        date: new Date().toLocaleDateString(),
+        startDate: { $gte: today, $lt: tomorrow },
       }).select(["_id", "category", "description", "status"]);
       res.status(200).json({ tasks });
     } catch (error: any) {
@@ -45,19 +50,38 @@ export default class TaskController {
     try {
       const tasks = await Task.find({
         userId: req.user.id,
-      }).select(["_id", "category", "description", "status", "date"]);
+      }).select([
+        "_id",
+        "category",
+        "description",
+        "status",
+        "startDate",
+        "endDate",
+        "isAllDay",
+      ]);
 
-      // 各taskの日付により分類する
-      const tasksByDate: Record<string, ITaskWithID[]> = {};
-      for (let task of tasks) {
-        const day = dayjs(task.date).format("YYYY-MM-DD");
-        if (!(day in tasksByDate)) {
-          tasksByDate[day] = [];
-        }
-        tasksByDate[day].push(task);
-      }
+      // // 各taskの日付により分類する
+      // const tasksByDate: Record<string, ITaskWithID[]> = {};
+      // for (let task of tasks) {
+      //   const day = dayjs(task.startDate).format("YYYY-MM-DD");
+      //   if (!(day in tasksByDate)) {
+      //     tasksByDate[day] = [];
+      //   }
+      //   tasksByDate[day].push(task);
+      // }
 
-      res.status(200).json({ tasks: tasksByDate });
+      // res.status(200).json({ tasks: tasksByDate });
+
+      // const fixedTasks = tasks.map((task: ITask) => ({
+      //   title: task.description,
+      //   start: task.startDate,
+      //   end: task.endDate,
+      //   allDay: task.isAllDay,
+      //   category: task.category,
+      //   status: task.status,
+      // }));
+
+      res.status(200).json({ tasks });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

@@ -39,7 +39,7 @@ const Tasks: FC = (): ReactElement => {
   // 初期データ同期（初回のみ）
   useEffect(() => {
     if (isSuccess) {
-      setTasks(data.data.tasks);
+      setTasks(data.tasks);
     }
   }, [isSuccess, data]);
 
