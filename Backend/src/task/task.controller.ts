@@ -59,28 +59,6 @@ export default class TaskController {
         "endDate",
         "isAllDay",
       ]);
-
-      // // 各taskの日付により分類する
-      // const tasksByDate: Record<string, ITaskWithID[]> = {};
-      // for (let task of tasks) {
-      //   const day = dayjs(task.startDate).format("YYYY-MM-DD");
-      //   if (!(day in tasksByDate)) {
-      //     tasksByDate[day] = [];
-      //   }
-      //   tasksByDate[day].push(task);
-      // }
-
-      // res.status(200).json({ tasks: tasksByDate });
-
-      // const fixedTasks = tasks.map((task: ITask) => ({
-      //   title: task.description,
-      //   start: task.startDate,
-      //   end: task.endDate,
-      //   allDay: task.isAllDay,
-      //   category: task.category,
-      //   status: task.status,
-      // }));
-
       res.status(200).json({ tasks });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
