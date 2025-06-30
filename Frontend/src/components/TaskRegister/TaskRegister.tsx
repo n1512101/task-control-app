@@ -56,6 +56,14 @@ const TaskRegister: FC<IProps> = ({
     const endDate = isAllDay
       ? dayjs(`${startDay} 23:59`).format("YYYY-MM-DDTHH:mm")
       : dayjs(`${endDay} ${endTime}`).format("YYYY-MM-DDTHH:mm");
+    if (!dayjs(endDate).isAfter(dayjs(startDate))) {
+      setProperty({
+        open: true,
+        message: "開始日時と終了日時が不適切です",
+        severity: "warning",
+      });
+      return;
+    }
     mutate(
       {
         ...data,

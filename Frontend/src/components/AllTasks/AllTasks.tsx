@@ -243,17 +243,17 @@
 // export default AllTasks;
 
 import { FC, ReactElement, useEffect, useState } from "react";
-import { Calendar, dayjsLocalizer, View, SlotInfo } from "react-big-calendar";
+import { Calendar, dayjsLocalizer, View, Event } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import useGetAllTasks from "../../hooks/useGetAllTasks.hook";
 import { ITask } from "../../interfaces/task.interface";
+import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import "./AllTasks.scss";
 
 // dayjsのロケールを日本語に設定
 dayjs.locale("ja");
-
 const localizer = dayjsLocalizer(dayjs);
 
 // 日本語メッセージの設定
@@ -271,33 +271,6 @@ const formats = {
   monthHeaderFormat: (date: Date) => dayjs(date).format("YYYY年M月"),
   dayHeaderFormat: (date: Date) => dayjs(date).format("YYYY年M月D日 (ddd)"),
 };
-
-const dummyEvents = [
-  {
-    title: "会議",
-    start: new Date(2025, 5, 10, 10, 0), // 2025年6月10日 10:00
-    end: new Date(2025, 5, 10, 11, 0),
-    allDay: false,
-    category: "study",
-    status: "done",
-  },
-  {
-    title: "ランチ",
-    start: new Date(2025, 5, 12, 12, 0), // 2025年6月12日 12:00
-    end: new Date(2025, 5, 12, 14, 30),
-    allDay: false,
-    category: "recreation",
-    status: "done",
-  },
-  {
-    title: "プロジェクト締切",
-    start: new Date(2025, 5, 15, 0, 0), // 2025年6月15日 終日
-    end: new Date(2025, 5, 15, 23, 59),
-    allDay: true,
-    category: "exercise",
-    status: "done",
-  },
-];
 
 // カテゴリーごとにイベントの背景色を設定する関数
 const eventPropGetter = (event: any) => {
@@ -362,40 +335,48 @@ const AllTasks: FC = (): ReactElement => {
     }
   }, [isSuccess, data]);
 
-  // スロットを選択した際に動作する関数
-  const handleSelectSlot = (slotInfo: SlotInfo) => {
-    console.log(slotInfo);
-  };
-
   // 日付を変更した際に動作する関数
   const handleNavigate = (newDate: Date) => {
-    console.log("handleNavigate");
     setDate(newDate);
   };
 
   // 表示を変更した際に動作する関数
   const handleViewChange = (newView: View) => {
-    console.log("handleViewChange");
     setView(newView);
+  };
+
+  // イベントをクリックした際に動作する関数
+  const handleSelectEvent = (event: Event) => {
+    console.log(event);
   };
 
   return (
     <div className="all-tasks">
-      <Calendar
-        selectable={true}
-        views={["month", "day"]}
-        defaultView="month"
-        localizer={localizer}
-        events={tasks}
-        eventPropGetter={eventPropGetter}
-        date={date}
-        view={view}
-        messages={messages}
-        formats={formats}
-        onSelectSlot={handleSelectSlot}
-        onNavigate={handleNavigate}
-        onView={handleViewChange}
-      />
+      {isPending && <div>読み込み中...</div>}
+      {isError && (
+        <div className="error">
+          <p>データの取得に失敗しました。</p>
+          <p>再読み込みしてください。</p>
+          <CustomizedButton onClick={() => refetch()}>再試行</CustomizedButton>
+        </div>
+      )}
+      {isSuccess && (
+        <Calendar
+          selectable={true}
+          views={["month", "day"]}
+          defaultView="month"
+          localizer={localizer}
+          events={tasks}
+          eventPropGetter={eventPropGetter}
+          date={date}
+          view={view}
+          messages={messages}
+          formats={formats}
+          onNavigate={handleNavigate}
+          onView={handleViewChange}
+          onSelectEvent={handleSelectEvent}
+        />
+      )}
     </div>
   );
 };
