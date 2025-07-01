@@ -91,7 +91,7 @@
 .all-tasks {
   margin-top: 60px;
   padding: 10px;
-  min-height: 100vh;
+  min-height: calc(100vh - 60px);
   background: var(--base-background);
   .error {
     position: absolute;
