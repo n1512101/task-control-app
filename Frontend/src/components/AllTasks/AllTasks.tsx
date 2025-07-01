@@ -248,8 +248,9 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import useGetAllTasks from "../../hooks/useGetAllTasks.hook";
-import { ITask } from "../../interfaces/task.interface";
+import { IEventTask, ITask } from "../../interfaces/task.interface";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
+import TaskModal from "../TaskModal/TaskModal";
 import "./AllTasks.scss";
 
 // dayjsのロケールを日本語に設定
@@ -315,7 +316,9 @@ const eventPropGetter = (event: any) => {
 const AllTasks: FC = (): ReactElement => {
   const [date, setDate] = useState<Date>(new Date());
   const [view, setView] = useState<View>("month");
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<IEventTask[]>([]);
+  const [selectedTasks, setSelectedTasks] = useState<IEventTask[]>([]);
+  const [openModal, setOpenModal] = useState<boolean>(false);
 
   // タスク取得hook
   const { data, isSuccess, isPending, isError, refetch } = useGetAllTasks();
@@ -324,6 +327,7 @@ const AllTasks: FC = (): ReactElement => {
   useEffect(() => {
     if (isSuccess) {
       const fixedTasks = data.tasks.map((task: ITask) => ({
+        id: task._id,
         title: task.description,
         start: dayjs(task.startDate).add(-9, "hour").toDate(),
         end: dayjs(task.endDate).add(-9, "hour").toDate(),
@@ -347,7 +351,14 @@ const AllTasks: FC = (): ReactElement => {
 
   // イベントをクリックした際に動作する関数
   const handleSelectEvent = (event: Event) => {
-    console.log(event);
+    setSelectedTasks(
+      tasks.filter(
+        (task: IEventTask) =>
+          dayjs(event.start).format("YYYY-MM-DD") ===
+          dayjs(task.start).format("YYYY-MM-DD")
+      )
+    );
+    setOpenModal(true);
   };
 
   return (
@@ -361,21 +372,29 @@ const AllTasks: FC = (): ReactElement => {
         </div>
       )}
       {isSuccess && (
-        <Calendar
-          selectable={true}
-          views={["month", "day"]}
-          defaultView="month"
-          localizer={localizer}
-          events={tasks}
-          eventPropGetter={eventPropGetter}
-          date={date}
-          view={view}
-          messages={messages}
-          formats={formats}
-          onNavigate={handleNavigate}
-          onView={handleViewChange}
-          onSelectEvent={handleSelectEvent}
-        />
+        <>
+          {openModal && (
+            <TaskModal
+              setOpenModal={setOpenModal}
+              selectedTasks={selectedTasks}
+            />
+          )}
+          <Calendar
+            selectable={true}
+            views={["month", "day"]}
+            defaultView="month"
+            localizer={localizer}
+            events={tasks}
+            eventPropGetter={eventPropGetter}
+            date={date}
+            view={view}
+            messages={messages}
+            formats={formats}
+            onNavigate={handleNavigate}
+            onView={handleViewChange}
+            onSelectEvent={handleSelectEvent}
+          />
+        </>
       )}
     </div>
   );

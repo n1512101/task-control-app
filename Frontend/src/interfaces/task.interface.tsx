@@ -2,6 +2,7 @@ export type IRepeatType = "daily" | "weekly";
 export type ICategory = "study" | "job" | "recreation" | "exercise";
 
 export interface ITask {
+  _id: string;
   startDate: string;
   endDate: string;
   category: ICategory;
@@ -33,4 +34,14 @@ export interface IUpdateTask {
   description?: string;
   status?: "pending" | "done";
   category?: ICategory;
+}
+
+export interface IEventTask {
+  id: string;
+  allDay: boolean;
+  start: Date;
+  end: Date;
+  title: string;
+  category: ICategory;
+  status: "pending" | "done";
 }
