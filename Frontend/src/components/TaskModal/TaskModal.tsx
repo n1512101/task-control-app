@@ -11,11 +11,17 @@ const TaskModal = ({
   setOpenModal: (openModal: boolean) => void;
   selectedTasks: IEventTask[];
 }): ReactElement => {
-  const toggleTaskCompletion = (id: string) => {};
+  const toggleTaskCompletion = (id: string) => {
+    console.log(id);
+  };
 
-  const handleEdit = (id: string) => {};
+  const handleEdit = (id: string) => {
+    console.log(id);
+  };
 
-  const handleDelete = (id: string) => {};
+  const handleDelete = (id: string) => {
+    console.log(id);
+  };
   return (
     <div className="task-modal">
       <div className="task-modal-container">
