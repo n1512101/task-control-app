@@ -46,9 +46,14 @@ let TaskController = class TaskController {
     getTasks(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
                 const tasks = yield task_model_1.Task.find({
                     userId: req.user.id,
-                    date: new Date().toLocaleDateString(),
+                    startDate: { $gte: today, $lt: tomorrow },
                 }).select(["_id", "category", "description", "status"]);
                 res.status(200).json({ tasks });
             }
@@ -63,17 +68,16 @@ let TaskController = class TaskController {
             try {
                 const tasks = yield task_model_1.Task.find({
                     userId: req.user.id,
-                }).select(["_id", "category", "description", "status", "date"]);
-                // 各taskの日付により分類する
-                const tasksByDate = {};
-                for (let task of tasks) {
-                    const day = (0, dayjs_1.default)(task.date).format("YYYY-MM-DD");
-                    if (!(day in tasksByDate)) {
-                        tasksByDate[day] = [];
-                    }
-                    tasksByDate[day].push(task);
-                }
-                res.status(200).json({ tasks: tasksByDate });
+                }).select([
+                    "_id",
+                    "category",
+                    "description",
+                    "status",
+                    "startDate",
+                    "endDate",
+                    "isAllDay",
+                ]);
+                res.status(200).json({ tasks });
             }
             catch (error) {
                 res.status(500).json({ message: error.message });

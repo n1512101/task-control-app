@@ -25,10 +25,14 @@ const taskSchema = new mongoose_1.Schema({
         enum: ["pending", "done"],
         required: true,
     },
-    date: {
+    startDate: {
         type: Date,
         required: true,
         index: { expires: parseInt(process.env.TASK_EXPIRY) },
+    },
+    endDate: {
+        type: Date,
+        required: true,
     },
     completedAt: {
         type: Date,
@@ -43,6 +47,10 @@ const taskSchema = new mongoose_1.Schema({
     nextReminderAt: {
         type: Date,
         default: null,
+    },
+    isAllDay: {
+        type: Boolean,
+        required: true,
     },
 });
 exports.Task = (0, mongoose_1.model)("Tasks", taskSchema);
