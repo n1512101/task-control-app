@@ -9,7 +9,7 @@
   .task-modal-container {
     width: 70%;
     height: 70%;
-    max-width: 900px;
+    max-width: 700px;
     min-width: 470px;
     background-color: var(--third-background);
     position: absolute;
@@ -18,10 +18,16 @@
     border-radius: 16px;
     box-shadow: 0 2px 6px var(--shadow-color);
     overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .task-modal-header {
       background: var(--tertiary-color);
       padding: 18px;
-      position: relative;
+      top: 0;
+      position: sticky;
       .close-button {
         position: absolute;
         top: 16px;
@@ -51,6 +57,91 @@
           color: rgba(191, 219, 254, 1);
           font-size: 14px;
           margin: 0;
+        }
+      }
+    }
+    .task-modal-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      .task-modal-item {
+        padding: 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        background-color: var(--paper-background);
+        &:hover {
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+          border-color: #93c5fd;
+          & .task-modal-content .task-modal-actions {
+            opacity: 1;
+          }
+        }
+        &.completed:hover {
+          border-color: var(--border-color);
+          box-shadow: none;
+        }
+        .task-modal-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 8px;
+          .task-modal-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex: 1;
+            min-width: 0;
+            .completion-button {
+              background: none;
+              border: none;
+              cursor: pointer;
+              transition: color 0.2s;
+              color: #9ca3af;
+              &:hover {
+                color: #3b82f6;
+              }
+              &.completed {
+                color: #10b981;
+              }
+              &.completed:hover {
+                color: #059669;
+              }
+            }
+            .task-modal-title {
+              overflow-wrap: break-word;
+              min-width: 0;
+              transition: all 0.2s ease;
+              &.completed {
+                color: #738088;
+                text-decoration: line-through;
+              }
+            }
+          }
+          .task-modal-actions {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            flex: 0;
+            .action-button {
+              padding: 8px;
+              background: none;
+              border: none;
+              cursor: pointer;
+              border-radius: 6px;
+              transition: color 0.2s ease;
+              color: #9ca3af;
+              &:hover {
+                color: #3b82f6;
+              }
+              &.delete:hover {
+                color: #ef4444;
+              }
+            }
+          }
         }
       }
     }

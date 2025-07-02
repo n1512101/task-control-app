@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import { Calendar, CheckCircle2, Circle, Edit3, Trash2, X } from "lucide-react";
+import dayjs from "dayjs";
 import { IEventTask } from "../../interfaces/task.interface";
 import "./TaskModal.scss";
 
@@ -15,7 +16,6 @@ const TaskModal = ({
   const handleEdit = (id: string) => {};
 
   const handleDelete = (id: string) => {};
-
   return (
     <div className="task-modal">
       <div className="task-modal-container">
@@ -26,9 +26,11 @@ const TaskModal = ({
           <div className="task-modal-header-content">
             <Calendar size={24} />
             <div>
-              <h2 className="task-modal-header-title">2025年07月01日</h2>
+              <h2 className="task-modal-header-title">
+                {dayjs(selectedTasks[0].start).format("YYYY年MM月DD日 (ddd)")}
+              </h2>
               <p className="task-modal-header-subtitle">
-                火曜日 - {selectedTasks.length}件のタスク
+                {selectedTasks.length}件のタスク
               </p>
             </div>
           </div>
@@ -37,12 +39,12 @@ const TaskModal = ({
           {selectedTasks.map((task: IEventTask) => (
             <div
               key={task.id}
-              className={`task-item ${
+              className={`task-modal-item ${
                 task.status === "done" ? "completed" : ""
               }`}
             >
-              <div className="task-content">
-                <div className="task-left">
+              <div className="task-modal-content">
+                <div className="task-modal-left">
                   <button
                     onClick={() => toggleTaskCompletion(task.id)}
                     className={`completion-button ${
@@ -55,30 +57,24 @@ const TaskModal = ({
                       <Circle size={20} />
                     )}
                   </button>
-
-                  <div className="task-info">
-                    <span
-                      className={`task-title ${
-                        task.status === "done" ? "completed" : ""
-                      }`}
-                    >
-                      {task.title}
-                    </span>
+                  <div
+                    className={`task-modal-title ${
+                      task.status === "done" ? "completed" : ""
+                    }`}
+                  >
+                    {task.title}
                   </div>
                 </div>
-
-                <div className="task-actions">
+                <div className="task-modal-actions">
                   <button
                     onClick={() => handleEdit(task.id)}
                     className="action-button"
-                    title="編集"
                   >
                     <Edit3 size={16} />
                   </button>
                   <button
                     onClick={() => handleDelete(task.id)}
                     className="action-button delete"
-                    title="削除"
                   >
                     <Trash2 size={16} />
                   </button>
