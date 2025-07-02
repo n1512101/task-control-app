@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 export default function useCreateTask() {
   const axiosAuth = useAxiosAuth();
   // タスク作成する際に動作する関数
-  const createTask = async (task: ITask) => {
+  const createTask = async (task: Omit<ITask, "_id">) => {
     try {
       const response = await axiosAuth.post("/task/create", task);
       return response.data;
