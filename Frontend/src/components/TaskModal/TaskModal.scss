@@ -82,6 +82,16 @@
           border-color: var(--border-color);
           box-shadow: none;
         }
+        .task-modal-category {
+          padding: 6px 10px;
+          color: white;
+          font-size: 12px;
+          font-weight: bold;
+          border-radius: 15px;
+          display: inline-block;
+          margin-bottom: 8px;
+          padding: 4px 10px;
+        }
         .task-modal-content {
           display: flex;
           align-items: center;
