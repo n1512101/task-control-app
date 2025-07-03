@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { injectable } from "inversify";
-import { ITask, ITaskWithID, IUpdateTask } from "./task.interface";
+import { ITask, IUpdateTask } from "./task.interface";
 import { matchedData } from "express-validator";
 import { Task } from "../models/task.model";
 import { Types } from "mongoose";
