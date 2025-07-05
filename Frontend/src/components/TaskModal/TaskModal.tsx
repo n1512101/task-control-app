@@ -1,23 +1,29 @@
 import { Dispatch, ReactElement, SetStateAction } from "react";
-import { Calendar, CheckCircle2, Circle, Edit3, Trash2, X } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { Calendar, X } from "lucide-react";
 import dayjs from "dayjs";
 import { IEventTask } from "../../interfaces/task.interface";
 import useUpdateTask from "../../hooks/useUpdateTask.hook";
 import useDebounce from "../../hooks/useDebounce.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
-import { Category, CategoryBackground } from "../../utils/utils";
+import TaskModalCard from "../TaskModalCard/TaskModalCard";
 import "./TaskModal.scss";
 
+// AllTaskページのTaskModal
 const TaskModal = ({
   setOpenModal,
   selectedTasks,
   setSelectedTasks,
   setProperty,
+  setTasks,
+  onRequestDelete,
 }: {
   setOpenModal: (openModal: boolean) => void;
   selectedTasks: IEventTask[];
   setSelectedTasks: Dispatch<SetStateAction<IEventTask[]>>;
   setProperty: (property: ISnackbarProperty) => void;
+  setTasks: Dispatch<SetStateAction<IEventTask[]>>;
+  onRequestDelete: (taskId: string) => void;
 }): ReactElement => {
   // データ更新hook
   const { mutate } = useUpdateTask();
@@ -67,13 +73,34 @@ const TaskModal = ({
     debouncedUpdateStatus(id, newStatus, category);
   };
 
-  const handleEdit = (id: string) => {
-    console.log(id);
+  // 保存ボタンを押した際の処理
+  const handleSave = (
+    id: string,
+    title: string,
+    setIsEdit: (isEdit: boolean) => void
+  ) => {
+    // データベースに編集内容を保存
+    mutate(
+      {
+        path: "/task",
+        task: { _id: id, description: title },
+      },
+      {
+        onError: (error) => {
+          setProperty({
+            open: true,
+            message: error.message,
+            severity: "warning",
+          });
+        },
+      }
+    );
+    setTasks((prev) =>
+      prev.map((task) => (task.id === id ? { ...task, title } : task))
+    );
+    setIsEdit(false);
   };
 
-  const handleDelete = (id: string) => {
-    console.log(id);
-  };
   return (
     <div className="task-modal">
       <div className="task-modal-container">
@@ -94,60 +121,17 @@ const TaskModal = ({
           </div>
         </div>
         <div className="task-modal-body">
-          {selectedTasks.map((task: IEventTask) => (
-            <div
-              key={task.id}
-              className={`task-modal-item ${
-                task.status === "done" ? "completed" : ""
-              }`}
-            >
-              <span
-                className="task-modal-category"
-                style={{
-                  backgroundColor: CategoryBackground[task.category],
-                }}
-              >
-                {Category[task.category]}
-              </span>
-              <div className="task-modal-content">
-                <div className="task-modal-left">
-                  <button
-                    onClick={() => toggleTaskCompletion(task.id)}
-                    className={`completion-button ${
-                      task.status === "done" ? "completed" : ""
-                    }`}
-                  >
-                    {task.status === "done" ? (
-                      <CheckCircle2 size={20} />
-                    ) : (
-                      <Circle size={20} />
-                    )}
-                  </button>
-                  <div
-                    className={`task-modal-title ${
-                      task.status === "done" ? "completed" : ""
-                    }`}
-                  >
-                    {task.title}
-                  </div>
-                </div>
-                <div className="task-modal-actions">
-                  <button
-                    onClick={() => handleEdit(task.id)}
-                    className="action-button"
-                  >
-                    <Edit3 size={16} />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(task.id)}
-                    className="action-button delete"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+          <AnimatePresence>
+            {selectedTasks.map((task: IEventTask) => (
+              <TaskModalCard
+                key={task.id}
+                task={task}
+                toggleTaskCompletion={toggleTaskCompletion}
+                handleSave={handleSave}
+                onRequestDelete={onRequestDelete}
+              />
+            ))}
+          </AnimatePresence>
         </div>
       </div>
     </div>

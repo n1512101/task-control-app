@@ -5,7 +5,7 @@ import {
   IRoutineResponse,
   ITaskResponse,
 } from "../../interfaces/task.interface";
-import { Category, CategoryBackground } from "../../utils/utils";
+import { Category, CategoryBackground, taskVariants } from "../../utils/utils";
 import useUpdateTask from "../../hooks/useUpdateTask.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import { motion } from "framer-motion";
@@ -19,13 +19,6 @@ interface IProps {
   api: string;
   handleUpdateStatus: (taskId: string, newStatus: "done" | "pending") => void;
 }
-
-// アニメーション設定
-const taskVariants = {
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-  hidden: { opacity: 0, y: 20 },
-  exit: { opacity: 0, x: -500, transition: { duration: 0.5 } },
-};
 
 const MotionPaper = motion.create(Paper); // Material UIコンポーネントをmotion化
 
@@ -104,7 +97,7 @@ const TaskCard: FC<IProps> = ({
       elevation={3}
       className="task"
       variants={taskVariants}
-      initial="hidden"
+      initial="initial"
       animate="visible"
       exit="exit"
       sx={{
@@ -127,7 +120,6 @@ const TaskCard: FC<IProps> = ({
       >
         {Category[task.category]}
       </span>
-
       {isEdit ? (
         <TextField
           multiline
@@ -149,7 +141,6 @@ const TaskCard: FC<IProps> = ({
           {text}
         </p>
       )}
-
       <div className="controller">
         <Button className="btn" onClick={handleEdit}>
           {isEdit ? "保存" : "編集"}

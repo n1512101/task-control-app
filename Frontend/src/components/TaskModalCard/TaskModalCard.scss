@@ -1,0 +1,110 @@
+.task-modal-item {
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  background-color: var(--paper-background);
+  &:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-color: #93c5fd;
+    & .task-modal-content .task-modal-actions {
+      opacity: 1;
+    }
+  }
+  &.completed:hover {
+    border-color: var(--border-color);
+    box-shadow: none;
+  }
+  .task-modal-category {
+    padding: 6px 10px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 15px;
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 4px 10px;
+  }
+  .task-modal-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    .task-modal-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex: 1;
+      min-width: 0;
+      .completion-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: color 0.2s;
+        color: #9ca3af;
+        &:hover {
+          color: #3b82f6;
+        }
+        &.completed {
+          color: #10b981;
+        }
+        &.completed:hover {
+          color: #059669;
+        }
+      }
+      .task-modal-title {
+        overflow-wrap: break-word;
+        min-width: 0;
+        transition: color 0.2s ease;
+        &.completed {
+          color: #738088;
+          text-decoration: line-through;
+        }
+      }
+    }
+    .task-modal-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      flex: 0;
+      .action-button {
+        padding: 8px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: color 0.2s ease;
+        color: #9ca3af;
+        &:hover {
+          color: #3b82f6;
+        }
+        &.delete:hover {
+          color: #ef4444;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .task-modal-item {
+    padding: 10px;
+    .task-modal-category {
+      margin-bottom: 4px;
+    }
+    .task-modal-content {
+      .task-modal-left {
+        gap: 16px;
+        font-size: 14px;
+      }
+      .task-modal-actions {
+        opacity: 1;
+        .action-button {
+          padding: 6px;
+        }
+      }
+    }
+  }
+}
