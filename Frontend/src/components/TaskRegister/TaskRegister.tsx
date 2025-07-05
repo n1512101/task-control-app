@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Switch from "@mui/material/Switch";
 import dayjs from "dayjs";
+import { PickerValue } from "@mui/x-date-pickers/internals";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import { ICategory } from "../../interfaces/task.interface";
 import useCreateTask from "../../hooks/useCreateTask.hook";
@@ -30,12 +31,12 @@ const TaskRegister: FC<IProps> = ({
   setIsAnimating,
 }): ReactElement => {
   const [isAllDay, setIsAllDay] = useState<boolean>(false);
-  const [startDay, setStartDay] = useState<string>(
-    dayjs().format("YYYY-MM-DD")
+  const [startTime, setStartTime] = useState<string>(
+    dayjs().format("YYYY-MM-DD HH:mm")
   );
-  const [endDay, setEndDay] = useState<string>(dayjs().format("YYYY-MM-DD"));
-  const [startTime, setStartTime] = useState<string>(dayjs().format("HH:mm"));
-  const [endTime, setEndTime] = useState<string>(dayjs().format("HH:mm"));
+  const [endTime, setEndTime] = useState<string>(
+    dayjs().add(1, "hour").format("YYYY-MM-DD HH:mm")
+  );
   const [category, setCategory] = useState<ICategory>("study");
 
   const { mutate } = useCreateTask();
@@ -48,14 +49,33 @@ const TaskRegister: FC<IProps> = ({
     formState: { errors },
   } = useForm<Schema>({ resolver: zodResolver(schema) });
 
+  // DatePicker日付選択した際に動作する関数
+  const handleDatePicker = (
+    e: PickerValue,
+    setTime: (time: string) => void,
+    time: string
+  ) => {
+    setTime(`${e?.format("YYYY-MM-DD")} ${dayjs(time).format("HH:mm")}`);
+  };
+
+  // TimePicker時間選択した際に動作する関数
+  const handleTimePicker = (
+    e: PickerValue,
+    setTime: (time: string) => void,
+    time: string
+  ) => {
+    setTime(`${dayjs(time).format("YYYY-MM-DD")} ${e?.format("HH:mm")}`);
+  };
+
   // タスク作成ボタンを押した際に動作する関数
   const onSubmit = (data: Schema) => {
     const startDate = isAllDay
-      ? dayjs(`${startDay} 00:00`).format("YYYY-MM-DDTHH:mm")
-      : dayjs(`${startDay} ${startTime}`).format("YYYY-MM-DDTHH:mm");
+      ? `${dayjs(startTime).format("YYYY-MM-DD")} 00:00`
+      : startTime;
     const endDate = isAllDay
-      ? dayjs(`${startDay} 23:59`).format("YYYY-MM-DDTHH:mm")
-      : dayjs(`${endDay} ${endTime}`).format("YYYY-MM-DDTHH:mm");
+      ? `${dayjs(startTime).format("YYYY-MM-DD")} 23:59`
+      : endTime;
+
     if (!dayjs(endDate).isAfter(dayjs(startDate))) {
       setProperty({
         open: true,
@@ -127,19 +147,23 @@ const TaskRegister: FC<IProps> = ({
               <div className="datetime-group">
                 <div className="datetime-label">開始日時</div>
                 <CalendarAndTimePicker
-                  setDay={setStartDay}
-                  setTime={setStartTime}
                   alwaysAvailable={true}
                   isAllDay={isAllDay}
+                  handleDatePicker={handleDatePicker}
+                  handleTimePicker={handleTimePicker}
+                  time={startTime}
+                  setTime={setStartTime}
                 />
               </div>
               <div className="datetime-group">
                 <div className="datetime-label">終了日時</div>
                 <CalendarAndTimePicker
-                  setDay={setEndDay}
-                  setTime={setEndTime}
                   alwaysAvailable={false}
                   isAllDay={isAllDay}
+                  handleDatePicker={handleDatePicker}
+                  handleTimePicker={handleTimePicker}
+                  time={endTime}
+                  setTime={setEndTime}
                 />
               </div>
             </div>
@@ -197,7 +221,7 @@ const TaskRegister: FC<IProps> = ({
           <textarea
             className="task-textarea"
             placeholder="タスクを入力..."
-            rows={6}
+            rows={5}
             {...register("description")}
           />
           {errors.description && (

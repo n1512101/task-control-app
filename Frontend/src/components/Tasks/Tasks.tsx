@@ -31,7 +31,7 @@ const Tasks: FC = (): ReactElement => {
     message: "",
     severity: "warning",
   });
-  const [open, setOpen] = useState(false); // modalが開いているか
+  const [open, setOpen] = useState(false); // タスク削除確認modalが開いているか
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   // 未完了のルーティンのみを表示するかどうか
   const [onlyPending, setOnlyPending] = useState<boolean>(false);
