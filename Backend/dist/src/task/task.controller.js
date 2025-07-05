@@ -141,7 +141,7 @@ let TaskController = class TaskController {
                 if (!result.deletedCount) {
                     return res.status(404).json({ message: "削除対象が存在しません" });
                 }
-                res.status(200).json({ message: "ルーティンを削除しました！" });
+                res.status(200).json({ message: "タスクを削除しました！" });
             }
             catch (error) {
                 res.status(500).json({ message: error.message });
