@@ -1,4 +1,4 @@
-import { Dispatch, ReactElement, SetStateAction } from "react";
+import { Dispatch, ReactElement, SetStateAction, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { Calendar, X } from "lucide-react";
 import dayjs from "dayjs";
@@ -25,6 +25,13 @@ const TaskModal = ({
   setTasks: Dispatch<SetStateAction<IEventTask[]>>;
   onRequestDelete: (taskId: string) => void;
 }): ReactElement => {
+  // 選択されたイベントの日付を保持する
+  const [selectedTasksDate] = useState<string>(
+    selectedTasks.length > 0
+      ? dayjs(selectedTasks[0].start).format("YYYY年MM月DD日 (ddd)")
+      : ""
+  );
+
   // データ更新hook
   const { mutate } = useUpdateTask();
 
@@ -111,9 +118,7 @@ const TaskModal = ({
           <div className="task-modal-header-content">
             <Calendar size={24} />
             <div>
-              <h2 className="task-modal-header-title">
-                {dayjs(selectedTasks[0].start).format("YYYY年MM月DD日 (ddd)")}
-              </h2>
+              <h2 className="task-modal-header-title">{selectedTasksDate}</h2>
               <p className="task-modal-header-subtitle">
                 {selectedTasks.length}件のタスク
               </p>

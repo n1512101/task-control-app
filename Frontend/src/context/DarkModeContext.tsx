@@ -13,11 +13,9 @@ export interface DarkModeContextType {
   toggle: () => void;
 }
 
-export const DarkModeContext = createContext<DarkModeContextType>({
-  mode: null,
-  // ダミー関数。DarkModeContextProviderで本物の関数に置き換わる
-  toggle: () => {},
-});
+export const DarkModeContext = createContext<DarkModeContextType>(
+  {} as DarkModeContextType
+);
 
 // ダークモードorライトモードを保持するcontext
 export const DarkModeContextProvider: FC<{ children: ReactNode }> = ({
