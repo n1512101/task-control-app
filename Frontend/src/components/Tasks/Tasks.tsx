@@ -1,4 +1,4 @@
-import { FC, ReactElement, useEffect, useState } from "react";
+import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -14,10 +14,14 @@ import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import TaskCard from "../TaskCard/TaskCard";
 import useDeleteTask from "../../hooks/useDeleteTask.hook";
 import SelectCompletedTaskButton from "../SelectCompletedTaskButton/SelectCompletedTaskButton";
+import { LoadingContext } from "../../context/LoadingContext";
 import "./Tasks.scss";
 
 const Tasks: FC = (): ReactElement => {
   const [tasks, setTasks] = useState<ITaskResponse[]>([]);
+
+  // ローディング状態を管理するcontext
+  const { setIsLoading } = useContext(LoadingContext);
 
   // タスク取得hook
   const { data, isSuccess, isPending, isError, refetch } = useGetTasks();
@@ -36,12 +40,14 @@ const Tasks: FC = (): ReactElement => {
   // 未完了のルーティンのみを表示するかどうか
   const [onlyPending, setOnlyPending] = useState<boolean>(false);
 
-  // 初期データ同期（初回のみ）
+  // 初回のみ初期データ同期
   useEffect(() => {
     if (isSuccess) {
       setTasks(data.tasks);
     }
-  }, [isSuccess, data]);
+    // ローディング状態の変更
+    setIsLoading(isPending);
+  }, [isSuccess, data, isPending, setIsLoading]);
 
   // snackbarを閉じる関数
   const handleClose = () => {
@@ -102,7 +108,6 @@ const Tasks: FC = (): ReactElement => {
 
   return (
     <div className="tasks">
-      {isPending && <div>読み込み中...</div>}
       {isError && (
         <div className="error">
           <p>データの取得に失敗しました。</p>

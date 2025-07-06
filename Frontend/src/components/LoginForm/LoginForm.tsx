@@ -1,10 +1,11 @@
-import { ReactElement, useContext, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
+import { LoadingContext } from "../../context/LoadingContext";
 import useLogin from "../../hooks/useLogin.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import "./LoginForm.scss";
@@ -34,7 +35,10 @@ const LoginForm = ({
 }): ReactElement => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const { mutate } = useLogin();
+  // ローディング状態を管理するcontext
+  const { setIsLoading } = useContext(LoadingContext);
+
+  const { mutate, isPending } = useLogin();
   const { setAccessToken } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -65,6 +69,11 @@ const LoginForm = ({
       },
     });
   };
+
+  useEffect(() => {
+    // ローディング状態の変更
+    setIsLoading(isPending);
+  }, [isPending, setIsLoading]);
 
   return (
     <div
