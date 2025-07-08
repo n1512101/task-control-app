@@ -4,7 +4,7 @@ import "./LoadingSpinner.scss";
 const LoadingSpinner = () => {
   return (
     <div className="loading-spinner">
-      <ClipLoader size={35} color="#eee" />
+      <ClipLoader color="#3784bc" />
     </div>
   );
 };

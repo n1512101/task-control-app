@@ -2,6 +2,7 @@ import { ReactNode, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import useAxiosAuth from "../../hooks/useAxiosAuth.hook";
+import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 // ログインした状態でのみアクセスできる
 const RequireAuth = ({ children }: { children: ReactNode }) => {
@@ -28,7 +29,7 @@ const RequireAuth = ({ children }: { children: ReactNode }) => {
   }, [isError, navigate]);
 
   if (isLoading) {
-    return <div>読み込み中...</div>;
+    return <LoadingSpinner />;
   }
 
   return children;

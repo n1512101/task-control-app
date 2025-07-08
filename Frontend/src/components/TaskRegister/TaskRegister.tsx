@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,6 +9,7 @@ import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import { ICategory } from "../../interfaces/task.interface";
 import useCreateTask from "../../hooks/useCreateTask.hook";
 import CalendarAndTimePicker from "../CalendarAndTimePicker/CalendarAndTimePicker";
+import { LoadingContext } from "../../context/LoadingContext";
 import "./TaskRegister.scss";
 
 // フォームスキーマ定義
@@ -39,7 +40,14 @@ const TaskRegister: FC<IProps> = ({
   );
   const [category, setCategory] = useState<ICategory>("study");
 
-  const { mutate } = useCreateTask();
+  // ローディング状態を管理するcontext
+  const { setIsLoading } = useContext(LoadingContext);
+  const { mutate, isPending } = useCreateTask();
+
+  useEffect(() => {
+    // ローディング状態の変更
+    setIsLoading(isPending);
+  }, [isPending, setIsLoading]);
 
   // react-hook-form
   const {

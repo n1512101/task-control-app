@@ -1,4 +1,4 @@
-import { FC, ReactElement, useEffect, useState } from "react";
+import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import { Calendar, dayjsLocalizer, View, Event } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
@@ -16,6 +16,7 @@ import {
   calendarText,
   calendarFormats,
 } from "../../utils/utils";
+import { LoadingContext } from "../../context/LoadingContext";
 import "./AllTasks.scss";
 
 // dayjsのロケールを日本語に設定
@@ -37,6 +38,9 @@ const AllTasks: FC = (): ReactElement => {
     severity: "warning",
   });
 
+  // ローディング状態を管理するcontext
+  const { setIsLoading } = useContext(LoadingContext);
+
   // タスク取得hook
   const { data, isSuccess, isPending, isError, refetch } = useGetAllTasks();
   // タスク削除hook
@@ -56,7 +60,9 @@ const AllTasks: FC = (): ReactElement => {
       }));
       setTasks(fixedTasks);
     }
-  }, [isSuccess, data]);
+    // ローディング状態の変更
+    setIsLoading(isPending);
+  }, [isSuccess, data, isPending, setIsLoading]);
 
   // 日付を変更した際に動作する関数
   const handleNavigate = (newDate: Date) => {
@@ -130,7 +136,6 @@ const AllTasks: FC = (): ReactElement => {
 
   return (
     <div className="all-tasks">
-      {isPending && <div>読み込み中...</div>}
       {isError && (
         <div className="error">
           <p>データの取得に失敗しました。</p>

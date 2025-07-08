@@ -1,10 +1,11 @@
-import { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ICategory, IRepeatType } from "../../interfaces/task.interface";
 import useCreateRoutine from "../../hooks/useCreateRoutine.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
+import { LoadingContext } from "../../context/LoadingContext";
 import "./RoutineRegister.scss";
 
 // フォームスキーマ定義
@@ -29,7 +30,14 @@ const RoutineRegister: FC<IProps> = ({
   const [repeatType, setRepeatType] = useState<IRepeatType>("daily");
   const [category, setCategory] = useState<ICategory>("study");
 
-  const { mutate } = useCreateRoutine();
+  // ローディング状態を管理するcontext
+  const { setIsLoading } = useContext(LoadingContext);
+  const { mutate, isPending } = useCreateRoutine();
+
+  useEffect(() => {
+    // ローディング状態の変更
+    setIsLoading(isPending);
+  }, [isPending, setIsLoading]);
 
   // react-hook-form
   const {

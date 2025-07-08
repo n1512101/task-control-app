@@ -1,10 +1,11 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useContext, useEffect, useState } from "react";
 import z from "zod";
 import { Eye, EyeOff } from "lucide-react";
 import useSignup from "../../hooks/useSignup.hook";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
+import { LoadingContext } from "../../context/LoadingContext";
 import "./SignupForm.scss";
 
 // スキーマ定義
@@ -45,7 +46,14 @@ const SignupForm = ({
 }): ReactElement => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const { mutate } = useSignup();
+  // ローディング状態を管理するcontext
+  const { setIsLoading } = useContext(LoadingContext);
+  const { mutate, isPending } = useSignup();
+
+  useEffect(() => {
+    // ローディング状態の変更
+    setIsLoading(isPending);
+  }, [isPending, setIsLoading]);
 
   // react-hook-form
   const {
