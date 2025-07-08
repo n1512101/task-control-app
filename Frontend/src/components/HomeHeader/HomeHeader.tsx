@@ -1,5 +1,4 @@
-import { FC, ReactElement, useContext } from "react";
-import axios from "axios";
+import { FC, ReactElement, useContext, useEffect } from "react";
 import {
   DarkModeContext,
   DarkModeContextType,
@@ -9,8 +8,10 @@ import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import MenuOpenRoundedIcon from "@mui/icons-material/MenuOpenRounded";
-import "./HomeHeader.scss";
 import { AuthContext, AuthContextType } from "../../context/AuthContext";
+import useLogout from "../../hooks/useLogout.hook";
+import { LoadingContext } from "../../context/LoadingContext";
+import "./HomeHeader.scss";
 
 interface PropsType {
   open: boolean;
@@ -23,20 +24,29 @@ const HomeHeader: FC<PropsType> = ({ open, setOpen }): ReactElement => {
   const { setAccessToken } = useContext<AuthContextType>(AuthContext);
   const navigate: NavigateFunction = useNavigate();
 
-  // ログアウトする際に動作する関数
-  const handleLogout = async () => {
-    try {
-      await axios.post(
-        `${import.meta.env.VITE_BACK_API_URL}/user/logout`,
-        {},
-        { withCredentials: true }
-      );
-    } catch (error) {
-      console.log(error);
-    }
-    setAccessToken(null);
-    navigate("/auth");
+  // ローディング状態を管理するcontext
+  const { setIsLoading } = useContext(LoadingContext);
+  const { mutate, isPending } = useLogout();
+
+  // ログアウトボタンを押した際に動作する関数
+  const handleLogout = () => {
+    // 成功でも失敗でもアクセストークンを削除してログイン画面に遷移
+    mutate(undefined, {
+      onSuccess: () => {
+        setAccessToken(null);
+        navigate("/auth");
+      },
+      onError: () => {
+        setAccessToken(null);
+        navigate("/auth");
+      },
+    });
   };
+
+  useEffect(() => {
+    // ローディング状態の変更
+    setIsLoading(isPending);
+  }, [isPending, setIsLoading]);
 
   return (
     <div className="homeHeader">
