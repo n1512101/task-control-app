@@ -61,7 +61,7 @@ const TaskModalCard = ({
           {isEdit ? (
             <TextField
               multiline
-              rows={2}
+              rows={3}
               value={title}
               fullWidth
               slotProps={{
