@@ -68,13 +68,6 @@ let AuthRouter = class AuthRouter {
                 }
                 // 新しいアクセストークンを発行する
                 const accessToken = jsonwebtoken_1.default.sign({ id: req.user.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRY) });
-                // 現在のリフレッシュトークンを破棄する
-                res.clearCookie("refreshToken", {
-                    httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: "strict",
-                });
-                yield token.deleteOne();
                 // 新しいリフレッシュトークンを発行し、保存する
                 const refreshToken = jsonwebtoken_1.default.sign({ id: req.user.id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: parseInt(process.env.REFRESH_TOKEN_EXPIRY) });
                 const newRefreshToken = new refreshToken_model_1.RefreshToken({
@@ -82,7 +75,14 @@ let AuthRouter = class AuthRouter {
                     refreshToken,
                     deviceId,
                 });
-                yield newRefreshToken.save();
+                // 古いリフレッシュトークンを削除し、新しいトークンを保存
+                yield Promise.all([token.deleteOne(), newRefreshToken.save()]);
+                // クッキーを更新する
+                res.clearCookie("refreshToken", {
+                    httpOnly: true,
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: "strict",
+                });
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === "production",
