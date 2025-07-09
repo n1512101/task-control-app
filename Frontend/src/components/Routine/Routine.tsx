@@ -1,10 +1,7 @@
 import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import IconButton from "@mui/material/IconButton";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
 import { IRoutineResponse } from "../../interfaces/task.interface";
 import TaskCard from "../TaskCard/TaskCard";
@@ -15,6 +12,7 @@ import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import useDeleteRoutine from "../../hooks/useDeleteTask.hook";
 import SelectCompletedTaskButton from "../SelectCompletedTaskButton/SelectCompletedTaskButton";
 import { LoadingContext } from "../../context/LoadingContext";
+import AddTaskButton from "../AddTaskButton/AddTaskButton";
 import "./Routine.scss";
 
 // 今週のルーティンコンポーネント
@@ -26,7 +24,6 @@ const Routine: FC = (): ReactElement => {
   const { data, isSuccess, isPending, isError, refetch } = useGetRoutine();
   // タスク削除hook
   const { mutate } = useDeleteRoutine();
-  const navigate = useNavigate();
 
   // snackbarに渡すプロパティー
   const [property, setProperty] = useState<ISnackbarProperty>({
@@ -153,6 +150,7 @@ const Routine: FC = (): ReactElement => {
             closeModal={closeModal}
             handleDelete={handleDelete}
           />
+          <AddTaskButton redirectUrl="/home/routine" />
           <div className="header">
             <span className="left">
               {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
@@ -166,12 +164,6 @@ const Routine: FC = (): ReactElement => {
           <div className="routine-container">
             <div className="routine-header">
               <span className="routine-title">毎週のルーティン</span>
-              <IconButton color="primary" className="routine-button">
-                <AddCircleIcon
-                  fontSize="large"
-                  onClick={() => navigate("/home/create-task")}
-                />
-              </IconButton>
             </div>
             <AnimatePresence>
               {weeklyRoutines
@@ -194,12 +186,6 @@ const Routine: FC = (): ReactElement => {
           <div className="routine-container">
             <div className="routine-header">
               <span className="routine-title">毎日のルーティン</span>
-              <IconButton color="primary" className="routine-button">
-                <AddCircleIcon
-                  fontSize="large"
-                  onClick={() => navigate("/home/create-task")}
-                />
-              </IconButton>
             </div>
             <AnimatePresence>
               {dailyRoutines

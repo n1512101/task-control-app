@@ -1,0 +1,20 @@
+.circle-plus-button {
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #045efa, #9ab7f1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+  z-index: 9;
+  &:hover {
+    box-shadow: 0 0 30px rgba(79, 172, 254, 0.7);
+    transform: translateY(-2px);
+  }
+}

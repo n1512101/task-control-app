@@ -1,4 +1,5 @@
 import { FC, ReactElement, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import RoutineRegister from "../RoutineRegister/RoutineRegister";
@@ -12,10 +13,16 @@ const CreateTask: FC = (): ReactElement => {
     message: "",
     severity: "warning",
   });
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // snackbarを閉じる関数
   const handleClose = () => {
     setProperty({ ...property, open: false });
+    // 別のページから遷移してきた場合、タスク作成後元のページに戻る
+    if (location.state?.redirectUrl) {
+      navigate(location.state.redirectUrl);
+    }
   };
 
   // カードがひっくり返している状態か
