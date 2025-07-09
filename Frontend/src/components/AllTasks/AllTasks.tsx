@@ -17,6 +17,7 @@ import {
   calendarFormats,
 } from "../../utils/utils";
 import { LoadingContext } from "../../context/LoadingContext";
+import AddTaskButton from "../AddTaskButton/AddTaskButton";
 import "./AllTasks.scss";
 
 // dayjsのロケールを日本語に設定
@@ -176,6 +177,7 @@ const AllTasks: FC = (): ReactElement => {
             onView={handleViewChange}
             onSelectEvent={handleSelectEvent}
           />
+          <AddTaskButton redirectUrl="/home/all-tasks" />
         </>
       )}
     </div>

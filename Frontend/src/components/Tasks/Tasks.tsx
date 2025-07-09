@@ -1,15 +1,13 @@
 import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import IconButton from "@mui/material/IconButton";
 import useGetTasks from "../../hooks/useGetTasks.hook";
 import { ITaskResponse } from "../../interfaces/task.interface";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import CustomizedModal from "../Modal/Modal";
+import AddTaskButton from "../AddTaskButton/AddTaskButton";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import TaskCard from "../TaskCard/TaskCard";
 import useDeleteTask from "../../hooks/useDeleteTask.hook";
@@ -27,7 +25,6 @@ const Tasks: FC = (): ReactElement => {
   const { data, isSuccess, isPending, isError, refetch } = useGetTasks();
   // タスク削除hook
   const { mutate } = useDeleteTask();
-  const navigate = useNavigate();
 
   // snackbarに渡すプロパティー
   const [property, setProperty] = useState<ISnackbarProperty>({
@@ -123,6 +120,7 @@ const Tasks: FC = (): ReactElement => {
             closeModal={closeModal}
             handleDelete={handleDelete}
           />
+          <AddTaskButton redirectUrl="/home" />
           <div className="header">
             <span className="left">
               {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
@@ -134,13 +132,7 @@ const Tasks: FC = (): ReactElement => {
           </div>
           <div className="tasks-container">
             <div className="tasks-header">
-              <span className="tasks-title">今日のタスク</span>
-              <IconButton color="primary" className="tasks-button">
-                <AddCircleIcon
-                  fontSize="large"
-                  onClick={() => navigate("/home/create-task")}
-                />
-              </IconButton>
+              <span className="tasks-title">本日のタスク</span>
             </div>
             <AnimatePresence>
               {tasks
