@@ -150,7 +150,7 @@ const Routine: FC = (): ReactElement => {
             closeModal={closeModal}
             handleDelete={handleDelete}
           />
-          <AddTaskButton redirectUrl="/home/routine" />
+          <AddTaskButton redirectUrl="/home/routine" isFlipped={true} />
           <div className="header">
             <span className="left">
               {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}

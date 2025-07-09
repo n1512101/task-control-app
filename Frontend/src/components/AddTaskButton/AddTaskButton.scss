@@ -12,9 +12,18 @@
   color: white;
   transition: box-shadow 0.2s ease, transform 0.2s ease;
   cursor: pointer;
-  z-index: 9;
+  z-index: 8;
   &:hover {
     box-shadow: 0 0 30px rgba(79, 172, 254, 0.7);
     transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 480px) {
+  .circle-plus-button {
+    width: 45px;
+    height: 45px;
+    bottom: 30px;
+    right: 30px;
   }
 }

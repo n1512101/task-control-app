@@ -1,4 +1,4 @@
-import { FC, ReactElement, useState } from "react";
+import { FC, ReactElement, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
@@ -29,6 +29,13 @@ const CreateTask: FC = (): ReactElement => {
   const [isFlipped, setIsFlipped] = useState(false);
   // アニメーション実行中か
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // 別のページから遷移してきた場合、パラメータによってisFlippedを設定
+  useEffect(() => {
+    if (location.state?.isFlipped) {
+      setIsFlipped(location.state.isFlipped);
+    }
+  }, [location.state?.isFlipped]);
 
   // カードを裏返す関数
   const handleFlip = () => {
