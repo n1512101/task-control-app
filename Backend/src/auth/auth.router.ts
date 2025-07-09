@@ -70,14 +70,6 @@ export default class AuthRouter {
             { expiresIn: parseInt(process.env.ACCESS_TOKEN_EXPIRY as string) }
           );
 
-          // 現在のリフレッシュトークンを破棄する
-          res.clearCookie("refreshToken", {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
-          });
-          await token.deleteOne();
-
           // 新しいリフレッシュトークンを発行し、保存する
           const refreshToken = jwt.sign(
             { id: req.user.id },
@@ -90,8 +82,15 @@ export default class AuthRouter {
             refreshToken,
             deviceId,
           });
-          await newRefreshToken.save();
+          // 古いリフレッシュトークンを削除し、新しいトークンを保存
+          await Promise.all([token.deleteOne(), newRefreshToken.save()]);
 
+          // クッキーを更新する
+          res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+          });
           res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
