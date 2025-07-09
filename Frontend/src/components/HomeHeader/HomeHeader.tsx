@@ -4,6 +4,7 @@ import {
   DarkModeContextType,
 } from "../../context/DarkModeContext";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
@@ -28,19 +29,24 @@ const HomeHeader: FC<PropsType> = ({ open, setOpen }): ReactElement => {
   const { setIsLoading } = useContext(LoadingContext);
   const { mutate, isPending } = useLogout();
 
+  const queryClient = useQueryClient();
+
   // ログアウトボタンを押した際に動作する関数
   const handleLogout = () => {
     // 成功でも失敗でもアクセストークンを削除してログイン画面に遷移
     mutate(undefined, {
       onSuccess: () => {
-        setAccessToken(null);
-        navigate("/auth");
+        logoutHandler();
       },
       onError: () => {
-        setAccessToken(null);
-        navigate("/auth");
+        logoutHandler();
       },
     });
+  };
+  const logoutHandler = () => {
+    setAccessToken(null);
+    queryClient.clear(); // tanstack-queryのデータキャッシュをクリア
+    navigate("/auth");
   };
 
   useEffect(() => {
