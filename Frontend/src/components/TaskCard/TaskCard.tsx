@@ -1,6 +1,6 @@
-import { ChangeEvent, FC, ReactElement, useState } from "react";
-import { Button, Checkbox, IconButton, Paper, TextField } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { FC, ReactElement, useState } from "react";
+import { TextField } from "@mui/material";
+import { CheckCircle2, Circle, Edit3, FileCheck, Trash2 } from "lucide-react";
 import {
   IRoutineResponse,
   ITaskResponse,
@@ -19,8 +19,6 @@ interface IProps {
   api: string;
   handleUpdateStatus: (taskId: string, newStatus: "done" | "pending") => void;
 }
-
-const MotionPaper = motion.create(Paper); // Material UIコンポーネントをmotion化
 
 const TaskCard: FC<IProps> = ({
   task,
@@ -85,72 +83,85 @@ const TaskCard: FC<IProps> = ({
   };
 
   // checkboxを変更した際に動作する関数
-  const handleCheck = (e: ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    handleUpdateStatus(task._id, checked ? "done" : "pending");
-    debouncedUpdateStatus(checked);
+  const toggleTaskCompletion = () => {
+    const newDone = task.status !== "done";
+    handleUpdateStatus(task._id, newDone ? "done" : "pending");
+    debouncedUpdateStatus(newDone);
   };
 
   return (
-    <MotionPaper
+    <motion.div
       layout
-      elevation={3}
-      className="task"
+      className={`task-card ${task.status === "done" && "completed"}`}
       variants={taskVariants}
       initial="initial"
       animate="visible"
       exit="exit"
-      sx={{
-        backgroundColor: "var(--paper-background)",
-        boxShadow: "0 2px 10px rgba(0, 0, 0, 0.05)",
-        borderRadius: "12px",
-      }}
-      whileHover={{
-        scale: 1.03,
-        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-        transition: { duration: 0.2 },
-        borderColor: "#aaa",
-      }}
     >
       <span
-        className="category"
+        className="task-category"
         style={{
           backgroundColor: CategoryBackground[task.category],
         }}
       >
         {Category[task.category]}
       </span>
-      {isEdit ? (
-        <TextField
-          multiline
-          rows={3}
-          className="textfield"
-          value={text}
-          fullWidth
-          slotProps={{
-            htmlInput: {
-              sx: {
-                color: "var(--base-color)",
-              },
-            },
-          }}
-          onChange={(e) => setText(e.target.value)}
-        />
-      ) : (
-        <p className={`content ${task.status === "done" && "task-completed"}`}>
-          {text}
-        </p>
-      )}
-      <div className="controller">
-        <Button className="btn" onClick={handleEdit}>
-          {isEdit ? "保存" : "編集"}
-        </Button>
-        <Checkbox onChange={handleCheck} checked={task.status === "done"} />
-        <IconButton aria-label="delete" size="medium" className="deletebtn">
-          <DeleteIcon onClick={() => onRequestDelete(task._id)} />
-        </IconButton>
+      <div className="task-content">
+        <div className="task-content-left">
+          <button
+            onClick={toggleTaskCompletion}
+            className={`completion-button ${
+              task.status === "done" && "completed"
+            }`}
+          >
+            {task.status === "done" ? (
+              <CheckCircle2 size={20} />
+            ) : (
+              <Circle size={20} />
+            )}
+          </button>
+          {isEdit ? (
+            <TextField
+              multiline
+              rows={3}
+              value={text}
+              fullWidth
+              slotProps={{
+                htmlInput: {
+                  sx: {
+                    color: "var(--base-color)",
+                  },
+                },
+              }}
+              onChange={(e) => setText(e.target.value)}
+            />
+          ) : (
+            <div
+              className={`task-title ${task.status === "done" && "completed"}`}
+            >
+              {text}
+            </div>
+          )}
+        </div>
+        <div className="task-actions">
+          {isEdit ? (
+            <button onClick={handleEdit} className="action-button">
+              <FileCheck size={16} />
+            </button>
+          ) : (
+            <button onClick={() => setIsEdit(true)} className="action-button">
+              <Edit3 size={16} />
+            </button>
+          )}
+          <button
+            onClick={() => onRequestDelete(task._id)}
+            className="action-button delete"
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
       </div>
-    </MotionPaper>
+    </motion.div>
   );
 };
 

@@ -49,7 +49,7 @@ const TaskModalCard = ({
           <button
             onClick={() => toggleTaskCompletion(task.id)}
             className={`completion-button ${
-              task.status === "done" ? "completed" : ""
+              task.status === "done" && "completed"
             }`}
           >
             {task.status === "done" ? (
@@ -76,7 +76,7 @@ const TaskModalCard = ({
           ) : (
             <div
               className={`task-modal-title ${
-                task.status === "done" ? "completed" : ""
+                task.status === "done" && "completed"
               }`}
             >
               {title}

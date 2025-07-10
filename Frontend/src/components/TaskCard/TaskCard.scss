@@ -1,40 +1,58 @@
-.task {
-  padding: 10px 10px 30px;
-  position: relative;
-  height: 100%;
+// .task-card {
+//   padding: 10px 10px 30px;
+//   position: relative;
+//   height: 100%;
+//   border: 1px solid var(--border-color);
+//   cursor: pointer;
+//   .category {
+//     margin-left: 15px;
+//     padding: 6px 10px;
+//     color: white;
+//     font-size: 12px;
+//     font-weight: bold;
+//     border-radius: 15px;
+//   }
+//   .textfield {
+//     display: block;
+//     margin: 15px 0 25px;
+//   }
+//   .content {
+//     margin: 10px 20px;
+//     color: var(--base-color);
+//     word-wrap: break-word;
+//     &.task-completed {
+//       text-decoration: line-through;
+//       opacity: 0.6;
+//     }
+//   }
+//   .controller {
+//     display: flex;
+//     justify-content: end;
+//     align-items: center;
+//     position: absolute;
+//     right: 15px;
+//     bottom: 5px;
+//     .btn,
+//     .deletebtn {
+//       color: var(--deleteIcon-color);
+//     }
+//   }
+// }
+
+.task-card {
+  padding: 16px;
   border: 1px solid var(--border-color);
-  cursor: pointer;
-  .category {
-    margin-left: 15px;
-    padding: 6px 10px;
-    color: white;
-    font-size: 12px;
-    font-weight: bold;
-    border-radius: 15px;
+  border-radius: 12px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  &:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-color: #93c5fd;
+    // & .task-modal-content .task-modal-actions {
+    //   opacity: 1;
+    // }
   }
-  .textfield {
-    display: block;
-    margin: 15px 0 25px;
-  }
-  .content {
-    margin: 10px 20px;
-    color: var(--base-color);
-    word-wrap: break-word;
-    &.task-completed {
-      text-decoration: line-through;
-      opacity: 0.6;
-    }
-  }
-  .controller {
-    display: flex;
-    justify-content: end;
-    align-items: center;
-    position: absolute;
-    right: 15px;
-    bottom: 5px;
-    .btn,
-    .deletebtn {
-      color: var(--deleteIcon-color);
-    }
+  &.completed:hover {
+    border-color: var(--border-color);
+    box-shadow: none;
   }
 }
