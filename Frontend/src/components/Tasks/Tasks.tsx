@@ -2,6 +2,7 @@ import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+import { CheckCircle2 } from "lucide-react";
 import useGetTasks from "../../hooks/useGetTasks.hook";
 import { ITaskResponse } from "../../interfaces/task.interface";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
@@ -121,7 +122,7 @@ const Tasks: FC = (): ReactElement => {
             handleDelete={handleDelete}
           />
           <AddTaskButton redirectUrl="/home" />
-          <div className="header">
+          <div className="tasks-content-header">
             <span className="left">
               {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
             </span>
@@ -132,24 +133,29 @@ const Tasks: FC = (): ReactElement => {
           </div>
           <div className="tasks-container">
             <div className="tasks-header">
-              <span className="tasks-title">本日のタスク</span>
+              <div className="tasks-header-icon">
+                <CheckCircle2 size={20} />
+              </div>
+              <span className="tasks-header-title">本日のタスク</span>
             </div>
-            <AnimatePresence>
-              {tasks
-                .filter((task) =>
-                  onlyPending ? task.status === "pending" : true
-                )
-                .map((task: ITaskResponse) => (
-                  <TaskCard
-                    task={task}
-                    key={task._id}
-                    setProperty={setProperty}
-                    onRequestDelete={openModal}
-                    api="/task"
-                    handleUpdateStatus={handleUpdateStatus}
-                  />
-                ))}
-            </AnimatePresence>
+            <div className="tasks-list">
+              <AnimatePresence>
+                {tasks
+                  .filter((task) =>
+                    onlyPending ? task.status === "pending" : true
+                  )
+                  .map((task: ITaskResponse) => (
+                    <TaskCard
+                      task={task}
+                      key={task._id}
+                      setProperty={setProperty}
+                      onRequestDelete={openModal}
+                      api="/task"
+                      handleUpdateStatus={handleUpdateStatus}
+                    />
+                  ))}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       )}

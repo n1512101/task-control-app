@@ -2,6 +2,7 @@ import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
+import { CheckCircle2 } from "lucide-react";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
 import { IRoutineResponse } from "../../interfaces/task.interface";
 import TaskCard from "../TaskCard/TaskCard";
@@ -151,7 +152,7 @@ const Routine: FC = (): ReactElement => {
             handleDelete={handleDelete}
           />
           <AddTaskButton redirectUrl="/home/routine" isFlipped={true} />
-          <div className="header">
+          <div className="routine-content-header">
             <span className="left">
               {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
             </span>
@@ -163,46 +164,56 @@ const Routine: FC = (): ReactElement => {
           {/* 週ごとのルーティンコンテナ */}
           <div className="routine-container">
             <div className="routine-header">
-              <span className="routine-title">毎週のルーティン</span>
+              <div className="routine-header-icon">
+                <CheckCircle2 size={20} />
+              </div>
+              <span className="routine-header-title">毎週のルーティン</span>
             </div>
-            <AnimatePresence>
-              {weeklyRoutines
-                .filter((task) =>
-                  onlyPending ? task.status === "pending" : true
-                )
-                .map((task: IRoutineResponse) => (
-                  <TaskCard
-                    task={task}
-                    key={task._id}
-                    setProperty={setProperty}
-                    onRequestDelete={openModal}
-                    api="/routine"
-                    handleUpdateStatus={handleUpdateWeeklyRoutineStatus}
-                  />
-                ))}
-            </AnimatePresence>
+            <div className="routine-list">
+              <AnimatePresence>
+                {weeklyRoutines
+                  .filter((task) =>
+                    onlyPending ? task.status === "pending" : true
+                  )
+                  .map((task: IRoutineResponse) => (
+                    <TaskCard
+                      task={task}
+                      key={task._id}
+                      setProperty={setProperty}
+                      onRequestDelete={openModal}
+                      api="/routine"
+                      handleUpdateStatus={handleUpdateWeeklyRoutineStatus}
+                    />
+                  ))}
+              </AnimatePresence>
+            </div>
           </div>
           {/* 日ごとのルーティンコンテナ */}
           <div className="routine-container">
             <div className="routine-header">
-              <span className="routine-title">毎日のルーティン</span>
+              <div className="routine-header-icon">
+                <CheckCircle2 size={20} />
+              </div>
+              <span className="routine-header-title">毎日のルーティン</span>
             </div>
-            <AnimatePresence>
-              {dailyRoutines
-                .filter((task) =>
-                  onlyPending ? task.status === "pending" : true
-                )
-                .map((task: IRoutineResponse) => (
-                  <TaskCard
-                    task={task}
-                    key={task._id}
-                    setProperty={setProperty}
-                    onRequestDelete={openModal}
-                    api="/routine"
-                    handleUpdateStatus={handleUpdateDailyRoutineStatus}
-                  />
-                ))}
-            </AnimatePresence>
+            <div className="routine-list">
+              <AnimatePresence>
+                {dailyRoutines
+                  .filter((task) =>
+                    onlyPending ? task.status === "pending" : true
+                  )
+                  .map((task: IRoutineResponse) => (
+                    <TaskCard
+                      task={task}
+                      key={task._id}
+                      setProperty={setProperty}
+                      onRequestDelete={openModal}
+                      api="/routine"
+                      handleUpdateStatus={handleUpdateDailyRoutineStatus}
+                    />
+                  ))}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       )}
