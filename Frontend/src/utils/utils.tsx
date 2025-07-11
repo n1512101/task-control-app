@@ -1,4 +1,5 @@
 import dayjs from "dayjs";
+import z from "zod";
 
 const Category = {
   study: "勉強",
@@ -77,6 +78,12 @@ const taskVariants = {
   exit: { opacity: 0, x: -500, transition: { duration: 0.5 } },
 };
 
+// タスク登録フォームスキーマ定義
+const taskFormSchema = z.object({
+  description: z.string().nonempty(),
+});
+export type TaskFormSchema = z.infer<typeof taskFormSchema>;
+
 export {
   Category,
   CategoryBackground,
@@ -84,4 +91,5 @@ export {
   calendarFormats,
   calendarEventPropGetter,
   taskVariants,
+  taskFormSchema,
 };
