@@ -1,7 +1,10 @@
 import { FC, ReactElement, useContext, useEffect, useState } from "react";
-import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  taskFormSchema as schema,
+  TaskFormSchema as Schema,
+} from "../../utils/utils";
 import Switch from "@mui/material/Switch";
 import dayjs from "dayjs";
 import { PickerValue } from "@mui/x-date-pickers/internals";
@@ -11,12 +14,6 @@ import useCreateTask from "../../hooks/useCreateTask.hook";
 import CalendarAndTimePicker from "../CalendarAndTimePicker/CalendarAndTimePicker";
 import { LoadingContext } from "../../context/LoadingContext";
 import "./TaskRegister.scss";
-
-// フォームスキーマ定義
-const schema = z.object({
-  description: z.string().nonempty(),
-});
-type Schema = z.infer<typeof schema>;
 
 interface IProps {
   setProperty: (property: ISnackbarProperty) => void;

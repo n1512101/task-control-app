@@ -38,7 +38,15 @@ export default class TaskController {
       const tasks = await Task.find({
         userId: req.user.id,
         startDate: { $gte: today, $lt: tomorrow },
-      }).select(["_id", "category", "description", "status"]);
+      }).select([
+        "_id",
+        "category",
+        "description",
+        "status",
+        "startDate",
+        "endDate",
+        "isAllDay",
+      ]);
       res.status(200).json({ tasks });
     } catch (error: any) {
       res.status(500).json({ message: error.message });

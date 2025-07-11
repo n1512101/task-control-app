@@ -1,18 +1,15 @@
 import { FC, ReactElement, useContext, useEffect, useState } from "react";
-import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  taskFormSchema as schema,
+  TaskFormSchema as Schema,
+} from "../../utils/utils";
 import { ICategory, IRepeatType } from "../../interfaces/task.interface";
 import useCreateRoutine from "../../hooks/useCreateRoutine.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import { LoadingContext } from "../../context/LoadingContext";
 import "./RoutineRegister.scss";
-
-// フォームスキーマ定義
-const schema = z.object({
-  description: z.string().nonempty(),
-});
-type Schema = z.infer<typeof schema>;
 
 interface IProps {
   setProperty: (property: ISnackbarProperty) => void;

@@ -14,6 +14,7 @@ import TaskCard from "../TaskCard/TaskCard";
 import useDeleteTask from "../../hooks/useDeleteTask.hook";
 import SelectCompletedTaskButton from "../SelectCompletedTaskButton/SelectCompletedTaskButton";
 import { LoadingContext } from "../../context/LoadingContext";
+import TaskUpdateDrawer from "../TaskUpdateDrawer/TaskUpdateDrawer";
 import "./Tasks.scss";
 
 const Tasks: FC = (): ReactElement => {
@@ -35,6 +36,7 @@ const Tasks: FC = (): ReactElement => {
   });
   const [open, setOpen] = useState(false); // タスク削除確認modalが開いているか
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [editTargetId, setEditTargetId] = useState<string>("");
   // 未完了のルーティンのみを表示するかどうか
   const [onlyPending, setOnlyPending] = useState<boolean>(false);
 
@@ -114,47 +116,65 @@ const Tasks: FC = (): ReactElement => {
         </div>
       )}
       {isSuccess && (
-        <div className="tasks-content">
-          <CustomizedSnackBar property={property} handleClose={handleClose} />
-          <CustomizedModal
-            open={open}
-            closeModal={closeModal}
-            handleDelete={handleDelete}
+        <div>
+          <TaskUpdateDrawer
+            key={editTargetId}
+            task={
+              tasks.find((task) => task._id === editTargetId) || {
+                _id: "",
+                startDate: dayjs().format("YYYY-MM-DD HH:mm"),
+                endDate: dayjs().format("YYYY-MM-DD HH:mm"),
+                category: "study",
+                description: "",
+                status: "pending",
+                isAllDay: false,
+              }
+            }
+            setTasks={setTasks}
           />
-          <AddTaskButton redirectUrl="/home" />
-          <div className="tasks-content-header">
-            <span className="left">
-              {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
-            </span>
-            <SelectCompletedTaskButton
-              onlyPending={onlyPending}
-              setOnlyPending={setOnlyPending}
+          <div className="tasks-content">
+            <CustomizedSnackBar property={property} handleClose={handleClose} />
+            <CustomizedModal
+              open={open}
+              closeModal={closeModal}
+              handleDelete={handleDelete}
             />
-          </div>
-          <div className="tasks-container">
-            <div className="tasks-header">
-              <div className="tasks-header-icon">
-                <CheckCircle2 size={20} />
-              </div>
-              <span className="tasks-header-title">本日のタスク</span>
+            <AddTaskButton redirectUrl="/home" />
+            <div className="tasks-content-header">
+              <span className="left">
+                {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
+              </span>
+              <SelectCompletedTaskButton
+                onlyPending={onlyPending}
+                setOnlyPending={setOnlyPending}
+              />
             </div>
-            <div className="tasks-list">
-              <AnimatePresence>
-                {tasks
-                  .filter((task) =>
-                    onlyPending ? task.status === "pending" : true
-                  )
-                  .map((task: ITaskResponse) => (
-                    <TaskCard
-                      task={task}
-                      key={task._id}
-                      setProperty={setProperty}
-                      onRequestDelete={openModal}
-                      api="/task"
-                      handleUpdateStatus={handleUpdateStatus}
-                    />
-                  ))}
-              </AnimatePresence>
+            <div className="tasks-container">
+              <div className="tasks-header">
+                <div className="tasks-header-icon">
+                  <CheckCircle2 size={20} />
+                </div>
+                <span className="tasks-header-title">本日のタスク</span>
+              </div>
+              <div className="tasks-list">
+                <AnimatePresence>
+                  {tasks
+                    .filter((task) =>
+                      onlyPending ? task.status === "pending" : true
+                    )
+                    .map((task: ITaskResponse) => (
+                      <TaskCard
+                        task={task}
+                        key={task._id}
+                        setProperty={setProperty}
+                        onRequestDelete={openModal}
+                        api="/task"
+                        handleUpdateStatus={handleUpdateStatus}
+                        setEditTargetId={setEditTargetId}
+                      />
+                    ))}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>
