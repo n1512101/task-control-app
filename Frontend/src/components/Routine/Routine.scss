@@ -13,10 +13,10 @@
   }
   .routine-content {
     margin: 10px 20px;
-    .header {
+    .routine-content-header {
       max-width: 900px;
       min-width: 470px;
-      margin: 0 auto 20px;
+      margin: 25px auto 30px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -26,32 +26,41 @@
       }
     }
     .routine-container {
-      max-width: 900px;
+      max-width: 850px;
       min-width: 470px;
       margin: 0 auto;
-      padding: 20px;
       background-color: var(--third-background);
       border-radius: 16px;
       box-shadow: 0 2px 6px var(--shadow-color);
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(273px, 1fr));
-      gap: 20px;
+      overflow: hidden;
       .routine-header {
-        grid-column: 1 / -1;
-        padding: 0 10px;
+        padding: 22px 30px;
+        background: var(--quaternary-color);
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        .routine-title {
+        gap: 30px;
+        .routine-header-icon {
+          color: #000;
+          width: 48px;
+          height: 48px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 14px;
+          background-color: rgba(255, 255, 255, 0.2);
+        }
+        .routine-header-title {
+          color: #fff;
           font-weight: bold;
-          font-size: 20px;
+          font-size: 22px;
         }
-        .routine-button {
-          transition: transform 0.3s ease;
-          &:hover {
-            transform: translateY(-2px);
-          }
-        }
+      }
+      .routine-list {
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 20px;
       }
     }
     .routine-container:last-child {
@@ -64,17 +73,36 @@
   .routine {
     .routine-content {
       margin: 10px;
-      .header {
+      .routine-content-header {
         min-width: unset;
+        margin: 0 auto 20px;
         .left {
           font-size: 16px;
         }
       }
       .routine-container {
         min-width: unset;
-        padding: 15px;
-        grid-template-columns: 1fr;
-        gap: 15px;
+        .routine-header {
+          padding: 15px 15px;
+          gap: 15px;
+          .routine-header-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+          }
+          .routine-header-title {
+            font-size: 18px;
+          }
+        }
+        .routine-list {
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          grid-template-columns: none;
+        }
+      }
+      .routine-container:last-child {
+        margin-top: 20px;
       }
     }
   }

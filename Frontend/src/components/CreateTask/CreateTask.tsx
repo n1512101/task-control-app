@@ -20,7 +20,7 @@ const CreateTask: FC = (): ReactElement => {
   const handleClose = () => {
     setProperty({ ...property, open: false });
     // 別のページから遷移してきた場合、タスク作成後元のページに戻る
-    if (location.state?.redirectUrl) {
+    if (location.state?.redirectUrl && property.severity === "success") {
       navigate(location.state.redirectUrl);
     }
   };
