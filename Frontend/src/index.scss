@@ -54,6 +54,7 @@
   --secondary-calendar-cell-background: rgb(226, 226, 226);
   --calendar-border-color: #ddd;
   --icon-color: #6b7280;
+  --drawer-background: #fafafa;
 }
 
 :root[data-theme="dark"] {
@@ -112,6 +113,7 @@
   --secondary-calendar-cell-background: #444;
   --calendar-border-color: #999;
   --icon-color: #989da6;
+  --drawer-background: #011142;
 }
 
 :root {
