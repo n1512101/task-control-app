@@ -1,24 +1,170 @@
 .task-drawer {
-  padding: 10px;
+  max-width: 800px;
+  min-width: 600px;
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #fff;
+  margin: 0 auto;
+  background-color: var(--drawer-background);
   border-radius: 15px 15px 0 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   z-index: 10;
-  .task-drawer-handler {
-    width: 40px;
-    height: 4px;
-    background-color: #d1d5db;
-    border-radius: 2px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    &:hover {
-      background-color: #9ca3af;
+  .task-drawer-container {
+    padding-bottom: 10px;
+    width: 500px;
+    text-align: center;
+    .task-drawer-handler {
+      width: 40px;
+      height: 4px;
+      margin-bottom: 5px;
+      display: inline-block;
+      background-color: #d1d5db;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      &:hover {
+        background-color: #9ca3af;
+      }
+    }
+    .task-drawer-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      .form-section {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        .section-title {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-weight: bold;
+          .section-icon {
+            color: var(--icon-color);
+          }
+        }
+        .toggle-container {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          border: 1px solid rgba(229, 231, 235, 0.5);
+          border-radius: 16px;
+          padding: 4px 5px;
+          transition: background-color 0.2s ease, border-color 0.2s ease;
+          &:hover {
+            background-color: rgba(243, 244, 246, 0.9);
+            border-color: rgba(209, 213, 219, 0.7);
+          }
+          .toggle-label {
+            font-size: 14px;
+          }
+        }
+        .datetime-title {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-weight: bold;
+          .datetime-icon {
+            color: #888;
+          }
+        }
+        .datetime-picker {
+          display: flex;
+          justify-content: center;
+          gap: 50px;
+          border: 1px solid rgba(229, 231, 235, 0.5);
+          border-radius: 16px;
+          padding: 6px;
+          transition: background-color 0.2s ease, border-color 0.2s ease;
+          &:hover {
+            background-color: rgba(243, 244, 246, 0.9);
+            border-color: rgba(209, 213, 219, 0.7);
+          }
+        }
+        .category-selector {
+          .MuiFormControl-root {
+            width: 100%;
+            .MuiFormGroup-root {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              .MuiFormControlLabel-root {
+                border: 1px solid rgba(229, 231, 235, 0.5);
+                border-radius: 16px;
+                padding: 0 27px 0 15px;
+                margin: 0;
+                transition: background-color 0.2s ease, border-color 0.2s ease;
+                &:hover {
+                  background-color: rgba(243, 244, 246, 0.9);
+                  border-color: rgba(209, 213, 219, 0.7);
+                }
+              }
+              .MuiFormControlLabel-label {
+                font-size: 14px;
+              }
+            }
+          }
+        }
+        .task-textarea {
+          padding: 12px 15px;
+          border: 2px solid rgba(229, 231, 235, 0.5);
+          border-radius: 16px;
+          background-color: var(--input-background);
+          resize: none;
+          outline: none;
+          font-size: 16px;
+          &:focus {
+            border-color: #667eea;
+          }
+        }
+        .error-message {
+          background-color: var(--error-message-background);
+          border: 1px solid #fde68a;
+          color: #92400e;
+          padding: 5px;
+          border-radius: 4px;
+          margin-bottom: 16px;
+          text-align: center;
+        }
+      }
+      .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin: 10px 0;
+        .btn {
+          width: 120px;
+          padding: 8px 10px;
+          border: none;
+          border-radius: 16px;
+          font-size: 14px;
+          font-weight: bold;
+          cursor: pointer;
+          outline: none;
+          &.cancel-button {
+            background-color: rgba(249, 250, 251, 0.8);
+            color: #6b7280;
+            border: 2px solid rgba(229, 231, 235, 0.5);
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+            &:hover {
+              background-color: rgba(243, 244, 246, 0.9);
+              border-color: rgba(209, 213, 219, 0.7);
+            }
+          }
+          &.submit-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            &:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+            }
+          }
+        }
+      }
     }
   }
 }
