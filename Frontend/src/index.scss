@@ -36,7 +36,8 @@
   --hover-button-color: rgba(135, 207, 235, 1);
   --paper-background: #f7f7f7;
   --card-background: rgba(255, 255, 255, 0.7);
-  --card-border: 1px solid rgba(255, 255, 255, 0.3);
+  --card-hover-background: rgba(209, 214, 219, 0.5);
+  --card-border: 1px solid rgba(204, 205, 206, 0.9);
   --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   --deleteIcon-color: rgb(149, 157, 169);
   --darkModeIcon-color: #6b7280;
@@ -54,7 +55,7 @@
   --secondary-calendar-cell-background: rgb(226, 226, 226);
   --calendar-border-color: #ddd;
   --icon-color: #6b7280;
-  --drawer-background: #fafafa;
+  --drawer-background: #e3e9f3;
 }
 
 :root[data-theme="dark"] {
@@ -95,6 +96,7 @@
   --hover-button-color: rgba(38, 83, 199, 1);
   --paper-background: rgba(255, 255, 255, 0.05);
   --card-background: rgba(255, 255, 255, 0.05);
+  --card-hover-background: rgba(88, 113, 161, 0.4);
   --card-border: 1px solid rgba(255, 255, 255, 0.1);
   --card-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   --deleteIcon-color: rgb(170, 170, 170);
@@ -113,7 +115,7 @@
   --secondary-calendar-cell-background: #444;
   --calendar-border-color: #999;
   --icon-color: #989da6;
-  --drawer-background: #011142;
+  --drawer-background: #344169;
 }
 
 :root {

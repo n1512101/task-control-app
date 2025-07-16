@@ -117,21 +117,26 @@ const Tasks: FC = (): ReactElement => {
       )}
       {isSuccess && (
         <div>
-          <TaskUpdateDrawer
-            key={editTargetId}
-            task={
-              tasks.find((task) => task._id === editTargetId) || {
-                _id: "",
-                startDate: dayjs().format("YYYY-MM-DD HH:mm"),
-                endDate: dayjs().format("YYYY-MM-DD HH:mm"),
-                category: "study",
-                description: "",
-                status: "pending",
-                isAllDay: false,
-              }
-            }
-            setTasks={setTasks}
-          />
+          <AnimatePresence>
+            {editTargetId && (
+              <TaskUpdateDrawer
+                key={editTargetId}
+                task={
+                  tasks.find((task) => task._id === editTargetId) || {
+                    _id: "",
+                    startDate: dayjs().format("YYYY-MM-DD HH:mm"),
+                    endDate: dayjs().format("YYYY-MM-DD HH:mm"),
+                    category: "study",
+                    description: "",
+                    status: "pending",
+                    isAllDay: false,
+                  }
+                }
+                setTasks={setTasks}
+                setEditTargetId={setEditTargetId}
+              />
+            )}
+          </AnimatePresence>
           <div className="tasks-content">
             <CustomizedSnackBar property={property} handleClose={handleClose} />
             <CustomizedModal
