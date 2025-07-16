@@ -71,11 +71,18 @@ const calendarEventPropGetter = (event: any) => {
   };
 };
 
-// アニメーション設定
+// タスクカードアニメーション設定
 const taskVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   initial: { opacity: 0, y: 20 },
   exit: { opacity: 0, x: -500, transition: { duration: 0.5 } },
+};
+
+// ドロワーアニメーション設定
+const drawerVariants = {
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+  initial: { opacity: 0, y: 200 },
+  exit: { opacity: 0, y: 200, transition: { duration: 0.3 } },
 };
 
 // タスク登録フォームスキーマ定義
@@ -91,5 +98,6 @@ export {
   calendarFormats,
   calendarEventPropGetter,
   taskVariants,
+  drawerVariants,
   taskFormSchema,
 };

@@ -2,6 +2,7 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
 import {
   taskFormSchema as schema,
   TaskFormSchema as Schema,
@@ -15,14 +16,17 @@ import { Clock, Calendar, Package, Pen } from "lucide-react";
 import CalendarAndTimePicker from "../CalendarAndTimePicker/CalendarAndTimePicker";
 import { PickerValue } from "@mui/x-date-pickers/internals";
 import { ICategory, ITaskResponse } from "../../interfaces/task.interface";
+import { drawerVariants } from "../../utils/utils";
 import "./TaskUpdateDrawer.scss";
 
 const TaskUpdateDrawer = ({
   task,
   setTasks,
+  setEditTargetId,
 }: {
   task: ITaskResponse;
   setTasks: (tasks: ITaskResponse[]) => void;
+  setEditTargetId: (id: string) => void;
 }) => {
   const {
     _id,
@@ -30,7 +34,6 @@ const TaskUpdateDrawer = ({
     endDate,
     category: taskCategory,
     description,
-    status,
     isAllDay: isTaskAllDay,
   } = task;
 
@@ -68,12 +71,23 @@ const TaskUpdateDrawer = ({
     setTime(`${dayjs(time).format("YYYY-MM-DD")} ${e?.format("HH:mm")}`);
   };
 
-  const onSubmit = (data: Schema) => {};
+  const onSubmit = (data: Schema) => {
+    console.log(data);
+  };
 
   return (
-    <div className="task-drawer">
+    <motion.div
+      className="task-drawer"
+      variants={drawerVariants}
+      initial="initial"
+      animate="visible"
+      exit="exit"
+    >
       <div className="task-drawer-container">
-        <div className="task-drawer-handler"></div>
+        <div
+          className="task-drawer-handler"
+          onClick={() => setEditTargetId("")}
+        ></div>
         <form className="task-drawer-form" onSubmit={handleSubmit(onSubmit)}>
           <div className="form-section">
             <div className="section-title">
@@ -147,7 +161,11 @@ const TaskUpdateDrawer = ({
             </div>
             <div className="category-selector">
               <FormControl>
-                <RadioGroup row>
+                <RadioGroup
+                  row
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as ICategory)}
+                >
                   <FormControlLabel
                     value="study"
                     control={<Radio size="small" />}
@@ -187,6 +205,7 @@ const TaskUpdateDrawer = ({
               className="task-textarea"
               placeholder="タスクを入力..."
               rows={4}
+              defaultValue={description}
               {...register("description")}
             />
             {errors.description && (
@@ -196,7 +215,11 @@ const TaskUpdateDrawer = ({
             )}
           </div>
           <div className="btn-group">
-            <button className="cancel-button btn" type="button">
+            <button
+              className="cancel-button btn"
+              type="button"
+              onClick={() => setEditTargetId("")}
+            >
               キャンセル
             </button>
             <button className="submit-button btn" type="submit">
@@ -205,7 +228,7 @@ const TaskUpdateDrawer = ({
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
