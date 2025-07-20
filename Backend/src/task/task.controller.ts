@@ -76,9 +76,17 @@ export default class TaskController {
   // タスクを更新する際の処理
   public async updateTask(req: Request<{}, {}, IUpdateTask>, res: Response) {
     try {
-      const { _id, description, status, category } = req.body;
+      const {
+        _id,
+        description,
+        status,
+        category,
+        startDate,
+        endDate,
+        isAllDay,
+      } = req.body;
       // 更新対象フィールド
-      const updateFields: Pick<IUpdateTask, "description" | "status"> & {
+      const updateFields: Omit<IUpdateTask, "_id"> & {
         completedAt?: string | null;
         nextReminderAt?: string | null;
         reminderCount?: number;
@@ -101,6 +109,10 @@ export default class TaskController {
           }
         }
       }
+      if (category !== undefined) updateFields.category = category;
+      if (startDate !== undefined) updateFields.startDate = startDate;
+      if (endDate !== undefined) updateFields.endDate = endDate;
+      if (isAllDay !== undefined) updateFields.isAllDay = isAllDay;
 
       if (Object.keys(updateFields).length === 0) {
         return res

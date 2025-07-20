@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 interface IProps {
   alwaysAvailable: boolean;
   isAllDay: boolean;
+  disablePast: boolean;
   handleDatePicker: (
     e: PickerValue,
     setTime: (time: string) => void,
@@ -26,6 +27,7 @@ interface IProps {
 const CalendarAndTimePicker = ({
   alwaysAvailable,
   isAllDay,
+  disablePast,
   handleDatePicker,
   handleTimePicker,
   time,
@@ -35,7 +37,7 @@ const CalendarAndTimePicker = ({
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DatePicker
         defaultValue={dayjs(time)}
-        disablePast
+        disablePast={disablePast}
         disabled={!alwaysAvailable && isAllDay}
         onChange={(e) => handleDatePicker(e, setTime, time)}
         slotProps={{
@@ -52,6 +54,7 @@ const CalendarAndTimePicker = ({
                 width: "140px",
                 fontSize: "14px",
                 padding: "0 12px",
+                border: "var(--card-border)",
                 "@media (max-width: 480px)": {
                   height: "28px",
                   width: "120px",
@@ -101,6 +104,7 @@ const CalendarAndTimePicker = ({
                 width: "140px",
                 fontSize: "14px",
                 padding: "0 12px",
+                border: "var(--card-border)",
                 "@media (max-width: 480px)": {
                   height: "28px",
                   width: "120px",

@@ -13,7 +13,8 @@ export default function useUpdateTask() {
   // ルーティンを更新する際に動作する関数
   const updateTask = async ({ path, task }: IProperty) => {
     try {
-      await axiosAuth.put(path, task);
+      const response = await axiosAuth.put(path, task);
+      return response.data.message;
     } catch (error: any) {
       const errorMessage =
         error?.response?.data?.message ?? "予期せぬエラーが発生しました";

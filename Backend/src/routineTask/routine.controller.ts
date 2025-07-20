@@ -44,11 +44,13 @@ export default class RoutineController {
     res: Response
   ) {
     try {
-      const { _id, description, status } = req.body;
+      const { _id, description, status, repeatType, category } = req.body;
       // 更新対象フィールド
-      const updateFields: Pick<IUpdateRoutine, "description" | "status"> = {};
+      const updateFields: Omit<IUpdateRoutine, "_id"> = {};
       if (description !== undefined) updateFields.description = description;
       if (status !== undefined) updateFields.status = status;
+      if (repeatType !== undefined) updateFields.repeatType = repeatType;
+      if (category !== undefined) updateFields.category = category;
 
       if (Object.keys(updateFields).length === 0) {
         return res

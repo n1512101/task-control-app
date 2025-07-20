@@ -1,5 +1,4 @@
 import { useState, Dispatch, SetStateAction } from "react";
-import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
@@ -7,47 +6,40 @@ import {
   taskFormSchema as schema,
   TaskFormSchema as Schema,
 } from "../../utils/utils";
-import Switch from "@mui/material/Switch";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import { Clock, Calendar, Package, Pen } from "lucide-react";
-import CalendarAndTimePicker from "../CalendarAndTimePicker/CalendarAndTimePicker";
-import { PickerValue } from "@mui/x-date-pickers/internals";
-import { ICategory, ITask } from "../../interfaces/task.interface";
+import { FileType, Package, Pen } from "lucide-react";
+import {
+  ICategory,
+  IRepeatType,
+  IRoutine,
+} from "../../interfaces/task.interface";
 import { drawerVariants } from "../../utils/utils";
 import useUpdateTask from "../../hooks/useUpdateTask.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
-import "./TaskUpdateDrawer.scss";
+import "./RoutineUpdateDrawer.scss";
 
-const TaskUpdateDrawer = ({
+const RoutineUpdateDrawer = ({
   task,
-  setTasks,
+  setRoutines,
   setEditTargetId,
   setProperty,
 }: {
-  task: ITask;
-  setTasks: Dispatch<SetStateAction<ITask[]>>;
+  task: IRoutine;
+  setRoutines: Dispatch<SetStateAction<IRoutine[]>>;
   setEditTargetId: (id: string) => void;
-  setProperty: (property: ISnackbarProperty) => void;
+  setProperty: Dispatch<SetStateAction<ISnackbarProperty>>;
 }) => {
   const {
     _id,
-    startDate,
-    endDate,
+    repeatType: taskRepeatType,
     category: taskCategory,
     description,
-    isAllDay: isTaskAllDay,
   } = task;
 
-  const [isAllDay, setIsAllDay] = useState<boolean>(isTaskAllDay);
-  const [startTime, setStartTime] = useState<string>(
-    dayjs(startDate).format("YYYY-MM-DD HH:mm")
-  );
-  const [endTime, setEndTime] = useState<string>(
-    dayjs(endDate).format("YYYY-MM-DD HH:mm")
-  );
+  const [repeatType, setRepeatType] = useState<IRepeatType>(taskRepeatType);
   const [category, setCategory] = useState<ICategory>(taskCategory);
 
   // データ更新hook
@@ -60,59 +52,25 @@ const TaskUpdateDrawer = ({
     formState: { errors },
   } = useForm<Schema>({ resolver: zodResolver(schema) });
 
-  // DatePicker日付選択した際に動作する関数
-  const handleDatePicker = (
-    e: PickerValue,
-    setTime: (time: string) => void,
-    time: string
-  ) => {
-    setTime(`${e?.format("YYYY-MM-DD")} ${dayjs(time).format("HH:mm")}`);
-  };
-
-  // TimePicker時間選択した際に動作する関数
-  const handleTimePicker = (
-    e: PickerValue,
-    setTime: (time: string) => void,
-    time: string
-  ) => {
-    setTime(`${dayjs(time).format("YYYY-MM-DD")} ${e?.format("HH:mm")}`);
-  };
-
   // 保存ボタンを押した際に動作する関数
   const onSubmit = (data: Schema) => {
-    const startDate = isAllDay
-      ? `${dayjs(startTime).format("YYYY-MM-DD")} 00:00`
-      : startTime;
-    const endDate = isAllDay
-      ? `${dayjs(startTime).format("YYYY-MM-DD")} 23:59`
-      : endTime;
-    if (!dayjs(endDate).isAfter(dayjs(startDate))) {
-      setProperty({
-        open: true,
-        message: "開始日時と終了日時が不適切です",
-        severity: "warning",
-      });
-      return;
-    }
     const updateFields = {
       _id,
-      isAllDay,
-      startDate,
-      endDate,
+      repeatType,
       category,
       description: data.description,
     };
     // データベース更新
     mutate(
       {
-        path: "/task",
+        path: "/routine",
         task: updateFields,
       },
       {
         onSuccess: (message) => {
-          setTasks((tasks) =>
-            tasks.map((task) =>
-              task._id === _id ? { ...task, ...updateFields } : task
+          setRoutines((routines) =>
+            routines.map((routine) =>
+              routine._id === _id ? { ...routine, ...updateFields } : routine
             )
           );
           setProperty({
@@ -135,77 +93,48 @@ const TaskUpdateDrawer = ({
 
   return (
     <motion.div
-      className="task-drawer"
+      className="routine-drawer"
       variants={drawerVariants}
       initial="initial"
       animate="visible"
       exit="exit"
     >
-      <div className="task-drawer-container">
+      <div className="routine-drawer-container">
         <div
-          className="task-drawer-handler"
+          className="routine-drawer-handler"
           onClick={() => setEditTargetId("")}
         ></div>
-        <form className="task-drawer-form" onSubmit={handleSubmit(onSubmit)}>
+        <form className="routine-drawer-form" onSubmit={handleSubmit(onSubmit)}>
           <div className="form-section">
             <div className="section-title">
               <div className="section-icon">
-                <Clock
+                <FileType
                   size={16}
                   strokeWidth={3}
                   style={{ verticalAlign: "text-top" }}
                 />
               </div>
-              <span>日時設定</span>
+              <span>タイプ</span>
             </div>
-            <div className="toggle-container">
-              <span className="toggle-label">終日のタスク</span>
-              <Switch
-                checked={isAllDay}
-                onChange={() => setIsAllDay(!isAllDay)}
-              />
-            </div>
-            <div className="datetime-title">
-              <div className="datetime-icon">
-                <Calendar
-                  size={16}
-                  strokeWidth={3}
-                  style={{ verticalAlign: "text-top" }}
-                />
-              </div>
-              <span>開始日時</span>
-            </div>
-            <div className="datetime-picker">
-              <CalendarAndTimePicker
-                alwaysAvailable={true}
-                isAllDay={isAllDay}
-                disablePast={false}
-                handleDatePicker={handleDatePicker}
-                handleTimePicker={handleTimePicker}
-                time={startTime}
-                setTime={setStartTime}
-              />
-            </div>
-            <div className="datetime-title">
-              <div className="datetime-icon">
-                <Calendar
-                  size={16}
-                  strokeWidth={3}
-                  style={{ verticalAlign: "text-top" }}
-                />
-              </div>
-              <span>終了日時</span>
-            </div>
-            <div className="datetime-picker">
-              <CalendarAndTimePicker
-                alwaysAvailable={false}
-                isAllDay={isAllDay}
-                disablePast={false}
-                handleDatePicker={handleDatePicker}
-                handleTimePicker={handleTimePicker}
-                time={endTime}
-                setTime={setEndTime}
-              />
+            <div className="type-selector">
+              <FormControl>
+                <RadioGroup
+                  row
+                  value={repeatType}
+                  onChange={(e) => setRepeatType(e.target.value as IRepeatType)}
+                >
+                  <FormControlLabel
+                    value="daily"
+                    control={<Radio size="small" />}
+                    label="毎日"
+                  />
+                  <FormControlLabel
+                    value="weekly"
+                    control={<Radio size="small" />}
+                    label="毎週"
+                  />
+                </RadioGroup>
+              </FormControl>
             </div>
           </div>
           <div className="form-section">
@@ -262,7 +191,7 @@ const TaskUpdateDrawer = ({
               <span>タスク内容</span>
             </div>
             <textarea
-              className="task-textarea"
+              className="routine-textarea"
               placeholder="タスクを入力..."
               rows={4}
               defaultValue={description}
@@ -292,4 +221,4 @@ const TaskUpdateDrawer = ({
   );
 };
 
-export default TaskUpdateDrawer;
+export default RoutineUpdateDrawer;
