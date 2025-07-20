@@ -54,7 +54,15 @@ let TaskController = class TaskController {
                 const tasks = yield task_model_1.Task.find({
                     userId: req.user.id,
                     startDate: { $gte: today, $lt: tomorrow },
-                }).select(["_id", "category", "description", "status"]);
+                }).select([
+                    "_id",
+                    "category",
+                    "description",
+                    "status",
+                    "startDate",
+                    "endDate",
+                    "isAllDay",
+                ]);
                 res.status(200).json({ tasks });
             }
             catch (error) {
@@ -88,7 +96,7 @@ let TaskController = class TaskController {
     updateTask(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { _id, description, status, category } = req.body;
+                const { _id, description, status, category, startDate, endDate, isAllDay, } = req.body;
                 // 更新対象フィールド
                 const updateFields = {};
                 if (description !== undefined)
@@ -111,6 +119,14 @@ let TaskController = class TaskController {
                         }
                     }
                 }
+                if (category !== undefined)
+                    updateFields.category = category;
+                if (startDate !== undefined)
+                    updateFields.startDate = startDate;
+                if (endDate !== undefined)
+                    updateFields.endDate = endDate;
+                if (isAllDay !== undefined)
+                    updateFields.isAllDay = isAllDay;
                 if (Object.keys(updateFields).length === 0) {
                     return res
                         .status(400)
