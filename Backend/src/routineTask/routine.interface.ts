@@ -11,6 +11,4 @@ export interface IRoutineSchema extends IRoutine {
   userId: Types.ObjectId;
 }
 
-export type IUpdateRoutine = { _id: Types.ObjectId } & Partial<
-  Pick<IRoutine, "description" | "status">
->;
+export type IUpdateRoutine = { _id: Types.ObjectId } & Partial<IRoutine>;

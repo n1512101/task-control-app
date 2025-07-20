@@ -4,7 +4,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import useGetAllTasks from "../../hooks/useGetAllTasks.hook";
-import { IEventTask, ITask } from "../../interfaces/task.interface";
+import { ITask } from "../../interfaces/task.interface";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import TaskModal from "../TaskModal/TaskModal";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
@@ -27,8 +27,8 @@ const localizer = dayjsLocalizer(dayjs);
 const AllTasks: FC = (): ReactElement => {
   const [date, setDate] = useState<Date>(new Date());
   const [view, setView] = useState<View>("month");
-  const [tasks, setTasks] = useState<IEventTask[]>([]);
-  const [selectedTasks, setSelectedTasks] = useState<IEventTask[]>([]);
+  const [tasks, setTasks] = useState<ITask[]>([]);
+  const [eventDate, setEventDate] = useState<string>(""); // 選択されたイベントの日付を保持する
   const [openModal, setOpenModal] = useState<boolean>(false); // タスク詳細modalが開いているか
   const [open, setOpen] = useState(false); // タスク削除確認modalが開いているか
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null); // 削除対象のタスクID
@@ -50,16 +50,13 @@ const AllTasks: FC = (): ReactElement => {
   // 初期データ同期(初回のみ)
   useEffect(() => {
     if (isSuccess) {
-      const fixedTasks = data.tasks.map((task: ITask) => ({
-        id: task._id,
-        title: task.description,
-        start: dayjs(task.startDate).add(-9, "hour").toDate(),
-        end: dayjs(task.endDate).add(-9, "hour").toDate(),
-        allDay: task.isAllDay,
-        category: task.category,
-        status: task.status,
-      }));
-      setTasks(fixedTasks);
+      setTasks(
+        data.tasks.map((task: ITask) => ({
+          ...task,
+          startDate: dayjs.utc(task.startDate).format("YYYY-MM-DD HH:mm"),
+          endDate: dayjs.utc(task.endDate).format("YYYY-MM-DD HH:mm"),
+        }))
+      );
     }
     // ローディング状態の変更
     setIsLoading(isPending);
@@ -77,13 +74,7 @@ const AllTasks: FC = (): ReactElement => {
 
   // イベントをクリックした際に動作する関数
   const handleSelectEvent = (event: Event) => {
-    setSelectedTasks(
-      tasks.filter(
-        (task: IEventTask) =>
-          dayjs(event.start).format("YYYY-MM-DD") ===
-          dayjs(task.start).format("YYYY-MM-DD")
-      )
-    );
+    setEventDate(dayjs(event.start).format("YYYY-MM-DD"));
     setOpenModal(true);
   };
 
@@ -111,10 +102,7 @@ const AllTasks: FC = (): ReactElement => {
       { path: "/task", id: deleteTargetId },
       {
         onSuccess: (response) => {
-          setTasks(tasks.filter((task) => task.id !== deleteTargetId));
-          setSelectedTasks(
-            selectedTasks.filter((task) => task.id !== deleteTargetId)
-          );
+          setTasks(tasks.filter((task) => task._id !== deleteTargetId));
           setProperty({
             open: true,
             message: response,
@@ -149,11 +137,14 @@ const AllTasks: FC = (): ReactElement => {
           {openModal && (
             <TaskModal
               setOpenModal={setOpenModal}
-              selectedTasks={selectedTasks}
-              setSelectedTasks={setSelectedTasks}
+              selectedTasks={tasks.filter(
+                (task: ITask) =>
+                  dayjs(task.startDate).format("YYYY-MM-DD") === eventDate
+              )}
               setProperty={setProperty}
               setTasks={setTasks}
               onRequestDelete={openConfirmModal}
+              eventDate={eventDate}
             />
           )}
           <CustomizedSnackBar property={property} handleClose={handleClose} />
@@ -167,7 +158,15 @@ const AllTasks: FC = (): ReactElement => {
             views={["month", "day"]}
             defaultView="month"
             localizer={localizer}
-            events={tasks}
+            events={tasks.map((task: ITask) => ({
+              id: task._id,
+              title: task.description,
+              start: dayjs(task.startDate).toDate(),
+              end: dayjs(task.endDate).toDate(),
+              allDay: task.isAllDay,
+              category: task.category,
+              status: task.status,
+            }))}
             eventPropGetter={calendarEventPropGetter}
             date={date}
             view={view}

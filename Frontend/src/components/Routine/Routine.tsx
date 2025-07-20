@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/ja";
 import { CheckCircle2 } from "lucide-react";
 import useGetRoutine from "../../hooks/useGetRoutine.hook";
-import { IRoutineResponse } from "../../interfaces/task.interface";
+import { IRoutine } from "../../interfaces/task.interface";
 import TaskCard from "../TaskCard/TaskCard";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
@@ -15,6 +15,7 @@ import SelectCompletedTaskButton from "../SelectCompletedTaskButton/SelectComple
 import { LoadingContext } from "../../context/LoadingContext";
 import AddTaskButton from "../AddTaskButton/AddTaskButton";
 import "./Routine.scss";
+import RoutineUpdateDrawer from "../RoutineUpdateDrawer/RoutineUpdateDrawer";
 
 // 今週のルーティンコンポーネント
 const Routine: FC = (): ReactElement => {
@@ -33,8 +34,8 @@ const Routine: FC = (): ReactElement => {
     severity: "warning",
   });
   const [open, setOpen] = useState(false); // modalが開いているか
-  const [weeklyRoutines, setWeeklyRoutines] = useState<IRoutineResponse[]>([]);
-  const [dailyRoutines, setDailyRoutines] = useState<IRoutineResponse[]>([]);
+  const [routines, setRoutines] = useState<IRoutine[]>([]);
+  const [editTargetId, setEditTargetId] = useState<string>("");
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   // 未完了のルーティンのみを表示するかどうか
   const [onlyPending, setOnlyPending] = useState<boolean>(false);
@@ -42,17 +43,7 @@ const Routine: FC = (): ReactElement => {
   // 初期データ同期（初回のみ）
   useEffect(() => {
     if (isSuccess) {
-      const routines = data.data;
-      setWeeklyRoutines(
-        routines.filter(
-          (routine: IRoutineResponse) => routine.repeatType === "weekly"
-        )
-      );
-      setDailyRoutines(
-        routines.filter(
-          (routine: IRoutineResponse) => routine.repeatType === "daily"
-        )
-      );
+      setRoutines(data.data);
     }
     // ローディング状態の変更
     setIsLoading(isPending);
@@ -82,11 +73,8 @@ const Routine: FC = (): ReactElement => {
       { path: "/routine", id: deleteTargetId },
       {
         onSuccess: (response) => {
-          setWeeklyRoutines(
-            weeklyRoutines.filter((task) => task._id !== deleteTargetId)
-          );
-          setDailyRoutines(
-            dailyRoutines.filter((task) => task._id !== deleteTargetId)
+          setRoutines(
+            routines.filter((routine) => routine._id !== deleteTargetId)
           );
           setProperty({
             open: true,
@@ -108,30 +96,16 @@ const Routine: FC = (): ReactElement => {
     );
   };
 
-  const updateRoutineStatus = (
-    items: IRoutineResponse[],
+  // routines内の指定する要素のstatusを更新する関数
+  const handleUpdateRoutineStatus = (
     taskId: string,
-    newStatus: IRoutineResponse["status"]
-  ): IRoutineResponse[] => {
-    return items.map((item) =>
-      item._id === taskId ? { ...item, status: newStatus } : item
+    newStatus: IRoutine["status"]
+  ) => {
+    setRoutines((prev) =>
+      prev.map((item) =>
+        item._id === taskId ? { ...item, status: newStatus } : item
+      )
     );
-  };
-
-  // weeklyRoutines内の指定する要素のstatusを更新する関数
-  const handleUpdateWeeklyRoutineStatus = (
-    taskId: string,
-    newStatus: IRoutineResponse["status"]
-  ) => {
-    setWeeklyRoutines((prev) => updateRoutineStatus(prev, taskId, newStatus));
-  };
-
-  // dailyRoutines内の指定する要素のstatusを更新する関数
-  const handleUpdateDailyRoutineStatus = (
-    taskId: string,
-    newStatus: IRoutineResponse["status"]
-  ) => {
-    setDailyRoutines((prev) => updateRoutineStatus(prev, taskId, newStatus));
   };
 
   return (
@@ -144,75 +118,106 @@ const Routine: FC = (): ReactElement => {
         </div>
       )}
       {isSuccess && (
-        <div className="routine-content">
-          <CustomizedSnackBar property={property} handleClose={handleClose} />
-          <CustomizedModal
-            open={open}
-            closeModal={closeModal}
-            handleDelete={handleDelete}
-          />
-          <AddTaskButton redirectUrl="/home/routine" isFlipped={true} />
-          <div className="routine-content-header">
-            <span className="left">
-              {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
-            </span>
-            <SelectCompletedTaskButton
-              onlyPending={onlyPending}
-              setOnlyPending={setOnlyPending}
+        <div>
+          <AnimatePresence>
+            {editTargetId && (
+              <RoutineUpdateDrawer
+                key={editTargetId}
+                task={
+                  routines.find(
+                    (routine: IRoutine) => routine._id === editTargetId
+                  ) || {
+                    _id: "",
+                    repeatType: "daily",
+                    category: "study",
+                    description: "",
+                    status: "pending",
+                  }
+                }
+                setRoutines={setRoutines}
+                setEditTargetId={setEditTargetId}
+                setProperty={setProperty}
+              />
+            )}
+          </AnimatePresence>
+          <div className="routine-content">
+            <CustomizedSnackBar property={property} handleClose={handleClose} />
+            <CustomizedModal
+              open={open}
+              closeModal={closeModal}
+              handleDelete={handleDelete}
             />
-          </div>
-          {/* 週ごとのルーティンコンテナ */}
-          <div className="routine-container">
-            <div className="routine-header">
-              <div className="routine-header-icon">
-                <CheckCircle2 size={20} />
+            <AddTaskButton redirectUrl="/home/routine" isFlipped={true} />
+            <div className="routine-content-header">
+              <span className="left">
+                {dayjs().locale("ja").format("YYYY年MM月DD日 (ddd)")}
+              </span>
+              <SelectCompletedTaskButton
+                onlyPending={onlyPending}
+                setOnlyPending={setOnlyPending}
+              />
+            </div>
+            {/* 週ごとのルーティンコンテナ */}
+            <div className="routine-container">
+              <div className="routine-header">
+                <div className="routine-header-icon">
+                  <CheckCircle2 size={20} />
+                </div>
+                <span className="routine-header-title">毎週のルーティン</span>
               </div>
-              <span className="routine-header-title">毎週のルーティン</span>
-            </div>
-            <div className="routine-list">
-              <AnimatePresence>
-                {weeklyRoutines
-                  .filter((task) =>
-                    onlyPending ? task.status === "pending" : true
-                  )
-                  .map((task: IRoutineResponse) => (
-                    <TaskCard
-                      task={task}
-                      key={task._id}
-                      setProperty={setProperty}
-                      onRequestDelete={openModal}
-                      api="/routine"
-                      handleUpdateStatus={handleUpdateWeeklyRoutineStatus}
-                    />
-                  ))}
-              </AnimatePresence>
-            </div>
-          </div>
-          {/* 日ごとのルーティンコンテナ */}
-          <div className="routine-container">
-            <div className="routine-header">
-              <div className="routine-header-icon">
-                <CheckCircle2 size={20} />
+              <div className="routine-list">
+                <AnimatePresence>
+                  {routines
+                    .filter(
+                      (routine: IRoutine) => routine.repeatType === "weekly"
+                    )
+                    .filter((routine: IRoutine) =>
+                      onlyPending ? routine.status === "pending" : true
+                    )
+                    .map((routine: IRoutine) => (
+                      <TaskCard
+                        task={routine}
+                        key={routine._id}
+                        setProperty={setProperty}
+                        onRequestDelete={openModal}
+                        api="/routine"
+                        handleUpdateStatus={handleUpdateRoutineStatus}
+                        setEditTargetId={setEditTargetId}
+                      />
+                    ))}
+                </AnimatePresence>
               </div>
-              <span className="routine-header-title">毎日のルーティン</span>
             </div>
-            <div className="routine-list">
-              <AnimatePresence>
-                {dailyRoutines
-                  .filter((task) =>
-                    onlyPending ? task.status === "pending" : true
-                  )
-                  .map((task: IRoutineResponse) => (
-                    <TaskCard
-                      task={task}
-                      key={task._id}
-                      setProperty={setProperty}
-                      onRequestDelete={openModal}
-                      api="/routine"
-                      handleUpdateStatus={handleUpdateDailyRoutineStatus}
-                    />
-                  ))}
-              </AnimatePresence>
+            {/* 日ごとのルーティンコンテナ */}
+            <div className="routine-container">
+              <div className="routine-header">
+                <div className="routine-header-icon">
+                  <CheckCircle2 size={20} />
+                </div>
+                <span className="routine-header-title">毎日のルーティン</span>
+              </div>
+              <div className="routine-list">
+                <AnimatePresence>
+                  {routines
+                    .filter(
+                      (routine: IRoutine) => routine.repeatType === "daily"
+                    )
+                    .filter((routine: IRoutine) =>
+                      onlyPending ? routine.status === "pending" : true
+                    )
+                    .map((routine: IRoutine) => (
+                      <TaskCard
+                        task={routine}
+                        key={routine._id}
+                        setProperty={setProperty}
+                        onRequestDelete={openModal}
+                        api="/routine"
+                        handleUpdateStatus={handleUpdateRoutineStatus}
+                        setEditTargetId={setEditTargetId}
+                      />
+                    ))}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>

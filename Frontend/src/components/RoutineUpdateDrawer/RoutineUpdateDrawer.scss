@@ -1,4 +1,4 @@
-.task-drawer {
+.routine-drawer {
   max-width: 800px;
   min-width: 600px;
   position: fixed;
@@ -12,11 +12,11 @@
   flex-direction: column;
   align-items: center;
   z-index: 11;
-  .task-drawer-container {
+  .routine-drawer-container {
     padding-bottom: 10px;
     width: 500px;
     text-align: center;
-    .task-drawer-handler {
+    .routine-drawer-handler {
       width: 40px;
       height: 4px;
       margin-bottom: 5px;
@@ -29,7 +29,7 @@
         background-color: #9ca3af;
       }
     }
-    .task-drawer-form {
+    .routine-drawer-form {
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -46,50 +46,12 @@
             color: var(--icon-color);
           }
         }
-        .toggle-container {
-          display: flex;
-          justify-content: space-around;
-          align-items: center;
-          border: var(--card-border);
-          border-radius: 16px;
-          padding: 4px 5px;
-          transition: background-color 0.2s ease, border-color 0.2s ease;
-          &:hover {
-            background-color: var(--card-hover-background);
-            border-color: rgba(209, 213, 219, 0.7);
-          }
-          .toggle-label {
-            font-size: 14px;
-          }
-        }
-        .datetime-title {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-weight: bold;
-          .datetime-icon {
-            color: #888;
-          }
-        }
-        .datetime-picker {
-          display: flex;
-          justify-content: center;
-          gap: 50px;
-          border: var(--card-border);
-          border-radius: 16px;
-          padding: 6px;
-          transition: background-color 0.2s ease, border-color 0.2s ease;
-          &:hover {
-            background-color: var(--card-hover-background);
-            border-color: rgba(209, 213, 219, 0.7);
-          }
-        }
+        .type-selector,
         .category-selector {
           .MuiFormControl-root {
             width: 100%;
             .MuiFormGroup-root {
               display: flex;
-              justify-content: space-between;
               align-items: center;
               .MuiFormControlLabel-root {
                 border: var(--card-border);
@@ -108,7 +70,21 @@
             }
           }
         }
-        .task-textarea {
+        .type-selector {
+          .MuiFormControl-root {
+            .MuiFormGroup-root {
+              justify-content: space-evenly;
+            }
+          }
+        }
+        .category-selector {
+          .MuiFormControl-root {
+            .MuiFormGroup-root {
+              justify-content: space-between;
+            }
+          }
+        }
+        .routine-textarea {
           padding: 12px 15px;
           border: 2px solid rgba(229, 231, 235, 0.5);
           border-radius: 16px;
@@ -173,13 +149,13 @@
 }
 
 @media (max-width: 480px) {
-  .task-drawer {
+  .routine-drawer {
     width: 100%;
     max-width: unset;
     min-width: unset;
-    .task-drawer-container {
+    .routine-drawer-container {
       width: 90%;
-      .task-drawer-form {
+      .routine-drawer-form {
         .form-section {
           .category-selector {
             .MuiFormControl-root {

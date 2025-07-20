@@ -24,6 +24,4 @@ export interface ITaskSchemaWithID extends ITaskSchema {
   _id: Types.ObjectId;
 }
 
-export type IUpdateTask = { _id: Types.ObjectId } & Partial<
-  Pick<ITask, "description" | "status" | "category">
->;
+export type IUpdateTask = { _id: Types.ObjectId } & Partial<ITask>;

@@ -154,6 +154,7 @@ const TaskRegister: FC<IProps> = ({
                 <CalendarAndTimePicker
                   alwaysAvailable={true}
                   isAllDay={isAllDay}
+                  disablePast={true}
                   handleDatePicker={handleDatePicker}
                   handleTimePicker={handleTimePicker}
                   time={startTime}
@@ -165,6 +166,7 @@ const TaskRegister: FC<IProps> = ({
                 <CalendarAndTimePicker
                   alwaysAvailable={false}
                   isAllDay={isAllDay}
+                  disablePast={true}
                   handleDatePicker={handleDatePicker}
                   handleTimePicker={handleTimePicker}
                   time={endTime}

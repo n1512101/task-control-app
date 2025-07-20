@@ -5,7 +5,7 @@ import useAxiosAuth from "./useAxiosAuth.hook";
 export default function useCreateRoutine() {
   const axiosAuth = useAxiosAuth();
   // ルーティン作成する際に動作する関数
-  const createRoutine = async (routine: IRoutine) => {
+  const createRoutine = async (routine: Omit<IRoutine, "_id">) => {
     try {
       const response = await axiosAuth.post("/routine/create", routine);
       return response.data;

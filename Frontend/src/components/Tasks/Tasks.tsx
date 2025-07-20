@@ -1,10 +1,10 @@
 import { FC, ReactElement, useContext, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import dayjs from "dayjs";
-import "dayjs/locale/ja";
+import utc from "dayjs/plugin/utc";
 import { CheckCircle2 } from "lucide-react";
 import useGetTasks from "../../hooks/useGetTasks.hook";
-import { ITaskResponse } from "../../interfaces/task.interface";
+import { ITask } from "../../interfaces/task.interface";
 import CustomizedButton from "../CustomizedButton/CustomizedButton";
 import CustomizedSnackBar from "../CustomizedSnackBar/CustomizedSnackBar";
 import CustomizedModal from "../Modal/Modal";
@@ -17,8 +17,10 @@ import { LoadingContext } from "../../context/LoadingContext";
 import TaskUpdateDrawer from "../TaskUpdateDrawer/TaskUpdateDrawer";
 import "./Tasks.scss";
 
+dayjs.extend(utc);
+
 const Tasks: FC = (): ReactElement => {
-  const [tasks, setTasks] = useState<ITaskResponse[]>([]);
+  const [tasks, setTasks] = useState<ITask[]>([]);
 
   // ローディング状態を管理するcontext
   const { setIsLoading } = useContext(LoadingContext);
@@ -43,7 +45,13 @@ const Tasks: FC = (): ReactElement => {
   // 初回のみ初期データ同期
   useEffect(() => {
     if (isSuccess) {
-      setTasks(data.tasks);
+      setTasks(
+        data.tasks.map((task: ITask) => ({
+          ...task,
+          startDate: dayjs.utc(task.startDate).format("YYYY-MM-DD HH:mm"),
+          endDate: dayjs.utc(task.endDate).format("YYYY-MM-DD HH:mm"),
+        }))
+      );
     }
     // ローディング状態の変更
     setIsLoading(isPending);
@@ -95,10 +103,7 @@ const Tasks: FC = (): ReactElement => {
   };
 
   // tasks内の指定する要素のstatusを更新する関数
-  const handleUpdateStatus = (
-    taskId: string,
-    newStatus: ITaskResponse["status"]
-  ) => {
+  const handleUpdateStatus = (taskId: string, newStatus: ITask["status"]) => {
     setTasks((prev) =>
       prev.map((task) =>
         task._id === taskId ? { ...task, status: newStatus } : task
@@ -134,6 +139,7 @@ const Tasks: FC = (): ReactElement => {
                 }
                 setTasks={setTasks}
                 setEditTargetId={setEditTargetId}
+                setProperty={setProperty}
               />
             )}
           </AnimatePresence>
@@ -167,7 +173,7 @@ const Tasks: FC = (): ReactElement => {
                     .filter((task) =>
                       onlyPending ? task.status === "pending" : true
                     )
-                    .map((task: ITaskResponse) => (
+                    .map((task: ITask) => (
                       <TaskCard
                         task={task}
                         key={task._id}
