@@ -109,8 +109,8 @@
       gap: 4px;
       padding: 4px;
     }
-    .rbc-button-link {
-      font-size: 15px;
+    .rbc-button-link:not(.rbc-show-more) {
+      font-size: 14px;
     }
   }
 }
