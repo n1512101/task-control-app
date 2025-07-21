@@ -3,8 +3,6 @@ import { AnimatePresence } from "framer-motion";
 import { Calendar, X } from "lucide-react";
 import dayjs from "dayjs";
 import { ITask } from "../../interfaces/task.interface";
-import useUpdateTask from "../../hooks/useUpdateTask.hook";
-import useDebounce from "../../hooks/useDebounce.hook";
 import ISnackbarProperty from "../../interfaces/snackbarProperty.interface";
 import TaskModalCard from "../TaskModalCard/TaskModalCard";
 import TaskUpdateDrawer from "../TaskUpdateDrawer/TaskUpdateDrawer";
@@ -27,54 +25,6 @@ const TaskModal = ({
   eventDate: string;
 }): ReactElement => {
   const [editTargetId, setEditTargetId] = useState<string>("");
-
-  // データ更新hook
-  const { mutate } = useUpdateTask();
-
-  // debounced関数(1秒)
-  const debounce = useDebounce(1000);
-  const debouncedUpdateStatus = (
-    id: string,
-    newStatus: ITask["status"],
-    category: ITask["category"]
-  ) => {
-    debounce(() => {
-      mutate(
-        {
-          path: "/task",
-          task: {
-            _id: id,
-            status: newStatus,
-            category,
-          },
-        },
-        {
-          onError: (error) => {
-            setProperty({
-              open: true,
-              message: error.message,
-              severity: "warning",
-            });
-          },
-        }
-      );
-    });
-  };
-
-  // タスクの完了状態を切り替える関数
-  const toggleTaskCompletion = (id: string) => {
-    const task = selectedTasks.find((task) => task._id === id)!;
-    const newStatus = task.status === "done" ? "pending" : "done";
-    const category = task.category;
-    // 状態を更新
-    setTasks((prev: ITask[]) =>
-      prev.map((task) =>
-        task._id === id ? { ...task, status: newStatus } : task
-      )
-    );
-    // データベース更新
-    debouncedUpdateStatus(id, newStatus, category);
-  };
 
   return (
     <div className="task-modal">
@@ -122,9 +72,10 @@ const TaskModal = ({
               <TaskModalCard
                 key={task._id}
                 task={task}
-                toggleTaskCompletion={toggleTaskCompletion}
                 onRequestDelete={onRequestDelete}
                 setEditTargetId={setEditTargetId}
+                setTasks={setTasks}
+                setProperty={setProperty}
               />
             ))}
           </AnimatePresence>
