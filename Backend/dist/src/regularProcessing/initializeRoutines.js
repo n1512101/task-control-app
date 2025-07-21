@@ -15,11 +15,24 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = initializeRoutines;
 const node_cron_1 = __importDefault(require("node-cron"));
 const routineTask_model_1 = require("../models/routineTask.model");
-// 毎日0時にルーティンを初期化する
+// ルーティンを初期化する
 function initializeRoutines() {
     try {
+        // 毎日0時に日ごとのルーティンを初期化
         node_cron_1.default.schedule("0 0 15 * * *", () => __awaiter(this, void 0, void 0, function* () {
-            yield routineTask_model_1.RoutineTask.find({ status: "done" }).updateMany({
+            yield routineTask_model_1.RoutineTask.find({
+                repeatType: "daily",
+                status: "done",
+            }).updateMany({
+                status: "pending",
+            });
+        }));
+        // 毎週月曜日の0時に週ごとのルーティンを初期化
+        node_cron_1.default.schedule("0 0 15 * * 7", () => __awaiter(this, void 0, void 0, function* () {
+            yield routineTask_model_1.RoutineTask.find({
+                repeatType: "weekly",
+                status: "done",
+            }).updateMany({
                 status: "pending",
             });
         }));
