@@ -28,8 +28,8 @@ const TaskCard: FC<IProps> = ({
   // データ更新hook
   const { mutate } = useUpdateTask();
 
-  // debounce関数(1秒)
-  const debounce = useDebounce(1000);
+  // debounce関数(500ms)
+  const debounce = useDebounce(500);
   const debouncedUpdateStatus = (newDone: boolean) => {
     debounce(() => {
       mutate(

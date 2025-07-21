@@ -14,8 +14,8 @@ import useDeleteRoutine from "../../hooks/useDeleteTask.hook";
 import SelectCompletedTaskButton from "../SelectCompletedTaskButton/SelectCompletedTaskButton";
 import { LoadingContext } from "../../context/LoadingContext";
 import AddTaskButton from "../AddTaskButton/AddTaskButton";
-import "./Routine.scss";
 import RoutineUpdateDrawer from "../RoutineUpdateDrawer/RoutineUpdateDrawer";
+import "./Routine.scss";
 
 // 今週のルーティンコンポーネント
 const Routine: FC = (): ReactElement => {
