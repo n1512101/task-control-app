@@ -27,19 +27,19 @@ https://task-control-app-46ty.onrender.com/auth
 
 ### 🎥デモ動画
 ##### ダークモード
-<img src="./image/darkmode.gif" width="400">
+<img src="./image/darkmode.gif" width="600">
 
 ##### タスク編集
-<img src="./image/task_edit.gif" width="400">
+<img src="./image/task_edit.gif" width="600">
 
 ##### タスク一覧
-<img src="./image/task_list.gif" width="400">
+<img src="./image/task_list.gif" width="600">
 
 ##### タスク作成
-<img src="./image/task_create.gif" width="400">
+<img src="./image/task_create.gif" width="600">
 
 ##### リマインダーメール例
-<img src="./image/reminder.png" width="400">
+<img src="./image/reminder.png" width="600">
 
 ### 🧱使用技術
 - フロントエンド： HTML, CSS, TypeScript, React
@@ -49,7 +49,7 @@ https://task-control-app-46ty.onrender.com/auth
 - その他： Docker
 
 ### 🗂データベース設計
-<img src="./image/database.png" width="400">
+<img src="./image/database.png" width="600">
 
 ### 🛠実装予定の機能
 - パスワード変更機能
